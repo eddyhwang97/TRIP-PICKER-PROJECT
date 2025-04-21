@@ -16,7 +16,7 @@ const center = {
 function EditTrip(props) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: 'AIzaSyCxy20L2MbSAveA8dvQsaxCngzcmOLmS8s'
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
   });
 
   return (
