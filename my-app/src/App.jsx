@@ -5,8 +5,8 @@ function App() {
   return (
     <>
       <HeaderArea />
-      <FooterArea />
       <MainArea />
+      <FooterArea />
     </>
   );
 }
