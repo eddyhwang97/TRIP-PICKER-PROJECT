@@ -8,6 +8,8 @@ function HeaderArea(props) {
                 <Link to="/">main</Link>
                 <Link to="editTrip">editTrip</Link>
                 <Link to="dashboard">dashboard</Link>
+                <Link to="login">login</Link>
+                <Link to="join">join</Link>
             </div>
         </div>
     );
