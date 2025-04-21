@@ -1,0 +1,101 @@
+@import "../../css/core";
+@import "../../css/reset";
+
+.login-container {
+  @include flex(center, center);
+  min-height: 100vh;
+  background-color: #eff7ff;
+}
+.logo-box {
+  @include flex(center, center);
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  margin-bottom: 3rem;
+  scale: 0.7;
+}
+.login-box {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  text-align: center;
+}
+
+.login-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.login-input {
+  @include borderSet;
+  width: 80%;
+  padding: 1.5rem 2rem;
+  border: 1px solid #ccc;
+  border-radius: 0.75rem;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+  &:focus {
+    border-color: #000000;
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+  }
+}
+.inputText {
+  text-align: left;
+  padding-left: 2rem;
+  font-size: 15px;
+}
+.passwordBox {
+  .forgetPassword {
+    @include flex(flex-start, center);
+    padding-left: 2rem;
+    color: gray;
+    cursor: pointer;
+  }
+}
+.login-button {
+  width: 90%;
+  padding: 0.75rem;
+  @include buttonSet;
+  margin-top: 3rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  &:hover {
+    background-color: #30a2ff;
+  }
+}
+.joinBox{
+    margin-top: 1rem;
+    @include flex(center, center);
+    .registerButton{
+        padding-left: 1rem;
+        color: $color-main;
+        font-weight: bold;
+    }
+}
+.divider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+  
+    &::before,
+    &::after {
+      content: "";
+      flex: .45 .45;
+      height: 1px;
+      background: #ccc;
+    }
+  
+    span {
+      padding: 0 1rem;
+      color: #888;
+      font-size: 0.9rem;
+    }
+  }
