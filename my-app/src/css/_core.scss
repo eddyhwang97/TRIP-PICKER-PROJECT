@@ -1,4 +1,4 @@
-//믹스인
+//////// 믹스인 ////////
 @mixin flex($x: flex-start, $y: flex-end) {
     display: flex;
     justify-content: $x;
@@ -21,3 +21,8 @@
     font-size: 15px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
+
+
+/////// 컬러 ///////
+$color-main : #7CC4FF;
+$color-sub : #EFF7FF;
