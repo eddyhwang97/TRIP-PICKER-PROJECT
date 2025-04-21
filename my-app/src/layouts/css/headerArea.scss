@@ -1,0 +1,22 @@
+.header{
+    height: 80px;
+    
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    
+}
+.logo-box{
+    align-content: center;
+    img{
+        width: 250px;
+        height: 48px;
+    }
+}
+.nav-box{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    gap: 20px;
+}

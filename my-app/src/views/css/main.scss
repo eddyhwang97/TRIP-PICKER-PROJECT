@@ -1,0 +1,83 @@
+@import "../../css/core";
+
+.container {
+  width: 100%;
+  height: calc(100vh - 80px);
+
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+}
+
+.introduction {
+  div {
+    overflow: hidden;
+    font-size: 9.6rem;
+    line-height: 1.5;
+    text-align: center;
+    font-weight: bold;
+    display: flex;
+    p {
+      animation: wordAnimation1 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+    }
+  }
+  .logo {
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $color-main;
+    font-family: "Jura", sans-serif;
+    transform: translate(100%);
+    animation: wordAnimation2 1s cubic-bezier(0.77, 0, 0.175, 1) .7s forwards;
+  }
+}
+
+.start-button {
+  text-align: center;
+  opacity: 0;
+
+  animation: buttonAnimation 1s cubic-bezier(0.77, 0, 0.175, 1) 1.7s forwards;
+  button {
+    width: 200px;
+    height: 50px;
+    background-color: #000;
+    color: #fff;
+    font-size: 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+
+  }
+  button:hover {
+    background-color: $color-main;
+    color: #fff;
+    transition: 0.3s;
+  }
+}
+
+// 애니메이션
+@keyframes wordAnimation1 {
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  @keyframes wordAnimation2 {
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translate(0);
+    }
+  }
+  @keyframes buttonAnimation{
+   
+    to {
+      opacity: 1;
+    }
+  }
