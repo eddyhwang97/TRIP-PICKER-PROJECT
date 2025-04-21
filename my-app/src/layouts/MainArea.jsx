@@ -1,11 +1,11 @@
 import React from 'react';
 
-function Main(props) {
+function MainArea(props) {
     return (
         <div>
-            
+            메인
         </div>
     );
 }
 
-export default Main;
+export default MainArea;

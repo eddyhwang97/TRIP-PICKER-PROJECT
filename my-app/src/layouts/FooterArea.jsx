@@ -1,11 +1,11 @@
 import React from 'react';
 
-function Main(props) {
+function FooterArea(props) {
     return (
         <div>
-            
+            푸터
         </div>
     );
 }
 
-export default Main;
+export default FooterArea;

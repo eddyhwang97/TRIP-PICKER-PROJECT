@@ -1,11 +1,11 @@
 import React from 'react';
 
-function Main(props) {
+function HeaderArea(props) {
     return (
         <div>
-            
+            헤더
         </div>
     );
 }
 
-export default Main;
+export default HeaderArea;
