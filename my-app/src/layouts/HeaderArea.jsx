@@ -1,9 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function HeaderArea(props) {
     return (
         <div>
-            헤더
+            <div>
+                <Link to="/">main</Link>
+                <Link to="editTrip">editTrip</Link>
+                <Link to="dashboard">dashboard</Link>
+            </div>
         </div>
     );
 }
