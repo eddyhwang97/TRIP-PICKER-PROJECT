@@ -1,7 +1,7 @@
 import React from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
-import "./css/editTrip.css";
+import "./css/editTrip.scss";
 
 const containerStyle = {
   width: '100vw',
