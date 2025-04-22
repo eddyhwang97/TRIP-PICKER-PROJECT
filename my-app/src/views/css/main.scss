@@ -3,15 +3,16 @@
 .container {
   width: 100%;
   height: calc(100vh - 80px);
-
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  justify-content: center;
+  overflow: hidden;
 }
 
-.introduction {
+.introduction-box {
+  margin: 200px 10px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
   div {
     overflow: hidden;
     font-size: 9.6rem;
@@ -23,7 +24,7 @@
       animation: wordAnimation1 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
     }
   }
-  .logo {
+  .introduction-logo {
     padding: 0 20px;
     display: flex;
     justify-content: center;
@@ -31,7 +32,7 @@
     color: $color-main;
     font-family: "Jura", sans-serif;
     transform: translate(100%);
-    animation: wordAnimation2 1s cubic-bezier(0.77, 0, 0.175, 1) .7s forwards;
+    animation: wordAnimation2 1s cubic-bezier(0.77, 0, 0.175, 1) 0.7s forwards;
   }
 }
 
@@ -49,7 +50,6 @@
     border-radius: 5px;
     border: none;
     cursor: pointer;
-
   }
   button:hover {
     background-color: $color-main;
@@ -57,27 +57,113 @@
     transition: 0.3s;
   }
 }
+.travle-location-search-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.search-box {
+  width: 400px;
+  height: 50px;
+  border: 1px solid $boarder-color-gray;
+  border-radius: 50px;
 
+  text-align: center;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  input {
+    width: 80%;
+    height: 100%;
+
+    border: none;
+    background-color: transparent;
+    outline: none;
+
+    font-size: 2rem;
+    text-align: center;
+    font-weight: thin;
+  }
+  button {
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+}
+.recommend-location-list {
+  width: 350px;
+  height: 200px;
+  top: 80px;
+  background-color: #fff;
+  margin-top: 10px;
+  overflow-y: scroll;
+  border-radius: 10px;
+  border: 1px solid $boarder-color-gray;
+}
+.city-list {
+  position: relative;
+  display: flex;
+  height: 60px;
+  gap: 10px;
+  align-items: center;
+  padding: 7px;
+  transition: all 0.3s;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+  &:hover {
+    background-color: #0000001a;
+    cursor: pointer;
+  }
+  &::after {
+    position: absolute;
+    bottom: 0;
+    content: "";
+    display: block;
+    width: 95%;
+    height: 1px;
+    background-color: #00000020;
+  }
+}
+.location-image {
+  width: 55px;
+  height: 55px;
+  border-radius: 5px;
+  background-color: #d49b9b;
+}
+.location-name {
+  font-size: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.city-name-en {
+  font-size: 20px;
+  color: $boarder-color-gray;
+}
 // 애니메이션
 @keyframes wordAnimation1 {
-    0% {
-      transform: translateY(100%);
-    }
-    100% {
-      transform: translateY(0);
-    }
+  0% {
+    transform: translateY(100%);
   }
-  @keyframes wordAnimation2 {
-    0% {
-      transform: translateY(100%);
-    }
-    100% {
-      transform: translate(0);
-    }
+  100% {
+    transform: translateY(0);
   }
-  @keyframes buttonAnimation{
-   
-    to {
-      opacity: 1;
-    }
+}
+@keyframes wordAnimation2 {
+  0% {
+    transform: translateY(100%);
   }
+  100% {
+    transform: translate(0);
+  }
+}
+@keyframes buttonAnimation {
+  to {
+    opacity: 1;
+  }
+}
