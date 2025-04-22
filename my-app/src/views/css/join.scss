@@ -1,7 +1,7 @@
 @import "../../css/core";
 @import "../../css/reset";
 
-.login-container {
+.join-container {
   @include flex(center, center);
   min-height: 100vh;
   background-color: #eff7ff;
@@ -14,7 +14,7 @@
   margin-bottom: 3rem;
   scale: 0.7;
 }
-.login-box {
+.join-box {
   background: #fff;
   padding: 2rem;
   border-radius: 1.5rem;
@@ -23,14 +23,14 @@
   text-align: center;
 }
 
-.login-title {
+.join-title {
   font-size: 1.8rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
   color: #333;
 }
 
-.login-input {
+.join-input {
   @include borderSet;
   width: 80%;
   padding: 1.5rem 2rem;
@@ -50,67 +50,29 @@
   padding-left: 2rem;
   font-size: 15px;
 }
-.passwordBox {
-  .forgetPassword {
-    @include flex(flex-start, center);
-    padding-left: 2rem;
-    color: gray;
-    cursor: pointer;
-  }
-}
-.login-button {
+.join-button {
   width: 90%;
   padding: 0.75rem;
+  font-size: 1.5rem;
   @include buttonSet;
   margin-top: 3rem;
+  margin-bottom: 3rem;
   cursor: pointer;
   transition: background-color 0.3s;
   &.inactive {
     background-color: #ccc;
     cursor: default;
+    font-size: 1.5rem;
   }
-
   &.active {
     background-color: #1e90ff;
   }
 }
-.joinBox{
-    margin-top: 1rem;
-    @include flex(center, center);
-    .registerButton{
-        padding-left: 1rem;
-        color: $color-main;
-        font-weight: bold;
-    }
-}
-.divider {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    margin: 1.5rem 0;
-  
-    &::before,
-    &::after {
-      content: "";
-      flex: .45 .45;
-      height: 1px;
-      background: #ccc;
-    }
-  
-    span {
-      padding: 0 1rem;
-      color: #888;
-      font-size: 0.9rem;
-    }
+
+.error {
+    color: red;
+    font-size: 10px;
+    text-align: left;
+    padding-left: 2rem;
   }
 
-  .iconLoginBox{
-    @include flex(center, center);
-    gap: .5rem;
-  .iconLogo {
-    width: 48px;
-    height: 48px;
-    object-fit: contain; // 이미지 비율 유지
-  }
-}

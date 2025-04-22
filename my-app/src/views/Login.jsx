@@ -1,18 +1,44 @@
 // Login 컴포넌트 - Login.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+// 이미지 import
 import smallLogo from "../assets/logo/small-logo.png";
+import google from "../assets/logo/google-logo.png";
+import kakao from "../assets/logo/kakao-logo.png";
+import naver from "../assets/logo/naver-logo.ico";
 
 // scss
 import "./css/login.scss";
+
 function Login(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isValid, setIsValid] = useState(false);
+
+  useEffect(() => {
+    // 이메일, 비밀번호 정규식 검사
+    if (emailRegex.test(username) && passwordRegex.test(password)) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  }, [username, password]);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    alert(`로그인 시도: ${username}`);
+    if (isValid) {
+      alert(`정규식 통과: ${username}`);
+    } else {
+      alert("이메일 또는 비밀번호가 올바르지 않습니다.");
+    }
   };
+
+  // 이메일 - @, 도메인 포함
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // 비밀번호 - 영문+숫자+특수문자 2개이상 + 8자 이상
+  const passwordRegex =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=(?:.*[!@#$%^&*()\-_=+[\]{};:'",.<>/?\\|`~]){2,}).{8,}$/;
 
   return (
     <div className="login-container">
@@ -42,7 +68,10 @@ function Login(props) {
             />
             <div className="forgetPassword">비밀번호를 잊으셨나요?</div>
           </div>
-          <button type="submit" className="login-button">
+          <button
+            type="submit"
+            className={`login-button ${isValid ? "active" : "inactive"}`}
+          >
             로그인
           </button>
           <div className="joinBox">
@@ -53,6 +82,17 @@ function Login(props) {
           </div>
           <div className="divider">
             <span>or</span>
+          </div>
+          <div className="iconLoginBox">
+            <a href="#">
+              <img className="iconLogo" src={google} alt="google logo" />
+            </a>
+            <a href="#">
+              <img className="iconLogo" src={kakao} alt="kakao logo" />
+            </a>
+            <a href="#">
+              <img className="iconLogo" src={naver} alt="naver logo" />
+            </a>
           </div>
         </form>
       </div>
