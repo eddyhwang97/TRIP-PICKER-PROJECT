@@ -33,16 +33,18 @@ function Main(props) {
   return (
     <div className="container">
       <div className="introduction-box">
-        <div>
-          <p>자유로운 여행을 하고싶어?</p>
-        </div>
-        <div>
-          <p>시작해봐</p>
-          <span className="introduction-logo">
-            TRIP
-            <img src={picker} alt="picker" />
-            PICKER
-          </span>
+        <div className="introduction-text">
+          <div className="introduction-title">
+            <p>자유로운 여행을 하고싶어?</p>
+          </div>
+          <div className="introduction-title">
+            <p>시작해봐</p>
+            <span className="introduction-logo">
+              TRIP
+              <img src={picker} alt="picker" />
+              PICKER
+            </span>
+          </div>
         </div>
       </div>
       {!start ? (
@@ -59,9 +61,7 @@ function Main(props) {
               <img src={searchButton} alt="검색버튼" />
             </button>
           </div>
-          {!CityLIst ? (
-            null
-          ) : (
+          {!CityLIst ? null : (
             <div className="recommend-location-list">
               <ul>
                 {cityList.slice(0, 5).map((city, idx) => (

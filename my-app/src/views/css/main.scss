@@ -8,20 +8,27 @@
 
 .introduction-box {
   margin: 200px 10px 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 
-  div {
+  .introduction-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     overflow: hidden;
     font-size: 9.6rem;
     line-height: 1.5;
     text-align: center;
     font-weight: bold;
     display: flex;
-    p {
-      animation: wordAnimation1 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+
+    .introduction-title {
+      overflow: hidden;
+      p {
+        animation: wordAnimation1 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+      }
+    }
+    .introduction-title:nth-child(2) {
+      display: flex;
     }
   }
   .introduction-logo {
@@ -31,7 +38,7 @@
     align-items: center;
     color: $color-main;
     font-family: "Jura", sans-serif;
-    transform: translate(100%);
+    transform: translateY(100%);
     animation: wordAnimation2 1s cubic-bezier(0.77, 0, 0.175, 1) 0.7s forwards;
   }
 }
