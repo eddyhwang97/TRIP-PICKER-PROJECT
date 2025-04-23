@@ -10,16 +10,15 @@ import "./css/main.scss";
 import { citys } from "../contants";
 
 function Main(props) {
-  let cityList = Object.values(citys);
-  cityList = cityList.map((city) => ({
-    name: city.name,
-    englishName: city.englishName,
-    center: city.center,
-    radiusKm: city.radiusKm,
-  }));
-
+  let city = Object.values(citys);
+      city = city.map((city) => ({
+        name: city.name,
+        englishName: city.englishName,
+        center: city.center,
+        radiusKm: city.radiusKm,
+      }));
   const [start, setStart] = useState(false);
-  const [CityLIst, setCityList] = useState(false);
+  const [cityLIst, setCityList] = useState(false);
 
   const clickEvent = {
     showSearch: () => {
@@ -29,7 +28,7 @@ function Main(props) {
       setCityList(true);
     },
   };
-  useEffect(() => {});
+  
   return (
     <div className="container">
       <div className="introduction-box">
@@ -61,10 +60,10 @@ function Main(props) {
               <img src={searchButton} alt="검색버튼" />
             </button>
           </div>
-          {!CityLIst ? null : (
+          {!cityLIst ? null : (
             <div className="recommend-location-list">
               <ul>
-                {cityList.slice(0, 5).map((city, idx) => (
+                {city.slice(0, 5).map((city, idx) => (
                   <li className="city-list" key={idx}>
                     <div className="location-image"></div>
                     <div className="location-name">
