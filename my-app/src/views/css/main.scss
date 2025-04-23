@@ -2,14 +2,14 @@
 
 .container {
   width: 100%;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 60px);
   overflow: hidden;
 }
 
-.introduction-box {
+.main-intro-box {
   margin: 200px 10px 0;
 
-  .introduction-text {
+  .main-intro-text {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -21,17 +21,17 @@
     font-weight: bold;
     display: flex;
 
-    .introduction-title {
+    .main-intro-title {
       overflow: hidden;
       p {
         animation: wordAnimation1 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
       }
     }
-    .introduction-title:nth-child(2) {
+    .main-intro-title:nth-child(2) {
       display: flex;
     }
   }
-  .introduction-logo {
+  .main-intro-logo {
     padding: 0 20px;
     display: flex;
     justify-content: center;
@@ -43,7 +43,7 @@
   }
 }
 
-.start-button {
+.main-intro-start-button {
   text-align: center;
   opacity: 0;
 
@@ -64,13 +64,13 @@
     transition: 0.3s;
   }
 }
-.travle-location-search-box {
+.main-intro-travle-location-search-box {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-.search-box {
+.main-intro-search-box {
   width: 400px;
   height: 50px;
   border: 1px solid $boarder-color-gray;
@@ -102,7 +102,7 @@
     cursor: pointer;
   }
 }
-.recommend-location-list {
+.main-intro-recommend-location-list {
   width: 350px;
   height: 200px;
   top: 80px;
@@ -112,7 +112,7 @@
   border-radius: 10px;
   border: 1px solid $boarder-color-gray;
 }
-.city-list {
+.main-intro-city-list {
   position: relative;
   display: flex;
   height: 60px;
@@ -137,18 +137,18 @@
     background-color: #00000020;
   }
 }
-.location-image {
+.main-intro-location-image {
   width: 55px;
   height: 55px;
   border-radius: 5px;
   background-color: #d49b9b;
 }
-.location-name {
+.main-intro-location-name {
   font-size: 24px;
   display: flex;
   flex-direction: column;
 }
-.city-name-en {
+.main-intro-city-name-en {
   font-size: 20px;
   color: $boarder-color-gray;
 }

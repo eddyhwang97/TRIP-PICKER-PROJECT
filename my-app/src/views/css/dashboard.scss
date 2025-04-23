@@ -1,0 +1,95 @@
+.container {
+  width: 100%;
+  height: calc(100vh - 80px);
+}
+.dashboard-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.dashboard-left {
+  width: 250px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-right: 0.5px solid #e0e0e0;
+  box-sizing: border-box;
+}
+.dashboard-left-top {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  
+  border-bottom: 0.5px solid #e0e0e0;
+  box-sizing: border-box;
+}
+.dashboard-left-profile {
+  display: flex;
+}
+.dashboard-left-profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: aquamarine;
+}
+.dashboard-left-profile-user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
+}
+.dashboard-left-profile-user-info-name {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.dashboard-left-profile-user-info-email {
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 140%;
+}
+.dashboard-left-notice-button {
+  //   border: none;
+  background: transparent;
+}
+.dashBoard-left-middel {
+  width: 100%;
+  height: calc(100% - 60px);
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  box-sizing: border-box;
+}
+.dashboard-left-middel-trip-list-title {
+  display: block;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 140%;
+  padding: 0 10px;
+  margin-bottom: 5px;
+}
+.dashboard-left-middel-trip-list-folder {
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}
+.dashboard-left-middel-trip-list-folder-title {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 140%;
+  padding: 0 10px 5px;
+}
+.dashboard-left-middel-trip-list-folder-item {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 140%;
+  padding: 0 10px;
+}
+.dashboard-right {
+  flex: 1;
+}
