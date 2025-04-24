@@ -42,7 +42,7 @@ function EditTrip(props) {
         setMarkerPosition(newCenter); // 마커 위치 업데이트
         setZoom(15); // 검색된 위치로 확대
       } else {
-        alert("선택한 장소에 대한 위치 정보를 가져올 수 없습니다.");
+        alert("위치 정보를 가져올 수 없습니다.");
       }
     }
   };
