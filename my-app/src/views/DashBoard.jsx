@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import "./css/dashboard.scss";
 import DashBoardItem from "../components/DashBoardItem";
 import noticeIcon from "../assets/icon/notice.png";
@@ -30,7 +30,7 @@ function DashBoard(props) {
 
   //           useEffect          //
   // 첫 랜더링시 여행 리스트 가져오기
-  useEffect(() => {
+  useLayoutEffect(() => {
     getTripList();
   }, []);
 
