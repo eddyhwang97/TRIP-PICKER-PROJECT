@@ -9,7 +9,6 @@ function DashBoard(props) {
   const [tripList, setTripList] = useState([]);
   const [mode, setMode] = useState("V");
   const [checkedItems, setCheckedItems] = useState([]);
-  console.log(user);
 
   //           fucnction          //
   // 사용자 여행목록 가져오기
@@ -28,7 +27,7 @@ function DashBoard(props) {
   };
   const saveTripList = () => {};
 
-  //           useEffect          //
+  //           useLayoutEffect          //
   // 첫 랜더링시 여행 리스트 가져오기
   useLayoutEffect(() => {
     getTripList();
