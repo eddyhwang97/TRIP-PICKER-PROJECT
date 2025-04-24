@@ -15,6 +15,7 @@ function Login(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isValid, setIsValid] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 이메일, 비밀번호 정규식 검사
@@ -28,7 +29,8 @@ function Login(props) {
   const handleLogin = (e) => {
     e.preventDefault();
     if (isValid) {
-      alert(`정규식 통과: ${username}`);
+      alert(`즐거운 여행 되세요!`);
+      navigate("/");
     } else {
       alert("이메일 또는 비밀번호가 올바르지 않습니다.");
     }
@@ -76,7 +78,14 @@ function Login(props) {
           </button>
           <div className="joinBox">
             <div>아직 회원이 아니신가요?</div>
-            <a href="#" className="registerButton">
+            <a
+              href="#"
+              className="registerButton"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/Join");
+              }}
+            >
               이메일로 회원가입하기
             </a>
           </div>
@@ -84,13 +93,31 @@ function Login(props) {
             <span>or</span>
           </div>
           <div className="iconLoginBox">
-            <a href="#">
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                alert("소셜 로그인은 추후 업데이트 됩니다.");
+              }}
+            >
               <img className="iconLogo" src={google} alt="google logo" />
             </a>
-            <a href="#">
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                alert("소셜 로그인은 추후 업데이트 됩니다.");
+              }}
+            >
               <img className="iconLogo" src={kakao} alt="kakao logo" />
             </a>
-            <a href="#">
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                alert("소셜 로그인은 추후 업데이트 됩니다.");
+              }}
+            >
               <img className="iconLogo" src={naver} alt="naver logo" />
             </a>
           </div>

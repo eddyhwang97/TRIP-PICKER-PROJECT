@@ -12,6 +12,7 @@ function Join(props) {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
   const [isValid, setIsValid] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 이메일, 비밀번호 정규식 검사
@@ -33,7 +34,8 @@ function Join(props) {
   const handleJoin = (e) => {
     e.preventDefault();
     if (isValid) {
-      alert(`정규식 통과: ${username}`);
+      alert(`트립피커에 오신 것을 환영합니다 :)`);
+      navigate("/Login");
     } else {
       alert("이메일 또는 비밀번호가 올바르지 않습니다.");
     }
