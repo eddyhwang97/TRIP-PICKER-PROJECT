@@ -28,6 +28,9 @@ function Main(props) {
       setCityList(true);
     },
   };
+  const searchPlace =()=>{
+   
+  }
   
   return (
     <div className="container">
@@ -60,7 +63,7 @@ function Main(props) {
               <img src={searchButton} alt="검색버튼" />
             </button>
           </div>
-          {!cityLIst ? null : (
+          {/* {!cityLIst ? null : (
             <div className="main-intro-recommend-location-list">
               <ul>
                 {city.slice(0, 5).map((city, idx) => (
@@ -74,7 +77,7 @@ function Main(props) {
                 ))}
               </ul>
             </div>
-          )}
+          )} */}
         </div>
       )}
     </div>
