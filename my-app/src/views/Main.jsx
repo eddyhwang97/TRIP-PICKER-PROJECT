@@ -6,9 +6,11 @@ import searchButton from "../assets/images/search-button.png";
 
 // css
 import "./css/main.scss";
+import { useNavigate } from "react-router-dom";
 // data
 
 function Main(props) {
+  const navigate = useNavigate();
   const city = JSON.parse(localStorage.getItem("citys"));
   const [start, setStart] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -19,6 +21,10 @@ function Main(props) {
     showSearch: () => {
       setStart(true);
     },
+    makeTrip:()=>{
+      cityInfo.current=city;
+      navigate('/edittrip', { state: { cityLocation: cityInfo.current } });
+    }
   };
   // 실시간 검색 함수
   const handleInputChange = (e) => {
@@ -67,7 +73,7 @@ function Main(props) {
             <ul>
               {cityList.length > 0 ? (
                 cityList.map((city, idx) => (
-                  <li className="main-intro-city-list" key={idx} onClick={()=>{cityInfo.current=city; console.log(cityInfo.current)}}>
+                  <li className="main-intro-city-list" key={idx} onClick={clickEvent.makeTrip}>
                     <div className="main-intro-location-image"></div>
                     <div className="main-intro-location-name">
                       <span className="main-intro-city-name-kr">{city.name}</span>
