@@ -2,24 +2,22 @@ import React, { useEffect, useState } from "react";
 import "./css/dashboard.scss";
 import DashBoardItem from "../components/DashBoardItem";
 import noticeIcon from "../assets/icon/notice.png";
+import { useStore } from "../stores/store.API";
 
 function DashBoard(props) {
+  const user = useStore((state) => state.user);
   const [tripList, setTripList] = useState([]);
   const [mode, setMode] = useState("V");
   const [checkedItems, setCheckedItems] = useState([]);
+  console.log(user);
 
   //           fucnction          //
+  // 사용자 여행목록 가져오기
   const getTripList = () => {
-    //  const trips =
+    const userTirpList = JSON.parse(localStorage.getItem("trips")).filter((trip) => trip.userId === user.id);
+   setTripList(userTirpList);
   };
 
-  /*************  ✨ Windsurf Command ⭐  *************/
-  /**
-   * id   isChecked  
-   * 
-   * @param {string} id 
-
-/*******  c747b6d7-aac8-4fcf-880c-ac02631a6bc6  *******/
   const handleCheck = (id, isChecked) => {
     setCheckedItems((prev) => (isChecked ? [...prev, id] : prev.filter((item) => item !== id)));
     console.log(checkedItems);
@@ -34,6 +32,7 @@ function DashBoard(props) {
   useEffect(() => {
     getTripList();
   }, []);
+
   return (
     <div className="container">
       <div className="dashboard-box">

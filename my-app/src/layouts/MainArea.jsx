@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
 import { initAllData } from "../contants/index";
 
-
 function MainArea(props) {
-  initAllData();
+  useEffect(() => {
+    initAllData();
+  }, []);
   return (
     <>
       <Outlet />
