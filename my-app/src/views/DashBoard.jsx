@@ -10,25 +10,24 @@ function DashBoard(props) {
 
   //           fucnction          //
   const getTripList = () => {
-    const tripLists = trips.map((trip) => ({
-      id: trip.id,
-      userId: trip.userId,
-      title: trip.title,
-    }));
-    setTripList(tripLists);
-    console.log(tripLists);
+    //  const trips =
   };
 
-  const handleCheck = (id,isChecked) => {
-    setCheckedItems((prev) =>
-      isChecked ? [...prev, id] : prev.filter((item) => item !== id)
-    );
+  /*************  ✨ Windsurf Command ⭐  *************/
+  /**
+   * id   isChecked  
+   * 
+   * @param {string} id 
+
+/*******  c747b6d7-aac8-4fcf-880c-ac02631a6bc6  *******/
+  const handleCheck = (id, isChecked) => {
+    setCheckedItems((prev) => (isChecked ? [...prev, id] : prev.filter((item) => item !== id)));
     console.log(checkedItems);
-  }
+  };
   const deleteTripList = () => {
     setTripList((prev) => prev.filter((item) => !checkedItems.includes(item.id)));
-  }
-  const saveTripList = () => {}
+  };
+  const saveTripList = () => {};
 
   //           useEffect          //
   // 첫 랜더링시 여행 리스트 가져오기
@@ -90,7 +89,9 @@ function DashBoard(props) {
                   <span className="dashboard-right-top-save-button" onClick={() => setMode("V")}>
                     저장
                   </span>
-                  <span className="dashboard-right-top-delete-button" onClick={deleteTripList}>삭제</span>
+                  <span className="dashboard-right-top-delete-button" onClick={deleteTripList}>
+                    삭제
+                  </span>
                 </>
               )}
             </div>

@@ -17,7 +17,6 @@ function Main(props) {
       setStart(true);
     },
     showCityList: () => {
-      setCityList(true);
     },
   };
   const searchPlace =()=>{
