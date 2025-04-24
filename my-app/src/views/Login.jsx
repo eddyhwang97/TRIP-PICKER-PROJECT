@@ -18,17 +18,30 @@ function Login(props) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 이메일, 비밀번호 정규식 검사
-    if (emailRegex.test(username) && passwordRegex.test(password)) {
-      setIsValid(true);
+    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+  
+    const matchedUser = storedUsers.find(
+      (user) => user.email === username && user.password === password
+    );
+  
+    if (matchedUser) {
+      setIsValid(true); // 로그인 조건 통과
     } else {
-      setIsValid(false);
+      setIsValid(false); // 일치하는 사용자 없음
     }
   }, [username, password]);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (isValid) {
+  
+    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+  
+    const matchedUser = storedUsers.find(
+      (user) => user.email === username && user.password === password
+    );
+  
+    if (matchedUser) {
+      sessionStorage.setItem("users", JSON.stringify(matchedUser));
       alert(`즐거운 여행 되세요!`);
       navigate("/");
     } else {
