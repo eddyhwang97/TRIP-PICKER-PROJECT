@@ -1,6 +1,6 @@
-import { useLocation } from 'react-router-dom';
-import { HeaderArea, FooterArea, MainArea } from './layouts';
-import './App.css';
+import { useLocation } from "react-router-dom";
+import { HeaderArea, MainArea } from "./layouts";
+import "./App.css";
 
 function App() {
   const location = useLocation();
@@ -9,7 +9,6 @@ function App() {
     <>
       <HeaderArea />
       <MainArea />
-      <FooterArea />
     </>
   );
 }

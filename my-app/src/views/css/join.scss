@@ -3,7 +3,7 @@
 
 .join-container {
   @include flex(center, center);
-  min-height: 100vh;
+  height: calc(100vh - 60px);
   background-color: #eff7ff;
 }
 
