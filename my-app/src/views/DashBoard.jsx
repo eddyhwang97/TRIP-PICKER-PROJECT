@@ -14,7 +14,8 @@ function DashBoard(props) {
   //           fucnction          //
   // 사용자 여행목록 가져오기
   const getTripList = () => {
-    const userTirpList = JSON.parse(localStorage.getItem("trips")).filter((trip) => trip.userId === user.id);
+    const userTirpList = user !==null ?
+    JSON.parse(localStorage.getItem("trips")).filter((trip) => trip.userId === user.id):[];
    setTripList(userTirpList);
   };
 
