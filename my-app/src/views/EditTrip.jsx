@@ -14,16 +14,11 @@ const containerStyle = {
   height: "100vh",
 };
 
-const center = {
-  lat: 37.5665, // 서울 중심
-  lng: 126.978,
-};
-
 function EditTrip(props) {
   const location = useLocation();
   const cityLocation = location.state.cityLocation;
   console.log(cityLocation);
-  const [mapCenter, setMapCenter] = useState(center);
+  const [mapCenter, setMapCenter] = useState(cityLocation.center);
   const [zoom, setZoom] = useState(12); // 초기 줌 레벨 설정
   const [autocomplete, setAutocomplete] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null); // 초기값을 null로 설정
