@@ -11,20 +11,20 @@ import { useNavigate } from "react-router-dom";
 
 function Main(props) {
   const navigate = useNavigate();
-  const city = JSON.parse(localStorage.getItem("citys"));
+  const citys = JSON.parse(localStorage.getItem("citys"));
   const [start, setStart] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [cityList, setCityList] = useState(city);
+  const [cityList, setCityList] = useState(citys);
   const cityInfo = useRef(null);
 
   const clickEvent = {
     showSearch: () => {
       setStart(true);
     },
-    makeTrip:()=>{
-      cityInfo.current=city;
-      navigate('/edittrip', { state: { cityLocation: cityInfo.current } });
-    }
+    makeTrip: (city) => {
+      console.log(city);
+      navigate("/edittrip", { state: { cityLocation: city } });
+    },
   };
   // 실시간 검색 함수
   const handleInputChange = (e) => {
@@ -32,7 +32,7 @@ function Main(props) {
     setInputValue(value);
 
     // 입력값에 따라 cityList 필터링
-    const filteredCities = city.filter((item) => item.name.includes(value) || item.englishName.toLowerCase().includes(value.toLowerCase()));
+    const filteredCities = citys.filter((item) => item.name.includes(value) || item.englishName.toLowerCase().includes(value.toLowerCase()));
     setCityList(filteredCities);
     console.log(filteredCities);
   };
@@ -73,7 +73,7 @@ function Main(props) {
             <ul>
               {cityList.length > 0 ? (
                 cityList.map((city, idx) => (
-                  <li className="main-intro-city-list" key={idx} onClick={clickEvent.makeTrip}>
+                  <li className="main-intro-city-list" key={idx} onClick={() => (cityInfo.current = city, clickEvent.makeTrip(city))}>
                     <div className="main-intro-location-image"></div>
                     <div className="main-intro-location-name">
                       <span className="main-intro-city-name-kr">{city.name}</span>

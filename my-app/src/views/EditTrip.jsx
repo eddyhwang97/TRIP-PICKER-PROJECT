@@ -7,6 +7,7 @@ import {
 } from "@react-google-maps/api";
 
 import "./css/editTrip.scss";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const containerStyle = {
   width: "100vw",
@@ -19,6 +20,9 @@ const center = {
 };
 
 function EditTrip(props) {
+  const location = useLocation();
+  const cityLocation = location.state.cityLocation;
+  console.log(cityLocation);
   const [mapCenter, setMapCenter] = useState(center);
   const [zoom, setZoom] = useState(12); // 초기 줌 레벨 설정
   const [autocomplete, setAutocomplete] = useState(null);
