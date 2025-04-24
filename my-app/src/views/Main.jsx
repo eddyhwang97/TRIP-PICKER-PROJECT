@@ -9,20 +9,27 @@ import "./css/main.scss";
 // data
 
 function Main(props) {
-  
+  const city = JSON.parse(localStorage.getItem("citys"));
   const [start, setStart] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [cityList, setCityList] = useState(city);
 
   const clickEvent = {
     showSearch: () => {
       setStart(true);
     },
-    showCityList: () => {
-    },
   };
-  const searchPlace =()=>{
-   
-  }
-  
+  // 실시간 검색 함수
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInputValue(value);
+
+    // 입력값에 따라 cityList 필터링
+    const filteredCities = city.filter((item) => item.name.includes(value) || item.englishName.toLowerCase().includes(value.toLowerCase()));
+    setCityList(filteredCities);
+    console.log(filteredCities);
+  };
+
   return (
     <div className="container">
       <div className="main-intro-box">
@@ -49,15 +56,16 @@ function Main(props) {
       ) : (
         <div className="main-intro-travle-location-search-box">
           <div className="main-intro-search-box" onClick={clickEvent.showCityList}>
-            <input type="text" className="main-intro-search-input" placeholder="여행지 검색하기" />
-            <button className="main-intro-search-button">
+            <input type="text" className="main-intro-search-input" placeholder="여행지 검색하기" value={inputValue} onChange={handleInputChange} />
+            {/* <button className="main-intro-search-button">
               <img src={searchButton} alt="검색버튼" />
-            </button>
+            </button> */}
           </div>
-          {/* {!cityLIst ? null : (
-            <div className="main-intro-recommend-location-list">
-              <ul>
-                {city.slice(0, 5).map((city, idx) => (
+
+          <div className="main-intro-recommend-location-list">
+            <ul>
+              {cityList.length > 0 ? (
+                cityList.map((city, idx) => (
                   <li className="main-intro-city-list" key={idx}>
                     <div className="main-intro-location-image"></div>
                     <div className="main-intro-location-name">
@@ -65,10 +73,12 @@ function Main(props) {
                       <span className="main-intro-city-name-en">{city.englishName}</span>
                     </div>
                   </li>
-                ))}
-              </ul>
-            </div>
-          )} */}
+                ))
+              ) : (
+                <li className="main-intro-city-list no-result">검색 결과가 없습니다.</li>
+              )}
+            </ul>
+          </div>
         </div>
       )}
     </div>
