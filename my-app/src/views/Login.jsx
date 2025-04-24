@@ -1,6 +1,7 @@
 // Login 컴포넌트 - Login.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useStore } from "../stores/store.API";
 
 // 이미지 import
 import smallLogo from "../assets/logo/small-logo.png";
@@ -16,14 +17,15 @@ function Login(props) {
   const [password, setPassword] = useState("");
   const [isValid, setIsValid] = useState(false);
   const navigate = useNavigate();
+  const setUser = useStore((state) => state.setUser); // Zustand 전역 상태에 저장하는 함수
 
   useEffect(() => {
     const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-  
+
     const matchedUser = storedUsers.find(
       (user) => user.email === username && user.password === password
     );
-  
+
     if (matchedUser) {
       setIsValid(true); // 로그인 조건 통과
     } else {
@@ -33,15 +35,16 @@ function Login(props) {
 
   const handleLogin = (e) => {
     e.preventDefault();
-  
+
     const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-  
+
     const matchedUser = storedUsers.find(
       (user) => user.email === username && user.password === password
     );
-  
+
     if (matchedUser) {
-      sessionStorage.setItem("users", JSON.stringify(matchedUser));
+      sessionStorage.setItem("users", JSON.stringify(matchedUser)); // 세션 스토리지 저장
+      setUser(matchedUser); // Zustand 전역 상태에 저장
       alert(`즐거운 여행 되세요!`);
       navigate("/");
     } else {
