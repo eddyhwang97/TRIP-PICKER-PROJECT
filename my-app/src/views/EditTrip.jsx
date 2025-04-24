@@ -52,6 +52,15 @@ function EditTrip(props) {
     }
   };
 
+  const onMapClick = (event) => {
+    const clickedPosition = {
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
+    };
+
+    setMarkerPosition(clickedPosition); // 마커 위치 업데이트
+  };
+
   return (
     <>
       <div className="container">
@@ -74,6 +83,7 @@ function EditTrip(props) {
               mapContainerStyle={containerStyle}
               center={mapCenter}
               zoom={zoom}
+              onClick={onMapClick} // 지도 클릭 이벤트 추가
             >
               {/* 마커 조건부 렌더링 */}
               {markerPosition && <Marker position={markerPosition} />}
