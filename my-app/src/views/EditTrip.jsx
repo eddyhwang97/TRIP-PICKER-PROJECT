@@ -1,16 +1,21 @@
-import React, { useState, useRef } from 'react';
-import { GoogleMap, useJsApiLoader, Autocomplete, Marker } from '@react-google-maps/api';
+import React, { useState, useRef } from "react";
+import {
+  GoogleMap,
+  useJsApiLoader,
+  Autocomplete,
+  Marker,
+} from "@react-google-maps/api";
 
 import "./css/editTrip.scss";
 
 const containerStyle = {
-  width: '100vw',
-  height: '100vh'
+  width: "100vw",
+  height: "100vh",
 };
 
 const center = {
   lat: 37.5665, // 서울 중심
-  lng: 126.9780
+  lng: 126.978,
 };
 
 function EditTrip(props) {
@@ -21,9 +26,9 @@ function EditTrip(props) {
   const inputRef = useRef(null);
 
   const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
+    id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries: ['places'],
+    libraries: ["places"],
   });
 
   const onLoadAutocomplete = (autocompleteInstance) => {
@@ -49,35 +54,35 @@ function EditTrip(props) {
 
   return (
     <>
-      {isLoaded ? (
-        <>
-          <div style={{ marginBottom: '10px', textAlign: 'center' }}>
-            <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={onPlaceChanged}>
-              <input
-                type="text"
-                placeholder="주소를 검색하세요"
-                ref={inputRef}
-                style={{
-                  width: '300px',
-                  height: '40px',
-                  padding: '10px',
-                  fontSize: '16px',
-                }}
-              />
-            </Autocomplete>
-          </div>
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={mapCenter}
-            zoom={zoom}
-          >
-            {/* 마커 조건부 렌더링 */}
-            {markerPosition && <Marker position={markerPosition} />}
-          </GoogleMap>
-        </>
-      ) : (
-        <div>Loading Map...</div>
-      )}
+      <div className="container">
+        {isLoaded ? (
+          <>
+            <div className="map-group">
+              <Autocomplete
+                onLoad={onLoadAutocomplete}
+                onPlaceChanged={onPlaceChanged}
+              >
+                <input
+                  className="map-control"
+                  type="text"
+                  placeholder="주소 검색"
+                  ref={inputRef}
+                />
+              </Autocomplete>
+            </div>
+            <GoogleMap
+              mapContainerStyle={containerStyle}
+              center={mapCenter}
+              zoom={zoom}
+            >
+              {/* 마커 조건부 렌더링 */}
+              {markerPosition && <Marker position={markerPosition} />}
+            </GoogleMap>
+          </>
+        ) : (
+          <div>Loading Map...</div>
+        )}
+      </div>
     </>
   );
 }
