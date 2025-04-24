@@ -7,18 +7,10 @@ import searchButton from "../assets/images/search-button.png";
 // css
 import "./css/main.scss";
 // data
-import { citys } from "../contants";
 
 function Main(props) {
-  let city = Object.values(citys);
-      city = city.map((city) => ({
-        name: city.name,
-        englishName: city.englishName,
-        center: city.center,
-        radiusKm: city.radiusKm,
-      }));
+  
   const [start, setStart] = useState(false);
-  const [cityLIst, setCityList] = useState(false);
 
   const clickEvent = {
     showSearch: () => {

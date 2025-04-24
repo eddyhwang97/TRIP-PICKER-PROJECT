@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./css/dashboard.scss";
 import DashBoardItem from "../components/DashBoardItem";
-import { trips } from "../contants";
 import noticeIcon from "../assets/icon/notice.png";
 
 function DashBoard(props) {
