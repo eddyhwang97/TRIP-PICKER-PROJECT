@@ -1,3 +1,5 @@
+@import "../../css/core";
+@import "../../css/reset";
 .header{
     height: 60px;
     
@@ -8,7 +10,11 @@
     box-sizing: border-box;
 }
 .logo-box{
-    align-content: center;
+    @include flex(center, center);
+  object-fit: cover;
+  height: 100%;
+  margin-bottom: 3rem;
+  scale: 0.7;
     img{
         width: 250px;
         height: 48px;

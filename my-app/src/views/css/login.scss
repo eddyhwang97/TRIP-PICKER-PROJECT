@@ -6,14 +6,7 @@
   min-height: 100vh;
   background-color: #eff7ff;
 }
-.logo-box {
-  @include flex(center, center);
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-  margin-bottom: 3rem;
-  scale: 0.7;
-}
+
 .login-box {
   background: #fff;
   padding: 2rem;
