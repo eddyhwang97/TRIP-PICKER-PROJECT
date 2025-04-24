@@ -29,7 +29,7 @@ function HeaderArea(props) {
         </section>
         <section className="nav-box">
           <Link to="/">main</Link>
-          <Link to="editTrip">editTrip</Link>
+          {/* <Link to="editTrip">editTrip</Link> */}
           <Link to="dashboard">dashboard</Link>
           {user ? (
             <>

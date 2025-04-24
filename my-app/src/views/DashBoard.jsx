@@ -18,6 +18,7 @@ function DashBoard(props) {
    setTripList(userTirpList);
   };
 
+  // 여행목록 체크박스 클릭 감지
   const handleCheck = (id, isChecked) => {
     setCheckedItems((prev) => (isChecked ? [...prev, id] : prev.filter((item) => item !== id)));
     console.log(checkedItems);
