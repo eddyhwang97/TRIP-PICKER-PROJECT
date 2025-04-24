@@ -110,6 +110,8 @@
   background-color: #fff;
   margin-top: 10px;
   overflow-y: scroll;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
   border-radius: 10px;
   border: 1px solid $boarder-color-gray;
 }
@@ -137,8 +139,7 @@
     height: 1px;
     background-color: #00000020;
   }
-  .no-result{
-    width: 100%;
+  &.no-result{
     height: 100%;
     display: flex;
     justify-content: center;

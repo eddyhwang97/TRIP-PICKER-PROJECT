@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // assets
 import picker from "../assets/logo/picker.png";
@@ -13,6 +13,7 @@ function Main(props) {
   const [start, setStart] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [cityList, setCityList] = useState(city);
+  const cityInfo = useRef(null);
 
   const clickEvent = {
     showSearch: () => {
@@ -66,7 +67,7 @@ function Main(props) {
             <ul>
               {cityList.length > 0 ? (
                 cityList.map((city, idx) => (
-                  <li className="main-intro-city-list" key={idx}>
+                  <li className="main-intro-city-list" key={idx} onClick={()=>{cityInfo.current=city; console.log(cityInfo.current)}}>
                     <div className="main-intro-location-image"></div>
                     <div className="main-intro-location-name">
                       <span className="main-intro-city-name-kr">{city.name}</span>
