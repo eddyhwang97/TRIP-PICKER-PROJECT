@@ -1,0 +1,195 @@
+@import "../../css/core";
+@import "../../css/reset";
+
+.container {
+  width: 100%;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+  position: relative;
+
+  .map-group {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+
+    .map-control {
+      width: 300px;
+      height: 30px;
+      font-size: 14px;
+      border: 1.5px solid #3b3b3b;
+      border-radius: 15px;
+      text-align: center;
+    }
+  }
+}
+
+.sidebar {
+  width: 300px;
+  height: 700px;
+  position: fixed;
+  top: 17%;
+  left: 1%;
+  bottom: 0;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  z-index: 20;
+  transition: all 0.3s ease;
+
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      transition: opacity 0.3s ease;
+    }
+
+    .dashboard-button {
+      background: none;
+      border: 1px solid #ccc;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+  }
+
+  .place-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 60vh;
+    overflow-y: auto;
+    transition: opacity 0.3s ease;
+
+    .place-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      background: #fafafa;
+
+      .place-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        margin-right: 10px;
+      }
+
+      .place-info {
+        flex: 1;
+
+        .place-name-category {
+          display: flex;
+          align-items: center;
+          margin-bottom: 5px;
+
+          .place-name {
+            font-weight: bold;
+          }
+
+          .place-category {
+            font-size: 0.9rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-left: 8px;
+            color: white;
+
+            &.category-red {
+              background-color: #eb8989;
+            }
+
+            &.category-blue {
+              background-color: #6987e9;
+            }
+
+            &.category-yellow {
+              background-color: #d39d42;
+            }
+
+            &.category-green {
+              background-color: #3aaa6a;
+            }
+          }
+        }
+
+        .place-address {
+          font-size: 0.85rem;
+          color: #666;
+        }
+      }
+
+      .delete-button {
+        background: none;
+        border: none;
+        color: #aaa;
+        font-size: 0.9rem;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .date-button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background-color: #60a5fa;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  /* 날짜 선택 UI */
+  .date-picker-container {
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    width: 100%;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s 0.3s;
+
+    &.show {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.3s ease;
+    }
+
+    h3 {
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+
+    .react-datepicker-wrapper {
+      width: 100%;
+    }
+  }
+}
+
+.modal-content {
+  text-align: center;
+}
+
+.close-button {
+  margin-top: 10px;
+  background-color: #60a5fa;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
