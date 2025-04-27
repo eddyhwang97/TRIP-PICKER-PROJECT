@@ -7,10 +7,10 @@ import {
 } from "@react-google-maps/api";
 import DatePicker from "react-datepicker"; // 캘린더 컴포넌트
 import "react-datepicker/dist/react-datepicker.css"; // 스타일 임포트
-import DateSelection from './DateSelection';
-import TimeSelection from './TimeSelection';
-import ScheduleCreation from './ScheduleCreation';
-import PlaceList from "./PlaceList";
+import DateSelection from './sidebarComponent/DateSelection';
+import TimeSelection from './sidebarComponent/TimeSelection';
+import ScheduleCreation from './sidebarComponent/ScheduleCreation';
+import PlaceList from "./sidebarComponent/PlaceList";
 
 import "./css/editTripSidebar.scss";
 import { useLocation, useNavigate } from "react-router-dom";

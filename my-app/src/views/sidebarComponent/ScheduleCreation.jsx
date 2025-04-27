@@ -1,5 +1,5 @@
 import React from "react";
-import editTripSidebar from "./css/editTripSidebar.scss";
+import editTripSidebar from "../css/editTripSidebar.scss";
 
 
 export default function ScheduleCreation({ onNext, onPrev }) {
@@ -10,7 +10,9 @@ export default function ScheduleCreation({ onNext, onPrev }) {
         <button className="prev-button" onClick={onPrev}>
           이전
         </button>
-        <button onClick={onNext}>저장하기</button>
+        <button className="next-button" onClick={onNext}>
+          저장하기
+        </button>
       </div>
     </div>
   );
