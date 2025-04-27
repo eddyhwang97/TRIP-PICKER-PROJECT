@@ -7,6 +7,10 @@ import {
 } from "@react-google-maps/api";
 import DatePicker from "react-datepicker"; // 캘린더 컴포넌트
 import "react-datepicker/dist/react-datepicker.css"; // 스타일 임포트
+import DateSelection from './DateSelection';
+import TimeSelection from './TimeSelection';
+import ScheduleCreation from './ScheduleCreation';
+import PlaceList from "./PlaceList";
 
 import "./css/editTripSidebar.scss";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -16,7 +20,8 @@ const containerStyle = {
   height: "100vh",
 };
 
-function EditTrip(props) {
+function Sidebar(props) {
+  const navigate = useNavigate();
   const location = useLocation();
   const cityLocation =
     location.state && location.state.cityLocation
@@ -33,6 +38,7 @@ function EditTrip(props) {
   // 사이드바 관련 변수 //
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showList, setShowList] = useState(true); // 리스트 애니메이션을 위한 상태
+  const [step, setStep] = useState(1);  // 1=리스트, 2=날짜, 3=시간, 4=일정
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -71,13 +77,13 @@ function EditTrip(props) {
   };
 
   // 사이드바 관련 변수 //
-  const sampleList = [
+  const [sampleList, setSampleList] = useState([
     { id: 1, name: "장소이름", address: "장소주소", category: "숙소" },
     { id: 2, name: "장소이름", address: "장소주소", category: "음식점" },
     { id: 3, name: "장소이름", address: "장소주소", category: "카페" },
     { id: 4, name: "장소이름", address: "장소주소", category: "관광" },
     { id: 5, name: "장소이름", address: "장소주소", category: "관광" },
-  ];
+  ]);
 
   const categoryColors = {
     숙소: "category-red",
@@ -90,6 +96,14 @@ function EditTrip(props) {
   const handleDatePickerClick = () => {
     setShowList(false); // 리스트 사라지기 시작
     setTimeout(() => setShowDatePicker(true), 300); // 애니메이션 끝난 후 날짜 선택 UI 표시
+  };
+
+  // 리스트 삭제 함수
+  const handleDelete = (id) => {
+    const confirmDelete = window.confirm("삭제하시겠습니까?");
+    if(confirmDelete){
+    setSampleList((prevList) => prevList.filter((item) => item.id !== id));
+    }
   };
 
   return (
@@ -123,60 +137,40 @@ function EditTrip(props) {
         <div>Loading Map...</div>
       )}
 
-      <div className="sidebar">
-        <div className="sidebar-header">
-          <h2 className={showDatePicker ? "date-title" : ""}>
-            {showDatePicker ? "날짜 선택하기" : "리스트"}
-          </h2>
-          <button className="dashboard-button">Dash Board</button>
-        </div>
+<div className="sidebar">
+  <div className="sidebar-header">
+    <h2>
+      {step === 1 && "리스트"}
+      {step === 2 && "날짜 선택"}
+      {step === 3 && "활동 시간 선택"}
+      {step === 4 && "일정 생성"}
+    </h2>
+    <button
+      className="dashboard-button"
+      onClick={(e) => {
+        e.preventDefault();
+        navigate("/Dashboard");
+      }}
+    >
+      Dash Board
+    </button>
+  </div>
 
-        <ul className={`place-list ${showList ? "" : "list-hide"}`}>
-          {sampleList.map((item) => (
-            <li key={item.id} className="place-item">
-              <img
-                src="https://via.placeholder.com/50"
-                alt="장소"
-                className="place-image"
-              />
-              <div className="place-info">
-                <div className="place-name-category">
-                  <span className="place-name">{item.name}</span>
-                  <span
-                    className={`place-category ${
-                      categoryColors[item.category]
-                    }`}
-                  >
-                    {item.category}
-                  </span>
-                </div>
-                <p className="place-address">{item.address}</p>
-              </div>
-              <button className="delete-button">삭제</button>
-            </li>
-          ))}
-        </ul>
-
-          
-        <button className="date-button" >
-          날짜 선택하기
-        </button>
-
-        {/* {날짜 선택 UI
-        {showDatePicker && (
-          <div
-            className={`date-picker-container ${showDatePicker ? "show" : ""}`}
-          >
-            <h3>날짜를 선택해주세요</h3>
-            <DatePicker
-              selected={new Date()}
-              onChange={(date) => console.log(date)}
-            />
-          </div>
-        )}} */}
-      </div>
+  {/* 단계별로 컴포넌트 보여주기 */}
+  {step === 1 && (
+    <PlaceList
+      sampleList={sampleList}
+      setSampleList={setSampleList}
+      categoryColors={categoryColors}
+      onNext={() => setStep(2)}
+    />
+  )}
+  {step === 2 && <DateSelection onNext={() => setStep(3)} />}
+  {step === 3 && <TimeSelection onNext={() => setStep(4)} />}
+  {step === 4 && <ScheduleCreation />}
+</div>
     </div>
   );
 }
 
-export default EditTrip;
+export default Sidebar;
