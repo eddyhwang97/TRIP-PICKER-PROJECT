@@ -3,6 +3,7 @@ import editTripSidebar from "./css/editTripSidebar.scss";
 
 export default function DateSelection({ onNext, onPrev }) {
   return (
+    
     <div className="date-selection">
       <p>날짜를 선택해주세요.</p>
       <div className="button-group">
