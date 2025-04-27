@@ -165,9 +165,23 @@ function Sidebar(props) {
       onNext={() => setStep(2)}
     />
   )}
-  {step === 2 && <DateSelection onNext={() => setStep(3)} />}
-  {step === 3 && <TimeSelection onNext={() => setStep(4)} />}
-  {step === 4 && <ScheduleCreation />}
+ {step === 2 && (
+  <DateSelection
+    onNext={() => setStep(3)}
+    onPrev={() => setStep(1)}
+  />
+)}
+{step === 3 && (
+  <TimeSelection
+    onNext={() => setStep(4)}
+    onPrev={() => setStep(2)}
+  />
+)}
+{step === 4 && (
+  <ScheduleCreation
+    onPrev={() => setStep(3)}
+  />
+)}
 </div>
     </div>
   );

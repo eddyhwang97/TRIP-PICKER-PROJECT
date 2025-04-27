@@ -1,4 +1,6 @@
 import React from "react";
+import editTripSidebar from "./css/editTripSidebar.scss";
+
 
 export default function PlaceList({ sampleList, setSampleList, categoryColors, onNext, onPrev }) {
   const handleDelete = (id) => {
@@ -36,10 +38,11 @@ export default function PlaceList({ sampleList, setSampleList, categoryColors, o
           </li>
         ))}
       </ul>
-      <button onClick={onPrev}>이전</button> 
-      <button className="next-button" onClick={onNext}>
-        날짜 선택하기
-      </button>
+      <div className="button-group">
+        <button className="next-button" onClick={onNext}>
+          날짜 선택하기 
+        </button>
+      </div>
     </div>
   );
 }
