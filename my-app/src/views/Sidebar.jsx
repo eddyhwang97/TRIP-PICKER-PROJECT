@@ -7,10 +7,11 @@ import {
 } from "@react-google-maps/api";
 import DatePicker from "react-datepicker"; // 캘린더 컴포넌트
 import "react-datepicker/dist/react-datepicker.css"; // 스타일 임포트
-import DateSelection from './sidebarComponent/DateSelection';
-import TimeSelection from './sidebarComponent/TimeSelection';
-import ScheduleCreation from './sidebarComponent/ScheduleCreation';
+import DateSelection from "./sidebarComponent/DateSelection";
+import TimeSelection from "./sidebarComponent/TimeSelection";
+import ScheduleCreation from "./sidebarComponent/ScheduleCreation";
 import PlaceList from "./sidebarComponent/PlaceList";
+import Viewer from "./sidebarComponent/Viewer";
 
 import "./css/editTripSidebar.scss";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -38,7 +39,7 @@ function Sidebar(props) {
   // 사이드바 관련 변수 //
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showList, setShowList] = useState(true); // 리스트 애니메이션을 위한 상태
-  const [step, setStep] = useState(1);  // 1=리스트, 2=날짜, 3=시간, 4=일정
+  const [step, setStep] = useState(1); // 1=리스트, 2=날짜, 3=시간, 4=일정
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -101,8 +102,8 @@ function Sidebar(props) {
   // 리스트 삭제 함수
   const handleDelete = (id) => {
     const confirmDelete = window.confirm("삭제하시겠습니까?");
-    if(confirmDelete){
-    setSampleList((prevList) => prevList.filter((item) => item.id !== id));
+    if (confirmDelete) {
+      setSampleList((prevList) => prevList.filter((item) => item.id !== id));
     }
   };
 
@@ -137,52 +138,48 @@ function Sidebar(props) {
         <div>Loading Map...</div>
       )}
 
-<div className="sidebar">
-  <div className="sidebar-header">
-    <h2>
-      {step === 1 && "리스트"}
-      {step === 2 && "날짜 선택"}
-      {step === 3 && "활동 시간 선택"}
-      {step === 4 && "일정 생성"}
-    </h2>
-    <button
-      className="dashboard-button"
-      onClick={(e) => {
-        e.preventDefault();
-        navigate("/Dashboard");
-      }}
-    >
-      Dash Board
-    </button>
-  </div>
+      <div className="sidebar">
+        <div className="sidebar-header">
+          <h2>
+            {step === 1 && "리스트"}
+            {step === 2 && "날짜 선택"}
+            {step === 3 && "활동 시간 선택"}
+            {step === 4 && "일정 생성"}
+            {step === 5 && "일정 뷰어"}
+          </h2>
+          <button
+            className="dashboard-button"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/Dashboard");
+            }}
+          >
+            Dash Board
+          </button>
+        </div>
 
-  {/* 단계별로 컴포넌트 보여주기 */}
-  {step === 1 && (
-    <PlaceList
-      sampleList={sampleList}
-      setSampleList={setSampleList}
-      categoryColors={categoryColors}
-      onNext={() => setStep(2)}
-    />
-  )}
- {step === 2 && (
-  <DateSelection
-    onNext={() => setStep(3)}
-    onPrev={() => setStep(1)}
-  />
-)}
-{step === 3 && (
-  <TimeSelection
-    onNext={() => setStep(4)}
-    onPrev={() => setStep(2)}
-  />
-)}
-{step === 4 && (
-  <ScheduleCreation
-    onPrev={() => setStep(3)}
-  />
-)}
-</div>
+        {/* 단계별로 컴포넌트 보여주기 */}
+        {step === 1 && (
+          <PlaceList
+            sampleList={sampleList}
+            setSampleList={setSampleList}
+            categoryColors={categoryColors}
+            onNext={() => setStep(2)}
+          />
+        )}
+        {step === 2 && (
+          <DateSelection onNext={() => setStep(3)} onPrev={() => setStep(1)} />
+        )}
+        {step === 3 && (
+          <TimeSelection onNext={() => setStep(4)} onPrev={() => setStep(2)} />
+        )}
+        {step === 4 && (
+          <ScheduleCreation
+            onNext={() => setStep(5)}
+            onPrev={() => setStep(3)}
+          />
+        )}
+      </div>
     </div>
   );
 }
