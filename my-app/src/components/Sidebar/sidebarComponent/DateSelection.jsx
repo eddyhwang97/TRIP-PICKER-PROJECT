@@ -3,7 +3,7 @@ import React from "react";
 import DatePicker from "react-datepicker";
 
 // scss
-import editTripSidebar from "../css/editTripSidebar.scss";
+import editTripSidebar from "../../../views/css/editTripSidebar.scss";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function DateSelection({ onNext, onPrev }) {
