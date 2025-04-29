@@ -177,6 +177,91 @@
     }
   }
 
+  .time-selection {
+    margin-top: 20px;
+  
+    > p {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 15px;
+    }
+  
+    .date-time-box {
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      display: flex;
+  
+      h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+  
+      label {
+        display: block;
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: #374151;
+      }
+  
+      .time-input {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+  
+        select {
+          padding: 6px 10px;
+          font-size: 0.95rem;
+          border: 1px solid #d1d5db;
+          border-radius: 5px;
+          background-color: white;
+          appearance: none;
+  
+          &:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 1px #60a5fa;
+          }
+        }
+  
+        span {
+          font-size: 1rem;
+          font-weight: bold;
+          color: #4b5563;
+        }
+      }
+    }
+  
+    > button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s;
+  
+      &:hover:enabled {
+        background-color: #2563eb;
+      }
+  
+      &:disabled {
+        background-color: #cbd5e1;
+        cursor: not-allowed;
+      }
+    }
+  }  
+
+
   /* 스텝 이동 버튼 그룹 */
   .button-group {
     display: flex;
