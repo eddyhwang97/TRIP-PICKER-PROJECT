@@ -131,7 +131,6 @@ export default function TimeSelection({ onNext, onPrev }) {
               </select>
             </div>
           </div>
-          <span>~</span>
           <div>
             <label htmlFor={`end-time-${date}`}>종료 시간</label>
             <div className="time-input">
@@ -184,7 +183,7 @@ export default function TimeSelection({ onNext, onPrev }) {
           )
         }
       >
-        저장
+        
       </button>
       <div className="button-group">
         <button className="prev-button" onClick={onPrev}>

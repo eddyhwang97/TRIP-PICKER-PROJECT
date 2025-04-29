@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import { format, set, setDate } from "date-fns";
+import { useStore } from "../../../stores/store.API";
 import $ from "jquery";
 // 캘린더
 
@@ -9,6 +10,7 @@ import $ from "jquery";
 // import editTripSidebar from "../../../views/css/editTripSidebar.scss";
 export default function DateSelection({ onNext, onPrev }) {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+  const user = useStore((state) => state.user);
   
   const handleDateChange = () => {
     const setDate = dateRange.map((date)=>date.toISOString().slice(0, 10))
