@@ -3,9 +3,11 @@ import "./css/dashboard.scss";
 import DashBoardItem from "../components/DashBoardItem";
 import noticeIcon from "../assets/icon/notice.png";
 import { useStore } from "../stores/store.API";
+import { useNavigate } from "react-router-dom";
 
 function DashBoard(props) {
   const user = useStore((state) => state.user);
+  const navigate = useNavigate();
   const [tripList, setTripList] = useState([]);
   const [mode, setMode] = useState("V");
   const [checkedItems, setCheckedItems] = useState([]);
@@ -23,10 +25,14 @@ function DashBoard(props) {
     setCheckedItems((prev) => (isChecked ? [...prev, id] : prev.filter((item) => item !== id)));
     console.log(checkedItems);
   };
-  const deleteTripList = () => {
+  const handleDeleteTripList = () => {
     setTripList((prev) => prev.filter((item) => !checkedItems.includes(item.id)));
   };
-  const saveTripList = () => {};
+  const handleSaveTripList = () => {};
+
+  const handleEditTrip = ()=>{
+    navigate("/edittrip",)
+  }
 
   //           useLayoutEffect          //
   // 첫 랜더링시 여행 리스트 가져오기
@@ -40,7 +46,7 @@ function DashBoard(props) {
         <div className="dashboard-left">
           <section className="dashboard-left-top">
             <div className="dashboard-left-profile">
-              <div className="dashboard-left-profile-image" style={{ backgroundImage: `url()` }}></div>
+              <div className="dashboard-left-profile-image" onClick={handleEditTrip} style={{ backgroundImage: `url()` }}></div>
               <div className="dashboard-left-profile-user-info">
                 <div className="dashboard-left-profile-user-info-name">
                   <span>{"이름"}</span>
@@ -80,16 +86,16 @@ function DashBoard(props) {
             <div className="dashboard-right-top-title">Dash board</div>
             <div className="dashboard-right-top-edit">
               {mode === "V" && (
-                <span className="dashboard-right-top-edit-button" onClick={() => setMode("E")}>
+                <span className="dashboard-right-top-edit-button" onClick={()=>setMode("E")}>
                   편집
                 </span>
               )}
               {mode === "E" && (
                 <>
-                  <span className="dashboard-right-top-save-button" onClick={() => setMode("V")}>
+                  <span className="dashboard-right-top-save-button" onClick={()=>setMode("V")}>
                     저장
                   </span>
-                  <span className="dashboard-right-top-delete-button" onClick={deleteTripList}>
+                  <span className="dashboard-right-top-delete-button" onClick={handleDeleteTripList}>
                     삭제
                   </span>
                 </>
