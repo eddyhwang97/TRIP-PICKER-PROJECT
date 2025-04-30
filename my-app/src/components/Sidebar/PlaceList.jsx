@@ -10,7 +10,7 @@ export default function PlaceList({ sampleList, setSampleList, categoryColors, o
   };
 
   return (
-    <div className="place-list-container">
+    <div className="contents-container place-list-container">
       <ul className="place-list">
         {sampleList.map((item) => (
           <li key={item.id} className="place-item">

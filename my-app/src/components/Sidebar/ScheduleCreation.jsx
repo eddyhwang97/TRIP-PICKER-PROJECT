@@ -41,7 +41,7 @@ export default function ScheduleCreation({ onNext, onPrev }) {
 
 
   return (
-    <div className="schedule-creation">
+    <div className="contents-container schedule-creation">
       <div className="schedule-summary">
         {sortedDates.map((date, idx) => (
          <div key={date} className="day-group">

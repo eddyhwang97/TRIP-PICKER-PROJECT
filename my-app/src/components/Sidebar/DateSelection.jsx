@@ -30,7 +30,7 @@ export default function DateSelection({ onNext, onPrev, user }) {
     handleDateChange();
   });
   return (
-    <div className="date-select-container">
+    <div className="contents-container date-select-container">
       <div className="p-6">
         <div>
           <Flatpickr
@@ -44,12 +44,6 @@ export default function DateSelection({ onNext, onPrev, user }) {
             onChange={(dates) => setDateRange(dates)}
           />
         </div>
-        <p>
-          <strong>Start Date:</strong> {dateRange[0] ? format(dateRange[0], "yyyy-MM-dd") : "Not selected"}
-        </p>
-        <p>
-          <strong>End Date:</strong> {dateRange[1] ? format(dateRange[1], "yyyy-MM-dd") : "Not selected"}
-        </p>
       </div>
       <div className="button-group">
         <button
