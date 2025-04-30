@@ -6,7 +6,6 @@ export const trips = [
     startDate: "2025-05-01",
     endDate: "2025-05-03",
     city: "seoul",
-
     // 장소 전체를 포함
     places: [
       {

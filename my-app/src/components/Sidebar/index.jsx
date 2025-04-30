@@ -11,11 +11,6 @@ import { SidebarButton } from "../../assets";
 import { useNavigate } from "react-router-dom";
 import $ from "jquery";
 
-const containerStyle = {
-  width: "100vw",
-  height: "100vh",
-};
-
 function Sidebar(props) {
   const {places} = props
   const navigate = useNavigate();
