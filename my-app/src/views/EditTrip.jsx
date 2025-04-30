@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 import accommodationIcon from "../assets/images/accommodation_pin.png";
 import restaurantIcon from "../assets/images/restaurant_pin.png";
 import placeIcon from "../assets/images/place_pin.png";
+import cafeIcon from "../assets/images/cafe_pin.png";
 import addIcon from "../assets/images/add_pin.png";
 import Sidebar from "../components/Sidebar";
 
@@ -49,6 +50,7 @@ function EditTrip(props) {
           lat: place.geometry.location.lat(),
           lng: place.geometry.location.lng(),
         };
+        
         setMapCenter(newCenter); // 지도 중심 업데이트
         setMarkerPosition(newCenter); // 마커 위치 업데이트
         setZoom(15); // 검색된 위치로 확대
@@ -106,6 +108,11 @@ function EditTrip(props) {
           url: placeIcon,
           scaledSize: new window.google.maps.Size(40, 40),
         };
+      case "cafe":
+        return {
+          url: cafeIcon,
+          scaledSize: new window.google.maps.Size(40, 40),
+        };
       default:
         return {
           url: addIcon,
@@ -139,8 +146,9 @@ function EditTrip(props) {
               >
                 <option value="">장소 유형</option>
                 <option value="accommodation">숙소</option>
-                <option value="restaurant">식당</option>
                 <option value="attraction">관광지</option>
+                <option value="restaurant">식당</option>
+                <option value="cafe">카페</option>
               </select>
               <button onClick={savePlace}>저장</button>
             </div>
@@ -148,23 +156,25 @@ function EditTrip(props) {
               mapContainerStyle={containerStyle}
               center={mapCenter}
               zoom={zoom}
-              onClick={onMapClick} // 지도 클릭 이벤트 추가
+              onClick={onMapClick}
+              options={{
+                disableDefaultUI: true,
+                zoomControl: false,
+              }}
             >
-              {/* 저장된 마커 렌더링 */}
               {markers.map((marker, index) => (
                 <Marker
                   key={index}
                   position={marker.position}
-                  icon={getMarkerIcon(marker.type)} // 커스텀 마커 아이콘
+                  icon={getMarkerIcon(marker.type)}
                 />
               ))}
-              {/* 현재 선택된 마커 */}
               {markerPosition && (
                 <Marker
                   position={markerPosition}
                   icon={{
-                    url: addIcon, // import한 이미지 경로 사용
-                    scaledSize: new window.google.maps.Size(40, 40), // 아이콘 크기 조정
+                    url: addIcon,
+                    scaledSize: new window.google.maps.Size(40, 40),
                   }}
                 />
               )}
@@ -173,7 +183,7 @@ function EditTrip(props) {
         ) : (
           <div>Loading Map...</div>
         )}
-        <Sidebar/>
+        <Sidebar />
       </div>
     </>
   );
