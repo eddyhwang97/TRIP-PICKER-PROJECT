@@ -42,6 +42,8 @@ function DashBoard(props) {
   //            navigation          //
   const navigateEditTrip = (city) => {
     navigate("/edittrip", { state: { cityLocation: city} });
+    // 시티값
+    // 트립값
   };
 
   //           useLayoutEffect          //
