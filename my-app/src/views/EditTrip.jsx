@@ -7,6 +7,7 @@ import {
 } from "@react-google-maps/api";
 
 import "./css/editTrip.scss";
+import { useLocation } from "react-router-dom";
 
 import accommodationIcon from "../assets/images/accommodation_pin.png";
 import restaurantIcon from "../assets/images/restaurant_pin.png";
@@ -17,13 +18,10 @@ const containerStyle = {
   height: "100vh",
 };
 
-const center = {
-  lat: 37.5665, // 서울 중심
-  lng: 126.978,
-};
-
 function EditTrip(props) {
-  const [mapCenter, setMapCenter] = useState(center);
+  const location = useLocation();
+  const cityLocation = location.state.cityLocation;
+  const [mapCenter, setMapCenter] = useState(cityLocation.center);
   const [zoom, setZoom] = useState(12); // 초기 줌 레벨 설정
   const [autocomplete, setAutocomplete] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null); // 초기값을 null로 설정
