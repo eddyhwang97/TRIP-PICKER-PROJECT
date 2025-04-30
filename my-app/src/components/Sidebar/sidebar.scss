@@ -97,6 +97,7 @@
         height: 50px;
         border-radius: 5px;
         margin-right: 10px;
+        object-fit: cover;
       }
 
       .place-info {
@@ -284,6 +285,10 @@
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+    position: sticky;
+    bottom: 0; /* 버튼을 아래쪽에 고정 */
+    background-color: #fff; /* 배경 색상 설정 */
+    z-index: 10; /* 버튼을 다른 요소보다 위에 표시 */
 
     .prev-button,
     .next-button,
@@ -337,8 +342,15 @@
 }
 
 .schedule-summary {
+  max-height: 55%; 
+  overflow-y: auto;  
+  padding-right: 5px;  
+  position: relative;
+  padding-bottom: 60px;
+  scrollbar-width: none; /* Firefox용 */
+  -ms-overflow-style: none; /* IE, Edge */
   .day-group {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     padding: 10px;
     background-color: #f3f4f6;
     border-radius: 8px;
