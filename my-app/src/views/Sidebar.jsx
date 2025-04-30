@@ -170,7 +170,11 @@ function Sidebar(props) {
           />
         )}
         {step === 2 && (
-          <DateSelection onNext={() => setStep(3)} onPrev={() => setStep(1)} user={user}/>
+          <DateSelection
+            onNext={() => setStep(3)}
+            onPrev={() => setStep(1)}
+            user={user}
+          />
         )}
         {step === 3 && (
           <TimeSelection onNext={() => setStep(4)} onPrev={() => setStep(2)} />
@@ -182,10 +186,7 @@ function Sidebar(props) {
           />
         )}
         {step === 5 && (
-          <Viewer
-            onNext={() => setStep(5)}
-            onPrev={() => setStep(4)}
-          />
+          <Viewer onNext={() => setStep(5)} onPrev={() => setStep(4)} />
         )}
       </div>
     </div>
