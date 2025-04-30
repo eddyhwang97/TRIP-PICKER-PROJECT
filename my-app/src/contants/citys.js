@@ -35,8 +35,8 @@ export const citys = [
     id: "jeju",
     name: "제주",
     englishName: "Jeju",
-    center: { lat: 33.4996, lng: 126.5312 },
-    radiusKm: 20,
+    center: { lat: 33.3996, lng: 126.5585 }, // 제주도의 지리적 중심 좌표
+    radiusKm: 75, // 제주도 전체를 포함할 수 있는 반경 (약 75km)
     image: "/assets/images/citys/jeju.jpeg",
   },
   {
