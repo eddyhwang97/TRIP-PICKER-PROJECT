@@ -2,19 +2,19 @@ import React, {useState} from "react";
 
 const tempSchedule = [
   {
-    date: "5/1 (목)",
+    date: "5/1 목",
     place: "서울타워",
     startTime: "10:00",
     endTime: "12:00",
   },
   {
-    date: "5/2 (금)",
+    date: "5/2 금",
     place: "남산 한옥마을",
     startTime: "13:00",
     endTime: "15:00",
   },
   {
-    date: "5/3 (토)",
+    date: "5/3 토",
     place: "경복궁",
     startTime: "09:00",
     endTime: "11:00",
@@ -23,7 +23,7 @@ const tempSchedule = [
 
 export default function ScheduleCreation({ onNext, onPrev }) {
   const [expandedDates, setExpandedDates] = useState([]);
-  
+
   // 날짜별로 그룹화
   const grouped = tempSchedule.reduce((acc, curr) => {
     acc[curr.date] = acc[curr.date] || [];
@@ -46,7 +46,7 @@ export default function ScheduleCreation({ onNext, onPrev }) {
         {sortedDates.map((date, idx) => (
          <div key={date} className="day-group">
          <h3 onClick={() => toggleDate(date)} className="day-title">
-           📅 {idx + 1}일차 ({date})
+           {idx + 1}일차 ({date})
          </h3>
          {expandedDates.includes(date) && (
            <ul className="place-list">

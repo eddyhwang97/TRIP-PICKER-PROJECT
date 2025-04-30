@@ -336,6 +336,45 @@
   }
 }
 
+.schedule-summary {
+  .day-group {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f3f4f6;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    background-color: $color-main;
+
+    h3 {
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: $color-sub;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+
+      li {
+        margin-bottom: 6px;
+        font-size: 0.95rem;
+        display: flex;
+        gap: 8px;
+
+        .place {
+          font-weight: 500;
+        }
+
+        .time {
+          color: #6b7280;
+        }
+      }
+    }
+  }
+}
+
 .modal-content {
   text-align: center;
 }
