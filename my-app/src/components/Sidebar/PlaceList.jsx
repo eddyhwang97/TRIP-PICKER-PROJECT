@@ -1,7 +1,8 @@
 import React from "react";
 
 
-export default function PlaceList({ sampleList, setSampleList, categoryColors }) {
+export default function PlaceList(props) {
+  const {places,setSampleList, categoryColors} = props
   const handleDelete = (id) => {
     const confirmDelete = window.confirm("삭제하시겠습니까?");
     if (confirmDelete) {
@@ -12,7 +13,7 @@ export default function PlaceList({ sampleList, setSampleList, categoryColors })
   return (
     <div className="contents-container place-list-container">
       <ul className="place-list">
-        {sampleList.map((item) => (
+        {places.map((item) => (
           <li key={item.id} className="place-item">
             <img
               src="https://via.placeholder.com/50"

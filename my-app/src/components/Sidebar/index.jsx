@@ -17,6 +17,7 @@ const containerStyle = {
 };
 
 function Sidebar(props) {
+  const {places} = props
   const navigate = useNavigate();
   // 사이드바 관련 변수 //
   const [step, setStep] = useState(1); // 1=리스트, 2=날짜, 3=시간, 4=일정
@@ -89,7 +90,7 @@ function Sidebar(props) {
         </button>
       </div>
       {/* 단계별로 컴포넌트 보여주기 */}
-      {step === 1 && <PlaceList sampleList={sampleList} setSampleList={setSampleList} categoryColors={categoryColors} onNext={() => setStep(2)} />}
+      {step === 1 && <PlaceList places={places} sampleList={sampleList} setSampleList={setSampleList} categoryColors={categoryColors} onNext={() => setStep(2)} />}
       {step === 2 && <DateSelection />}
       {step === 3 && <TimeSelection />}
       {step === 4 && <ScheduleCreation />}

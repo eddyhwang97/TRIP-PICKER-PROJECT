@@ -1,19 +1,16 @@
-import React, { useState, useRef } from "react";
-import {
-  GoogleMap,
-  useJsApiLoader,
-  Autocomplete,
-  Marker,
-} from "@react-google-maps/api";
-
-import "./css/editTrip.scss";
+import React, { useState, useRef, useEffect } from "react";
+import { GoogleMap, useJsApiLoader, Autocomplete, Marker } from "@react-google-maps/api";
 import { useLocation } from "react-router-dom";
 
+// css
+import "./css/editTrip.scss";
+
+// components
+import Sidebar from "../components/Sidebar";
 import accommodationIcon from "../assets/images/accommodation_pin.png";
 import restaurantIcon from "../assets/images/restaurant_pin.png";
 import placeIcon from "../assets/images/place_pin.png";
 import addIcon from "../assets/images/add_pin.png";
-import Sidebar from "../components/Sidebar";
 
 const containerStyle = {
   width: "100vw",
@@ -30,6 +27,9 @@ function EditTrip(props) {
   const [placeType, setPlaceType] = useState(""); // 장소 유형 상태 추가
   const [markers, setMarkers] = useState([]); // 모든 마커 저장
   const inputRef = useRef(null);
+
+  // 장소
+  const [places, setPlaces] = useState([]);
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -113,6 +113,16 @@ function EditTrip(props) {
         };
     }
   };
+  const getPlacesFromLocalStorage = (user) => {
+    const places = user !== null ? JSON.parse(localStorage.getItem("places")) : [];
+    setPlaces(places);
+    console.log(places);
+  }
+useEffect(()=>{
+  // 세션 유저 정보
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  getPlacesFromLocalStorage(user);
+},[]);
 
   return (
     <>
@@ -120,23 +130,12 @@ function EditTrip(props) {
         {isLoaded ? (
           <>
             <div className="map-group">
-              <Autocomplete
-                onLoad={onLoadAutocomplete}
-                onPlaceChanged={onPlaceChanged}
-              >
-                <input
-                  className="map-control"
-                  type="text"
-                  placeholder="주소 검색"
-                  ref={inputRef}
-                />
+              <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={onPlaceChanged}>
+                <input className="map-control" type="text" placeholder="주소 검색" ref={inputRef} />
               </Autocomplete>
             </div>
             <div className="place-control">
-              <select
-                value={placeType}
-                onChange={(e) => setPlaceType(e.target.value)}
-              >
+              <select value={placeType} onChange={(e) => setPlaceType(e.target.value)}>
                 <option value="">장소 유형</option>
                 <option value="accommodation">숙소</option>
                 <option value="restaurant">식당</option>
@@ -173,7 +172,7 @@ function EditTrip(props) {
         ) : (
           <div>Loading Map...</div>
         )}
-        <Sidebar/>
+        <Sidebar places={places} />
       </div>
     </>
   );
