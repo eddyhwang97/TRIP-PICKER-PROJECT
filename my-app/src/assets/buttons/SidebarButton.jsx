@@ -44,7 +44,7 @@ export default function SidebarButton(props) {
         </button>
       </div>)}
       {step === 5 && (<div className="button-group">
-        <button className="prev-button" onClick={()=>setStep(3)}>
+        <button className="prev-button" onClick={()=>setStep(4)}>
           이전
         </button>
         <button className="next-button">
