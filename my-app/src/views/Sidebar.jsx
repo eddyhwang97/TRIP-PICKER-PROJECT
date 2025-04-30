@@ -5,6 +5,7 @@ import {
   Autocomplete,
   Marker,
 } from "@react-google-maps/api";
+import { useStore } from "../stores/store.API";
 import DatePicker from "react-datepicker"; // 캘린더 컴포넌트
 import "react-datepicker/dist/react-datepicker.css"; // 스타일 임포트
 import DateSelection from "../components/Sidebar/sidebarComponent/DateSelection";
@@ -22,6 +23,7 @@ const containerStyle = {
 };
 
 function Sidebar(props) {
+  const user = useStore((state) => state.user);
   const navigate = useNavigate();
   const location = useLocation();
   const cityLocation =
@@ -168,7 +170,7 @@ function Sidebar(props) {
           />
         )}
         {step === 2 && (
-          <DateSelection onNext={() => setStep(3)} onPrev={() => setStep(1)} />
+          <DateSelection onNext={() => setStep(3)} onPrev={() => setStep(1)} user={user}/>
         )}
         {step === 3 && (
           <TimeSelection onNext={() => setStep(4)} onPrev={() => setStep(2)} />
