@@ -6,56 +6,55 @@ export const trips = [
     startDate: "2025-05-01",
     endDate: "2025-05-03",
     city: "seoul",
-    // 장소 전체를 포함
-    places: [
+    // 장소를 타입별로 분리
+    accommodation: [
       {
-        id: "place001",
+        id: "accom1",
         name: "숙소 - 서울역 호텔",
-        type: "accommodation",
         location: { lat: 37.5547, lng: 126.9706 },
         image: "https://example.com/seoul_hotel.jpg"
-      },
+      }
+    ],
+    attraction: [
       {
-        id: "place002",
+        id: "attr1",
         name: "경복궁",
-        type: "attraction",
         location: { lat: 37.5796, lng: 126.9770 },
         image: "https://example.com/gyeongbokgung.jpg"
       },
       {
-        id: "place003",
-        name: "광화문 근처 맛집",
-        type: "restaurant",
-        location: { lat: 37.5710, lng: 126.9769 },
-        image: "https://example.com/gwanghwamun_food.jpg"
-      },
-      {
-        id: "place004",
+        id: "attr2",
         name: "남산타워",
-        type: "attraction",
         location: { lat: 37.5512, lng: 126.9882 },
         image: "https://example.com/namsan.jpg"
       },
       {
-        id: "place005",
-        name: "명동 맛집",
-        type: "restaurant",
-        location: { lat: 37.5636, lng: 126.982 },
-        image: "https://example.com/myeongdong_food.jpg"
-      },
-      {
-        id: "place006",
+        id: "attr3",
         name: "롯데월드",
-        type: "attraction",
         location: { lat: 37.5110, lng: 127.0980 },
         image: "https://example.com/lotteworld.jpg"
       }
     ],
+    restaurant: [
+      {
+        id: "rest1",
+        name: "광화문 근처 맛집",
+        location: { lat: 37.5710, lng: 126.9769 },
+        image: "https://example.com/gwanghwamun_food.jpg"
+      },
+      {
+        id: "rest2",
+        name: "명동 맛집",
+        location: { lat: 37.5636, lng: 126.982 },
+        image: "https://example.com/myeongdong_food.jpg"
+      }
+    ],
+    cafe: [], // 일단 빈배열 id는 cafe1부터 시작
 
     groupedByDate: {
-      "2025-05-01": ["place001", "place002", "place003"],
-      "2025-05-02": ["place004", "place005"],
-      "2025-05-03": ["place006"]
+      "2025-05-01": [],
+      "2025-05-02": [],
+      "2025-05-03": []
     },
     dailyTimeSlots: {
       "2025-05-01": { start: "09:00", end: "18:00" },
