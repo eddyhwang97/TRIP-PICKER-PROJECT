@@ -52,43 +52,90 @@ export default function ScheduleCreation({ onNext, onPrev }) {
   const sortedDates = Object.keys(grouped).sort();
 
   // 일정 삭제 함수
-  const handleDelete = (date, indexToDelete) => {
-    const confirmDelete = window.confirm("일정을 삭제하시겠습니까?");
+  const handleDeleteItem = (targetDate, targetIndex) => {
+    const confirmDelete = window.confirm("정말 이 일정을 삭제하시겠습니까?");
     if (!confirmDelete) return;
+    // date가 targetDate인 항목들 중 targetIndex 번째 항목을 제거
+    const newSchedule = schedule.reduce((acc, item) => {
+      if (item.date !== targetDate) return [...acc, item];
 
-    const updated = schedule.filter((item, idx) => {
-      // 같은 날짜이면서 삭제 대상 인덱스가 아닌 것만 남김
-      const sameDateItems = schedule.filter((i) => i.date === date);
-      const itemIndexInDateGroup = sameDateItems.indexOf(item);
-      return item.date !== date || itemIndexInDateGroup !== indexToDelete;
-    });
+      const sameDateItems = acc.filter((i) => i.date === targetDate);
+      const indexInSameDate = sameDateItems.length;
 
-    setSchedule(updated);
+      // 해당 index에 도달하지 않은 경우 추가
+      if (indexInSameDate !== targetIndex) {
+        return [...acc, item];
+      }
+
+      // 삭제할 항목은 skip
+      return acc;
+    }, []);
+
+    setSchedule(newSchedule);
   };
 
   // 드래그 앤 드롭 핸들러
   // 드래그 완료 후 순서 업데이트 함수
-  const handleOnDragEnd = (result) => {
-    const { destination, source } = result;
+  function handleOnDragEnd(result) {
+    const { source, destination, draggableId } = result;
 
-    // 드래그가 끝난 위치가 없으면 (즉, 드래그를 취소한 경우)
+    // 드래그 취소 시
     if (!destination) return;
 
-    // 같은 위치에 드래그하면 아무 일도 하지 않음
+    // 같은 위치로 옮긴 경우 무시
     if (
-      source.index === destination.index &&
-      source.droppableId === destination.droppableId
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
     ) {
       return;
     }
 
-    // 드래그된 항목을 상태에서 순서를 업데이트
-    const reorderedItems = Array.from(schedule);
-    const [removed] = reorderedItems.splice(source.index, 1); // 원본 배열에서 항목 제거
-    reorderedItems.splice(destination.index, 0, removed); // 새로운 위치에 삽입
+    // 현재 schedule을 복사
+    const newSchedule = Array.from(schedule);
 
-    setSchedule(reorderedItems); // 상태 업데이트
-  };
+    // source 그룹의 요소 필터링
+    const sourceDate = source.droppableId;
+    const destinationDate = destination.droppableId;
+
+    // 드래그된 아이템 찾기
+    const draggedItems = newSchedule.filter((item) => item.date === sourceDate);
+    const movedItem = draggedItems[source.index];
+
+    // 원래 schedule에서 제거
+    const filteredSchedule = newSchedule.filter(
+      (item, idx) =>
+        !(
+          item.date === sourceDate &&
+          draggedItems.indexOf(item) === source.index
+        )
+    );
+
+    // date 변경
+    const updatedItem = { ...movedItem, date: destinationDate };
+
+    // destination 리스트 구해서 새 위치에 삽입
+    const resultSchedule = [];
+    let inserted = false;
+    let countInDestination = 0;
+
+    for (let item of filteredSchedule) {
+      if (item.date === destinationDate) {
+        if (countInDestination === destination.index) {
+          resultSchedule.push(updatedItem);
+          inserted = true;
+        }
+        countInDestination++;
+      }
+      resultSchedule.push(item);
+    }
+
+    // destination에 항목이 전혀 없을 때
+    if (!inserted) {
+      resultSchedule.push(updatedItem);
+    }
+
+    setSchedule(resultSchedule);
+  }
 
   return (
     <DragDropContext onDragEnd={handleOnDragEnd}>
@@ -127,7 +174,9 @@ export default function ScheduleCreation({ onNext, onPrev }) {
                               />
                               <div className="place-info">
                                 <div className="place-name-category">
-                                  <span className="place-name">{item.place}</span>
+                                  <span className="place-name">
+                                    {item.place}
+                                  </span>
                                   {item.category && (
                                     <span
                                       className={`place-category ${
@@ -142,6 +191,12 @@ export default function ScheduleCreation({ onNext, onPrev }) {
                                   {item.address}
                                 </div>
                               </div>
+                              <button
+                                className="delete-button"
+                                onClick={() => handleDeleteItem(date, i)}
+                              >
+                                삭제
+                              </button>
                             </li>
                           )}
                         </Draggable>
