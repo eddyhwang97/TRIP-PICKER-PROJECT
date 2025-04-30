@@ -21,7 +21,7 @@ const tempSchedule = [
   },
 ];
 
-export default function ScheduleCreation({ onNext, onPrev }) {
+export default function ScheduleCreation() {
   const [expandedDates, setExpandedDates] = useState([]);
 
   // 날짜별로 그룹화
@@ -41,7 +41,7 @@ export default function ScheduleCreation({ onNext, onPrev }) {
 
 
   return (
-    <div className="contents-container schedule-creation">
+    <div className="contents-container schedule-creation-container">
       <div className="schedule-summary">
         {sortedDates.map((date, idx) => (
          <div key={date} className="day-group">

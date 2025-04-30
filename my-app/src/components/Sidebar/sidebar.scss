@@ -198,7 +198,7 @@
     }
   }
 
-  .time-selection {
+  .time-selection-container {
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -212,19 +212,20 @@
       background-color: #f9fafb;
       border: 1px solid #e5e7eb;
       border-radius: 5px;
-    height: 70px;
-    box-sizing: border-box;
+      height: 70px;
+      box-sizing: border-box;
 
-      padding: 5px 15px;
+      padding: 5px 10px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
+      align-items: center;
 
       .date-title {
         margin-bottom: 7px;
       }
       .date {
-        font-size: 1.2rem;
+        font-size: 1.5rem;
         font-weight: bold;
       }
 
@@ -243,7 +244,7 @@
 
         select {
           padding: 6px 10px;
-          font-size: 0.95rem;
+          font-size: 1.5rem;
           border: 1px solid #d1d5db;
           border-radius: 5px;
           background-color: white;
@@ -289,7 +290,6 @@
   }
 
   /* 스텝 이동 버튼 그룹 */
-  
 }
 
 .schedule-summary {

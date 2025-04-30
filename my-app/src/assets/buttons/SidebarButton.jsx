@@ -43,7 +43,14 @@ export default function SidebarButton(props) {
           저장하기
         </button>
       </div>)}
-      {step === 5 && ""}
+      {step === 5 && (<div className="button-group">
+        <button className="prev-button" onClick={()=>setStep(3)}>
+          이전
+        </button>
+        <button className="next-button">
+          수정하기
+        </button>
+      </div>)}
     </>
   );
 }
