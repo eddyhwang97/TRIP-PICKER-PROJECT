@@ -81,7 +81,7 @@ function Sidebar(props) {
 
   // 사이드바 관련 변수 //
   const [sampleList, setSampleList] = useState([
-    { id: 1, name: "장소이름", address: "장소주소", category: "숙소" },
+    { id: 1, name: "장소이   름", address: "장소주소", category: "숙소" },
     { id: 2, name: "장소이름", address: "장소주소", category: "음식점" },
     { id: 3, name: "장소이름", address: "장소주소", category: "카페" },
     { id: 4, name: "장소이름", address: "장소주소", category: "관광" },
