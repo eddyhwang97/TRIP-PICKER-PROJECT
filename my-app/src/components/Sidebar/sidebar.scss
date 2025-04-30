@@ -40,7 +40,6 @@
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 
   .sidebar-header {
     display: flex;
@@ -64,7 +63,16 @@
       cursor: pointer;
     }
   }
-
+  .contents-container{
+    display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  
+  }
+.place-list-container{
+  
+}
   .place-list {
     list-style: none;
     padding: 0;
@@ -72,7 +80,9 @@
     max-height: 60vh;
     overflow-y: auto;
     transition: opacity 0.3s ease;
-
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     .place-item {
       display: flex;
       align-items: center;
@@ -204,7 +214,7 @@
       .date-title {
         margin-bottom: 7px;
       }
-      .date{
+      .date {
         font-size: 1.2rem;
         font-weight: bold;
       }
@@ -221,7 +231,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        
+
         select {
           padding: 6px 10px;
           font-size: 0.95rem;
