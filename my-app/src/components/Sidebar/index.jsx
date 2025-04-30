@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { GoogleMap, useJsApiLoader, Autocomplete, Marker } from "@react-google-maps/api";
 import { useStore } from "../../stores/store.API";
-import DatePicker from "react-datepicker"; // 캘린더 컴포넌트
 import "react-datepicker/dist/react-datepicker.css"; // 스타일 임포트
 import DateSelection from "./DateSelection";
 import TimeSelection from "./TimeSelection";
@@ -11,6 +10,7 @@ import Viewer from "./Viewer";
 
 import "./sidebar.scss";
 import { useLocation, useNavigate } from "react-router-dom";
+import { SidebarButton } from "../../assets";
 
 const containerStyle = {
   width: "100vw",
@@ -81,6 +81,11 @@ function Sidebar(props) {
     { id: 3, name: "장소이름", address: "장소주소", category: "카페" },
     { id: 4, name: "장소이름", address: "장소주소", category: "관광" },
     { id: 5, name: "장소이름", address: "장소주소", category: "관광" },
+    { id: 5, name: "장소이름", address: "장소주소", category: "관광" },
+    { id: 5, name: "장소이름", address: "장소주소", category: "관광" },
+    { id: 5, name: "장소이름", address: "장소주소", category: "관광" },
+    { id: 5, name: "장소이름", address: "장소주소", category: "관광" },
+    { id: 5, name: "장소이름", address: "장소주소", category: "관광" },
   ]);
 
   const categoryColors = {
@@ -124,13 +129,16 @@ function Sidebar(props) {
           Dash Board
         </button>
       </div>
-        {/* 단계별로 컴포넌트 보여주기 */}
-        {step === 1 && <PlaceList sampleList={sampleList} setSampleList={setSampleList} categoryColors={categoryColors} onNext={() => setStep(2)} />}
-        {step === 2 && <DateSelection onNext={() => setStep(3)} onPrev={() => setStep(1)} user={user} />}
-        {step === 3 && <TimeSelection onNext={() => setStep(4)} onPrev={() => setStep(2)} />}
-        {step === 4 && <ScheduleCreation onNext={() => setStep(5)} onPrev={() => setStep(3)} />}
-        {step === 5 && <Viewer onNext={() => setStep(5)} onPrev={() => setStep(4)} />}
-      </div>
+      {/* 단계별로 컴포넌트 보여주기 */}
+      {step === 1 && <PlaceList sampleList={sampleList} setSampleList={setSampleList} categoryColors={categoryColors} onNext={() => setStep(2)} />}
+      {step === 2 && <DateSelection onNext={() => setStep(3)} onPrev={() => setStep(1)} user={user} />}
+      {step === 3 && <TimeSelection onNext={() => setStep(4)} onPrev={() => setStep(2)} />}
+      {step === 4 && <ScheduleCreation onNext={() => setStep(5)} onPrev={() => setStep(3)} />}
+      {step === 5 && <Viewer onNext={() => setStep(5)} onPrev={() => setStep(4)} />}
+
+<SidebarButton step={step} setStep={setStep}/>
+    
+    </div>
   );
 }
 

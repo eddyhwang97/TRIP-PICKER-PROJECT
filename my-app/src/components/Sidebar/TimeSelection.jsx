@@ -182,14 +182,7 @@ export default function TimeSelection({ onNext, onPrev }) {
           </div>
         </div>
       ))}
-      <div className="button-group">
-        <button className="prev-button" onClick={onPrev}>
-          이전
-        </button>
-        <button className="next-button" onClick={onNext}>
-          일정 생성하기
-        </button>
-      </div>
+     
     </div>
   );
 }

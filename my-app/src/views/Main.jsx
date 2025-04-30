@@ -74,7 +74,9 @@ function Main(props) {
               {cityList.length > 0 ? (
                 cityList.map((city, idx) => (
                   <li className="main-intro-city-list" key={idx} onClick={() => (cityInfo.current = city, clickEvent.makeTrip(city))}>
-                    <div className="main-intro-location-image"></div>
+                    <div className="main-intro-location-image">
+                      <img src={city.image} alt={city.name} />
+                    </div>
                     <div className="main-intro-location-name">
                       <span className="main-intro-city-name-kr">{city.name}</span>
                       <span className="main-intro-city-name-en">{city.englishName}</span>
