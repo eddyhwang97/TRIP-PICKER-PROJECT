@@ -24,7 +24,7 @@ export const trips = [
       title: "제주 여행",
       startDate: "2025-05-01",
       endDate: "2025-05-03",
-      city: "seoul",
+      city: "jeju",
       places: ["place001", "place002", "place003", "place004", "place005", "place006"],
       groupedByDate: {
         "2025-05-01": ["place001", "place002", "place003"],
@@ -43,7 +43,7 @@ export const trips = [
       title: "부산 여행",
       startDate: "2025-05-01",
       endDate: "2025-05-03",
-      city: "seoul",
+      city: "busan",
       places: ["place001", "place002", "place003", "place004", "place005", "place006"],
       groupedByDate: {
         "2025-05-01": ["place001", "place002", "place003"],
