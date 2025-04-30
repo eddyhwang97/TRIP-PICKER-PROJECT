@@ -85,7 +85,10 @@ export default function TimeSelection({ onNext, onPrev }) {
       <p>활동 시간을 선택해주세요.</p>
       {dateRange.map((date) => (
         <div key={date} className="date-time-box">
-          <h4>{date}</h4>
+          <div className="date-box">
+          <h4>일자</h4>
+          <div>{date}</div>
+          </div>
           <div>
             <label htmlFor={`start-time-${date}`}>시작 시간</label>
             <div className="time-input">
@@ -180,7 +183,7 @@ export default function TimeSelection({ onNext, onPrev }) {
           )
         }
       >
-        저장
+        
       </button>
       <div className="button-group">
         <button className="prev-button" onClick={onPrev}>
