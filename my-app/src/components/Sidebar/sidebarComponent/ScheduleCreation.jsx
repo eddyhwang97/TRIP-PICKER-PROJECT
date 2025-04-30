@@ -15,7 +15,7 @@ const tempSchedule = [
     endTime: "15:00",
   },
   {
-    date: "5/3 (토_",
+    date: "5/3 (토)",
     place: "경복궁",
     startTime: "09:00",
     endTime: "11:00",
