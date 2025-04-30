@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
+import { format } from "date-fns";
 import "flatpickr/dist/flatpickr.min.css";
-import { format, set, setDate } from "date-fns";
-import { useStore } from "../../stores/store.API";
 import $ from "jquery";
 // 캘린더
 
 // scss
-export default function DateSelection({ onNext, onPrev, user }) {
+export default function DateSelection() {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
 
   const handleDateChange = () => {
@@ -45,7 +44,6 @@ export default function DateSelection({ onNext, onPrev, user }) {
           />
         </div>
       </div>
-     
     </div>
   );
 }

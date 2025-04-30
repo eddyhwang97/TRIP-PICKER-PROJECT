@@ -1,7 +1,7 @@
 import React from "react";
 
 
-export default function PlaceList({ sampleList, setSampleList, categoryColors, onNext, onPrev }) {
+export default function PlaceList({ sampleList, setSampleList, categoryColors }) {
   const handleDelete = (id) => {
     const confirmDelete = window.confirm("삭제하시겠습니까?");
     if (confirmDelete) {

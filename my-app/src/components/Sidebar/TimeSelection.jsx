@@ -22,7 +22,7 @@ const generateDateRange = (startDate, endDate) => {
   return dateArray;
 };
 
-export default function TimeSelection({ onNext, onPrev }) {
+export default function TimeSelection() {
   // 날짜, 시작시간, 종료 시간을 상태로 관리
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -87,7 +87,7 @@ export default function TimeSelection({ onNext, onPrev }) {
   };
 
   return (
-    <div className="contents-container time-selection">
+    <div className="contents-container time-selection-container">
       {dateRange.map((date) => (
         <div key={date} className="date-time-box">
           <div className="date-box">
@@ -136,7 +136,7 @@ export default function TimeSelection({ onNext, onPrev }) {
               </select>
             </div>
           </div>
-                <span className="divider">~</span>
+                <span >~</span>
           <div>
             <label htmlFor={`end-time-${date}`}>종료 시간</label>
             <div className="time-input">
