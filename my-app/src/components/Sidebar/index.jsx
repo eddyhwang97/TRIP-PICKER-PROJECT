@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { GoogleMap, useJsApiLoader, Autocomplete, Marker } from "@react-google-maps/api";
 import { useStore } from "../../stores/store.API";
-import DatePicker from "react-datepicker"; // 캘린더 컴포넌트
 import "react-datepicker/dist/react-datepicker.css"; // 스타일 임포트
 import DateSelection from "./DateSelection";
 import TimeSelection from "./TimeSelection";
@@ -11,6 +10,7 @@ import Viewer from "./Viewer";
 
 import "./sidebar.scss";
 import { useLocation, useNavigate } from "react-router-dom";
+import { SidebarButton } from "../../assets";
 
 const containerStyle = {
   width: "100vw",
@@ -136,40 +136,8 @@ function Sidebar(props) {
       {step === 4 && <ScheduleCreation onNext={() => setStep(5)} onPrev={() => setStep(3)} />}
       {step === 5 && <Viewer onNext={() => setStep(5)} onPrev={() => setStep(4)} />}
 
-      {step === 1 && (
-        <div className="button-group">
-          <button className="next-button" onClick={onNext}>
-            날짜 선택하기
-          </button>
-        </div>
-      )}
-      {step === 2 && (
-        <div className="button-group">
-          <button
-            className="prev-button"
-            onClick={() => {
-              onPrev();
-            }}
-          >
-            이전
-          </button>
-          <button className="next-button" onClick={onNext}>
-            활동 시간 선택하기
-          </button>
-        </div>
-      )}
-      {step === 3 && (
-        <div className="button-group">
-          <button className="prev-button" onClick={onPrev}>
-            이전
-          </button>
-          <button className="next-button" onClick={onNext}>
-            일정 생성하기
-          </button>
-        </div>
-      )}
-      {step === 4 && ""}
-      {step === 5 && ""}
+<SidebarButton step={step} setStep={setStep}/>
+    
     </div>
   );
 }
