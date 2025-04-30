@@ -73,7 +73,7 @@
   .contents-container {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    // justify-content: space-between;
     flex: 1;
     gap: 10px;
     height: 100%;
@@ -93,7 +93,9 @@
     .place-item {
       display: flex;
       align-items: center;
+      height: 70px;
       padding: 10px;
+      box-sizing: border-box;
       border: 1px solid #eee;
       border-radius: 5px;
       background: #fafafa;
@@ -210,8 +212,10 @@
       background-color: #f9fafb;
       border: 1px solid #e5e7eb;
       border-radius: 5px;
+    height: 70px;
+    box-sizing: border-box;
+
       padding: 5px 15px;
-      margin-bottom: 5px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       display: flex;
       justify-content: space-around;
@@ -285,59 +289,7 @@
   }
 
   /* 스텝 이동 버튼 그룹 */
-  .button-group {
-    display: flex;
-    justify-content: space-between;
-
-    .prev-button,
-    .next-button,
-    .submit-button {
-      flex: 1;
-      margin: 0 5px;
-      padding: 12px;
-      font-size: 1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-
-      &:first-child {
-        margin-left: 0;
-      }
-
-      &:last-child {
-        margin-right: 0;
-      }
-    }
-
-    .prev-button {
-      background-color: #d3d3d3;
-      color: #333;
-
-      &:hover {
-        background-color: #b0b0b0;
-      }
-    }
-
-    .next-button {
-      background-color: #60a5fa;
-      color: white;
-
-      &:hover {
-        background-color: #3b82f6;
-      }
-    }
-
-    .submit-button {
-      background-color: #34d399; // 초록색 느낌
-      color: white;
-
-      &:hover {
-        background-color: #10b981;
-      }
-    }
-  }
+  
 }
 
 .schedule-summary {

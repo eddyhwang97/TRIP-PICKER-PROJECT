@@ -88,7 +88,6 @@ export default function TimeSelection({ onNext, onPrev }) {
 
   return (
     <div className="contents-container time-selection">
-      <p>활동 시간을 선택해주세요.</p>
       {dateRange.map((date) => (
         <div key={date} className="date-time-box">
           <div className="date-box">
