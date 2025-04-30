@@ -7,10 +7,17 @@ const generateDateRange = (startDate, endDate) => {
   const currentDate = new Date(startDate);
   const endDateObj = new Date(endDate);
 
+  const daysKor = ["일", "월", "화", "수", "목", "금", "토"];
+
   while (currentDate <= endDateObj) {
-    const dateString = currentDate.toISOString().split("T")[0]; // "YYYY-MM-DD" 형식으로 변환
-    dateArray.push(dateString);
-    currentDate.setDate(currentDate.getDate() + 1); // 하루씩 증가
+    const month = currentDate.getMonth() + 1; // 0-indexed
+    const day = currentDate.getDate();
+    const dayOfWeek = daysKor[currentDate.getDay()]; // 요일
+
+    const formatted = `${month}/${day} ${dayOfWeek}`;
+    dateArray.push(formatted);
+
+    currentDate.setDate(currentDate.getDate() + 1);
   }
 
   return dateArray;
@@ -175,16 +182,6 @@ export default function TimeSelection({ onNext, onPrev }) {
           </div>
         </div>
       ))}
-      <button
-        onClick={handleSubmit}
-        disabled={
-          !Object.values(activities).every(
-            ({ startTime, endTime }) => startTime && endTime
-          )
-        }
-      >
-        
-      </button>
       <div className="button-group">
         <button className="prev-button" onClick={onPrev}>
           이전
