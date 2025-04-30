@@ -3,8 +3,9 @@ export const citys = [
     id: "seoul",
     name: "서울",
     englishName: "Seoul",
-    center: { lat: 37.5665, lng: 126.9780 },
+    center: { lat: 37.5665, lng: 126.978 },
     radiusKm: 20,
+    image: "/assets/images/citys/seoul.jpeg",
   },
   {
     id: "busan",
@@ -12,6 +13,7 @@ export const citys = [
     englishName: "Busan",
     center: { lat: 35.1796, lng: 129.0756 },
     radiusKm: 20,
+    image: "/assets/images/citys/busan.jpeg",
   },
   {
     id: "gwangju",
@@ -19,6 +21,7 @@ export const citys = [
     englishName: "Gwangju",
     center: { lat: 35.1595, lng: 126.8526 },
     radiusKm: 15,
+    image: "/assets/images/citys/gwangju.jpeg",
   },
   {
     id: "daegu",
@@ -26,6 +29,7 @@ export const citys = [
     englishName: "Daegu",
     center: { lat: 35.8722, lng: 128.6025 },
     radiusKm: 15,
+    image: "/assets/images/citys/daegu.jpeg",
   },
   {
     id: "jeju",
@@ -33,6 +37,7 @@ export const citys = [
     englishName: "Jeju",
     center: { lat: 33.4996, lng: 126.5312 },
     radiusKm: 20,
+    image: "/assets/images/citys/jeju.jpeg",
   },
   {
     id: "daejeon",
@@ -40,6 +45,7 @@ export const citys = [
     englishName: "Daejeon",
     center: { lat: 36.3504, lng: 127.3845 },
     radiusKm: 15,
+    image: "/assets/images/citys/daejeon.jpeg",
   },
   {
     id: "gangneung",
@@ -47,6 +53,7 @@ export const citys = [
     englishName: "Gangneung",
     center: { lat: 37.7519, lng: 128.8761 },
     radiusKm: 15,
+    image: "/assets/images/citys/gangneung.jpeg",
   },
   {
     id: "ulsan",
@@ -54,13 +61,15 @@ export const citys = [
     englishName: "Ulsan",
     center: { lat: 35.5384, lng: 129.3114 },
     radiusKm: 15,
+    image: "/assets/images/citys/ulsan.jpeg",
   },
   {
     id: "sokcho",
     name: "속초",
     englishName: "Sokcho",
-    center: { lat: 38.2070, lng: 128.5912 },
+    center: { lat: 38.207, lng: 128.5912 },
     radiusKm: 10,
+    image: "/assets/images/citys/sokcho.jpg",
   },
   {
     id: "yeosu",
@@ -68,6 +77,7 @@ export const citys = [
     englishName: "Yeosu",
     center: { lat: 34.7604, lng: 127.6622 },
     radiusKm: 15,
+    image: "/assets/images/citys/yeosu.jpeg",
   },
   {
     id: "incheon",
@@ -75,13 +85,15 @@ export const citys = [
     englishName: "Incheon",
     center: { lat: 37.4563, lng: 126.7052 },
     radiusKm: 20,
+    image: "/assets/images/citys/incheon.jpeg",
   },
   {
     id: "ulleungdo",
     name: "울릉도",
     englishName: "Ulleungdo",
-    center: { lat: 37.4842, lng: 130.9050 },
+    center: { lat: 37.4842, lng: 130.905 },
     radiusKm: 10,
+    image: "/assets/images/citys/ulleungdo.jpeg",
   },
   {
     id: "gyeongju",
@@ -89,13 +101,15 @@ export const citys = [
     englishName: "Gyeongju",
     center: { lat: 35.8562, lng: 129.2247 },
     radiusKm: 15,
+    image: "/assets/images/citys/gyeongju.jpeg",
   },
   {
     id: "pohang",
     name: "포항",
     englishName: "Pohang",
-    center: { lat: 36.0190, lng: 129.3435 },
+    center: { lat: 36.019, lng: 129.3435 },
     radiusKm: 15,
+    image: "/assets/images/citys/pohang.jpeg",
   },
   {
     id: "jeonju",
@@ -103,6 +117,7 @@ export const citys = [
     englishName: "Jeonju",
     center: { lat: 35.8242, lng: 127.1479 },
     radiusKm: 15,
+    image: "/assets/images/citys/jeonju.jpeg",
   },
   {
     id: "mokpo",
@@ -110,12 +125,14 @@ export const citys = [
     englishName: "Mokpo",
     center: { lat: 34.8118, lng: 126.3922 },
     radiusKm: 15,
+    image: "/assets/images/citys/mokpo.jpeg",
   },
   {
     id: "chungju",
     name: "충주",
     englishName: "Chungju",
-    center: { lat: 36.9910, lng: 127.9260 },
+    center: { lat: 36.991, lng: 127.926 },
     radiusKm: 15,
+    image: "/assets/images/citys/chungju.jpeg",
   },
 ];
