@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import editTripSidebar from "../../../views/css/editTripSidebar.scss";
 
 // 날짜 범위 샘플 생성 함수
 const generateDateRange = (startDate, endDate) => {

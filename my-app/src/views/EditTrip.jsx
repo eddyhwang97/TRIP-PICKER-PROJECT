@@ -11,6 +11,7 @@ import "./css/editTrip.scss";
 import accommodationIcon from "../assets/images/accommodation_pin.png";
 import restaurantIcon from "../assets/images/restaurant_pin.png";
 import placeIcon from "../assets/images/place_pin.png";
+import Sidebar from "../components/Sidebar";
 
 const containerStyle = {
   width: "100vw",
@@ -170,6 +171,7 @@ function EditTrip(props) {
         ) : (
           <div>Loading Map...</div>
         )}
+        <Sidebar/>
       </div>
     </>
   );

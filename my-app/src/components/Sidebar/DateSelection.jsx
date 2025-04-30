@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import { format, set, setDate } from "date-fns";
-import { useStore } from "../../../stores/store.API";
+import { useStore } from "../../stores/store.API";
 import $ from "jquery";
 // 캘린더
 
 // scss
-// import editTripSidebar from "../../../views/css/editTripSidebar.scss";
 export default function DateSelection({ onNext, onPrev, user }) {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
 

@@ -1,5 +1,4 @@
 import React from "react";
-import editTripSidebar from "../../../views/css/editTripSidebar.scss";
 
 
 export default function PlaceList({ sampleList, setSampleList, categoryColors, onNext, onPrev }) {

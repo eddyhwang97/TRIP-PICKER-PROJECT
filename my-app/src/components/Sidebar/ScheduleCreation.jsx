@@ -1,5 +1,4 @@
 import React from "react";
-import editTripSidebar from "../../../views/css/editTripSidebar.scss";
 
 const tempSchedule = [
   {
