@@ -131,10 +131,10 @@ function Sidebar(props) {
       </div>
       {/* 단계별로 컴포넌트 보여주기 */}
       {step === 1 && <PlaceList sampleList={sampleList} setSampleList={setSampleList} categoryColors={categoryColors} onNext={() => setStep(2)} />}
-      {step === 2 && <DateSelection onNext={() => setStep(3)} onPrev={() => setStep(1)} user={user} />}
-      {step === 3 && <TimeSelection onNext={() => setStep(4)} onPrev={() => setStep(2)} />}
-      {step === 4 && <ScheduleCreation onNext={() => setStep(5)} onPrev={() => setStep(3)} />}
-      {step === 5 && <Viewer onNext={() => setStep(5)} onPrev={() => setStep(4)} />}
+      {step === 2 && <DateSelection />}
+      {step === 3 && <TimeSelection />}
+      {step === 4 && <ScheduleCreation />}
+      {step === 5 && <Viewer  />}
 
 <SidebarButton step={step} setStep={setStep}/>
     
