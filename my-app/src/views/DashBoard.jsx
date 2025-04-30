@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./css/dashboard.scss";
 import DashBoardItem from "../components/DashBoardItem";
 import noticeIcon from "../assets/icon/notice.png";
@@ -11,13 +11,13 @@ function DashBoard(props) {
   const [tripList, setTripList] = useState([]);
   const [mode, setMode] = useState("V");
   const [checkedItems, setCheckedItems] = useState([]);
-
+  const cityRef = useRef(null);
   //           fucnction          //
   // 사용자 여행목록 가져오기
   const getTripList = () => {
-    const userTirpList = user !==null ?
-    JSON.parse(localStorage.getItem("trips")).filter((trip) => trip.userId === user.id):[];
-   setTripList(userTirpList);
+    const userTirpList = user !== null ? JSON.parse(localStorage.getItem("trips")).filter((trip) => trip.userId === user.id) : [];
+    setTripList(userTirpList);
+    console.log(userTirpList);
   };
 
   // 여행목록 체크박스 클릭 감지
@@ -30,9 +30,16 @@ function DashBoard(props) {
   };
   const handleSaveTripList = () => {};
 
-  const handleEditTrip = ()=>{
-    navigate("/edittrip",)
+  const matchingCity = (trip)=>{
+    cityRef.current = trip;
+    const cityData = cityRef.current;
+    const citys = JSON.parse(localStorage.getItem("citys"));
+    const cityLocation = citys.find((v) => v.id === cityData.city).center;
+    navigateEditTrip(cityLocation)
   }
+  const navigateEditTrip = (cityLocation) => {
+    navigate("/edittrip", { state: { cityLocation: {cityLocation} } });
+  };
 
   //           useLayoutEffect          //
   // 첫 랜더링시 여행 리스트 가져오기
@@ -46,7 +53,7 @@ function DashBoard(props) {
         <div className="dashboard-left">
           <section className="dashboard-left-top">
             <div className="dashboard-left-profile">
-              <div className="dashboard-left-profile-image" onClick={handleEditTrip} style={{ backgroundImage: `url()` }}></div>
+              <div className="dashboard-left-profile-image" style={{ backgroundImage: `url()` }}></div>
               <div className="dashboard-left-profile-user-info">
                 <div className="dashboard-left-profile-user-info-name">
                   <span>{"이름"}</span>
@@ -86,13 +93,13 @@ function DashBoard(props) {
             <div className="dashboard-right-top-title">Dash board</div>
             <div className="dashboard-right-top-edit">
               {mode === "V" && (
-                <span className="dashboard-right-top-edit-button" onClick={()=>setMode("E")}>
+                <span className="dashboard-right-top-edit-button" onClick={() => setMode("E")}>
                   편집
                 </span>
               )}
               {mode === "E" && (
                 <>
-                  <span className="dashboard-right-top-save-button" onClick={()=>setMode("V")}>
+                  <span className="dashboard-right-top-save-button" onClick={() => setMode("V")}>
                     저장
                   </span>
                   <span className="dashboard-right-top-delete-button" onClick={handleDeleteTripList}>
@@ -115,7 +122,7 @@ function DashBoard(props) {
                   </div>
                 </div>
                 {tripList.map((trip) => (
-                  <DashBoardItem key={trip.id} trip={trip} mode={mode} onCheck={handleCheck} />
+                  <DashBoardItem matchingCity={matchingCity} key={trip.id} trip={trip} mode={mode} onCheck={handleCheck} />
                 ))}
               </div>
             </div>
