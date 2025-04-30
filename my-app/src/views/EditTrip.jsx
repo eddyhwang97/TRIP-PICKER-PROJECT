@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 import accommodationIcon from "../assets/images/accommodation_pin.png";
 import restaurantIcon from "../assets/images/restaurant_pin.png";
 import placeIcon from "../assets/images/place_pin.png";
+import addIcon from "../assets/images/add_pin.png";
 
 const containerStyle = {
   width: "100vw",
@@ -106,7 +107,7 @@ function EditTrip(props) {
         };
       default:
         return {
-          url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+          url: addIcon,
           scaledSize: new window.google.maps.Size(40, 40),
         };
     }
@@ -130,12 +131,12 @@ function EditTrip(props) {
                 />
               </Autocomplete>
             </div>
-            <div className="controls">
+            <div className="place-control">
               <select
                 value={placeType}
                 onChange={(e) => setPlaceType(e.target.value)}
               >
-                <option value="">장소 유형 선택</option>
+                <option value="">장소 유형</option>
                 <option value="accommodation">숙소</option>
                 <option value="restaurant">식당</option>
                 <option value="attraction">관광지</option>
@@ -160,7 +161,10 @@ function EditTrip(props) {
               {markerPosition && (
                 <Marker
                   position={markerPosition}
-                  icon="http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                  icon={{
+                    url: addIcon, // import한 이미지 경로 사용
+                    scaledSize: new window.google.maps.Size(40, 40), // 아이콘 크기 조정
+                  }}
                 />
               )}
             </GoogleMap>
