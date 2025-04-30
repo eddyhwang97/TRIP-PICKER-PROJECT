@@ -93,8 +93,8 @@ export default function TimeSelection({ onNext, onPrev }) {
       {dateRange.map((date) => (
         <div key={date} className="date-time-box">
           <div className="date-box">
-          <h4>일자</h4>
-          <div>{date}</div>
+          <div className="date-title">일자</div>
+          <div className="date">{date}</div>
           </div>
           <div>
             <label htmlFor={`start-time-${date}`}>시작 시간</label>
@@ -138,6 +138,7 @@ export default function TimeSelection({ onNext, onPrev }) {
               </select>
             </div>
           </div>
+                <span className="divider">~</span>
           <div>
             <label htmlFor={`end-time-${date}`}>종료 시간</label>
             <div className="time-input">
