@@ -30,15 +30,18 @@ function DashBoard(props) {
   };
   const handleSaveTripList = () => {};
 
+  // 로컬시티데이터와 선택한 시티데이터 매칭 후 center 뽑기
   const matchingCity = (trip)=>{
     cityRef.current = trip;
     const cityData = cityRef.current;
     const citys = JSON.parse(localStorage.getItem("citys"));
-    const cityLocation = citys.find((v) => v.id === cityData.city).center;
-    navigateEditTrip(cityLocation)
+    const city = citys.find((v) => v.id === cityData.city);
+    navigateEditTrip(city)
   }
-  const navigateEditTrip = (cityLocation) => {
-    navigate("/edittrip", { state: { cityLocation: {cityLocation} } });
+
+  //            navigation          //
+  const navigateEditTrip = (city) => {
+    navigate("/edittrip", { state: { cityLocation: city} });
   };
 
   //           useLayoutEffect          //
