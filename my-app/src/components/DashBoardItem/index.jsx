@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./style.scss";
 
 function DashBoardItem(props) {
-  const { trip, mode,onCheck } = props;
+  const { trip, mode, onCheck, cityRef,matchingCity } = props;
   const [isChecked, setIsChecked] = useState(false);
 
   const handleCheck = (e) => {
@@ -11,7 +11,10 @@ function DashBoardItem(props) {
     onCheck(trip.id, checked);
   };
   return (
-    <div className="dashboard-right-trip-item">
+    <div
+      className="dashboard-right-trip-item"
+     onClick={()=>matchingCity(trip)}
+    >
       {mode === "E" && <input type="checkbox" checked={isChecked} onChange={handleCheck} />}
       <div className="dashboard-right-trip-item-thumb-box">
         <div className="dashboard-right-trip-item-thumb-image"></div>
