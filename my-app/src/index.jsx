@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import { DashBoard, EditTrip, Main , Login , Join } from "./views";
-import Sidebar from "./views/Sidebar";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -15,7 +14,6 @@ root.render(
         <Route index element={<Main />} />
         <Route path="dashboard" element={<DashBoard />} />
         <Route path="edittrip" element={<EditTrip />} />
-        <Route path="sidebar" element={<Sidebar />} />
         <Route path="login" element={<Login/>} />
         <Route path="join" element={<Join/>} />
       </Route>
