@@ -37,11 +37,7 @@ export default function PlaceList({ sampleList, setSampleList, categoryColors, o
           </li>
         ))}
       </ul>
-      <div className="button-group">
-        <button className="next-button" onClick={onNext}>
-          날짜 선택하기 
-        </button>
-      </div>
+     
     </div>
   );
 }

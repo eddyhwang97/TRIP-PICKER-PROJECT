@@ -87,7 +87,7 @@ function Sidebar(props) {
     { id: 4, name: "장소이름", address: "장소주소", category: "관광" },
     { id: 5, name: "장소이름", address: "장소주소", category: "관광" },
   ]);
-
+  
   const categoryColors = {
     숙소: "category-red",
     음식점: "category-blue",
