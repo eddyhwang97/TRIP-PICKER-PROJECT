@@ -1,4 +1,4 @@
-import { APIContext } from "./stores/store.API";
+import { useStore } from "./stores/store.API";
 import { useLocation } from "react-router-dom";
 import { HeaderArea, MainArea } from "./layouts";
 import "./App.css";
@@ -9,7 +9,7 @@ function App() {
   return (
     <>
       <HeaderArea />
-      <MainArea />
+      <MainArea/>
     </>
   );
 }

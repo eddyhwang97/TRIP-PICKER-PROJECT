@@ -3,7 +3,7 @@ import "./css/dashboard.scss";
 import DashBoardItem from "../components/DashBoardItem";
 import noticeIcon from "../assets/icon/notice.png";
 import { useStore } from "../stores/store.API";
-import { useNavigate } from "react-router-dom";
+import { StaticRouterProvider, useNavigate } from "react-router-dom";
 
 function DashBoard(props) {
   const user = useStore((state) => state.user);
@@ -11,14 +11,9 @@ function DashBoard(props) {
   const [tripList, setTripList] = useState([]);
   const [mode, setMode] = useState("V");
   const [checkedItems, setCheckedItems] = useState([]);
-  const cityRef = useRef(null);
+  const tripRef = useRef(null);
+
   //           fucnction          //
-  // 사용자 여행목록 가져오기
-  const getTripList = () => {
-    const userTirpList = user !== null ? JSON.parse(localStorage.getItem("trips")).filter((trip) => trip.userId === user.id) : [];
-    setTripList(userTirpList);
-    console.log(userTirpList);
-  };
 
   // 여행목록 체크박스 클릭 감지
   const handleCheck = (id, isChecked) => {
@@ -30,20 +25,31 @@ function DashBoard(props) {
   };
   const handleSaveTripList = () => {};
 
-  // 로컬시티데이터와 선택한 시티데이터 매칭 후 center 뽑기
-  const matchingCity = (trip)=>{
-    cityRef.current = trip;
-    const cityData = cityRef.current;
+  // 사용자 여행목록 가져오기
+  const getTripList = () => {
+    const userTirpList = user !== null ? JSON.parse(localStorage.getItem("trips")).filter((trip) => trip.userId === user.id) : [];
+    setTripList(userTirpList);
+    console.log(userTirpList);
+  };
+  // 클릭한 여행데이터 수집
+  const getCurrentTripData = (trip) => {
+    tripRef.current = trip;
+    const tripData = tripRef.current;
+    console.log(tripData);
+    matchingCity(tripData.city, tripData);
+  };
+  const matchingCity = (city,tripData) => {
     const citys = JSON.parse(localStorage.getItem("citys"));
-    const city = citys.find((v) => v.id === cityData.city);
-    navigateEditTrip(city)
-  }
+    const filterCity = citys.find((v) => v.id === city);
+    console.log(filterCity,tripData);
+    navigateEditTrip([filterCity,tripData]);
+  };
+
+  // 로컬시티데이터와 선택한 시티데이터 매칭 후 center 뽑기
 
   //            navigation          //
-  const navigateEditTrip = (city) => {
-    navigate("/edittrip", { state: { cityLocation: city} });
-    // 시티값
-    // 트립값
+  const navigateEditTrip = ([filterCity, tripData]) => {
+    navigate("/edittrip", { state: { cityLocation: filterCity, tripData: tripData } });
   };
 
   //           useLayoutEffect          //
@@ -127,7 +133,7 @@ function DashBoard(props) {
                   </div>
                 </div>
                 {tripList.map((trip) => (
-                  <DashBoardItem matchingCity={matchingCity} key={trip.id} trip={trip} mode={mode} onCheck={handleCheck} />
+                  <DashBoardItem getCurrentTripData={getCurrentTripData} key={trip.id} trip={trip} mode={mode} onCheck={handleCheck} />
                 ))}
               </div>
             </div>
