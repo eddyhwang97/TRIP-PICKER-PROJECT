@@ -48,6 +48,7 @@ function EditTrip(props) {
   const onLoadAutocomplete = (autocompleteInstance) => {
     setAutocomplete(autocompleteInstance);
   };
+  
   //           trip 정보 세션에 저장          //
   const setTripInStorage = () => {
     const trips = JSON.parse(localStorage.getItem("trips"));
@@ -55,12 +56,10 @@ function EditTrip(props) {
 
     // 1. 로그인 상태일 경우
     if (user !== null) {
-      // (1) 대시보드에서 넘어올 경우
-
-      // (2) 메인에서 넘어올 경우
+      // (1) 기존 tripData가 없는 경우
       if (tripData !== null) {
         const newTrip = {
-          id: tripData.id,
+          id: `trip001`,
           userId: user.id,
           title: tripData.title,
           startDate: tripData.startDate,
@@ -74,7 +73,9 @@ function EditTrip(props) {
           dailyTimeSlots: tripData.dailyTimeSlots,
         };
         sessionStorage.setItem("newtrip", JSON.stringify(newTrip));
-      } else if (tripData === null) {
+      } 
+      // (2) 기존 tripData가 있는 경우
+      else if (tripData === null) {
         const newTrip = {
           id: tripId,
           userId: user.id,
@@ -92,7 +93,7 @@ function EditTrip(props) {
         sessionStorage.setItem("newtrip", JSON.stringify(newTrip));
       }
     }
-    // 2. 로그인 상태 아닐 경우
+    // 2. 로그인 상태 아닐 경우(대쉬보드 또는 메인에서 넘어옴 => 무조건 새로운 생성)
     if (user === null) {
       const newTrip = {
         id: "trip001",
@@ -110,11 +111,8 @@ function EditTrip(props) {
       };
       sessionStorage.setItem("newtrip", JSON.stringify(newTrip));
     }
-
-    // 2. 대쉬보드에서 들어왔을 때
   };
 
-  // 대쉬보드에서 들어왔을 때
 
   const onPlaceChanged = () => {
     if (autocomplete) {

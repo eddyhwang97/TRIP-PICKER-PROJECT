@@ -15,6 +15,7 @@ function HeaderArea(props) {
     const confirmed = window.confirm("로그아웃 하시겠습니까?");
     if (confirmed) {
       clearUser();
+      sessionStorage.clear();
       navigate("/");
     }
   };
