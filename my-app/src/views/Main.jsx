@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useStore } from "../stores/store.API";
 
 // assets
 import picker from "../assets/logo/picker.png";
@@ -11,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 function Main(props) {
   const navigate = useNavigate();
+  const user = useStore((state) => state.user);
   const citys = JSON.parse(localStorage.getItem("citys"));
   const [start, setStart] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -22,8 +24,66 @@ function Main(props) {
       setStart(true);
     },
     makeTrip: (city) => {
-      console.log(city);
-      navigate("/edittrip", { state: { cityLocation: city } });
+      const usersTrip = user.trips;
+      const createTripId = usersTrip.length < 10 ? `trip00${usersTrip.length + 1}` : usersTrip.length > 10 ? `trip0${usersTrip.length + 1}` : `trip${usersTrip.length + 1}`;
+      let tripData;
+      // 1. 로그인 상태일 경우
+      if (user !== null) {
+        // (1) 사용자 trips가 있을경우
+        if (usersTrip.length > 0) {
+          tripData = {
+            id: createTripId,
+            userId: user.id,
+            title: "Untitled Trip",
+            startDate: null,
+            endDate: null,
+            city: city.id,
+            accommodation: [],
+            attraction: [],
+            restaurant: [],
+            cafe: [],
+            groupedByDate: {},
+            dailyTimeSlots: {},
+          };
+
+        } 
+        // (2) 사용자 trips가 없을경우
+        else if (usersTrip.length === 0) {
+          tripData = {
+            id: "trip001",
+            userId: user.id,
+            title: "Untitled Trip",
+            startDate: null,
+            endDate: null,
+            city: city.id,
+            accommodation: [],
+            attraction: [],
+            restaurant: [],
+            cafe: [],
+            groupedByDate: {},
+            dailyTimeSlots: {},
+          };
+        }
+      }
+      // 2. 로그인 상태 아닐 경우(대쉬보드 또는 메인에서 넘어옴 => 무조건 새로운 생성)
+      if (user === null) {
+        tripData = {
+          id: "trip001",
+          userId: "unknown-host",
+          title: "Untitled Trip",
+          startDate: null,
+          endDate: null,
+          city: city.id,
+          accommodation: [],
+          attraction: [],
+          restaurant: [],
+          cafe: [],
+          groupedByDate: {},
+          dailyTimeSlots: {},
+        };
+      }
+      console.log(tripData);
+      navigate("/edittrip", { state: { tripData: tripData} });
     },
   };
   // 실시간 검색 함수
@@ -73,7 +133,7 @@ function Main(props) {
             <ul>
               {cityList.length > 0 ? (
                 cityList.map((city, idx) => (
-                  <li className="main-intro-city-list" key={idx} onClick={() => (cityInfo.current = city, clickEvent.makeTrip(city))}>
+                  <li className="main-intro-city-list" key={idx} onClick={() => ((cityInfo.current = city), clickEvent.makeTrip(city))}>
                     <div className="main-intro-location-image">
                       <img src={city.image} alt={city.name} />
                     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { GoogleMap, useJsApiLoader, Autocomplete, Marker } from "@react-google-maps/api";
 import { useLocation } from "react-router-dom";
 import { useStore } from "../stores/store.API";
@@ -21,98 +21,42 @@ const containerStyle = {
 
 function EditTrip(props) {
   const location = useLocation();
-  // 유저 정보
-  const user = useStore((state) => state.user);
-  // 시티 정보 (메인, 대시보드 에서 넘어옴)
-  const cityLocation = location.state.cityLocation;
-  // 여행 정보 (대시보드에서 넘어옴)
-  const tripData = location.state.tripData === undefined ? null : location.state.tripData;
+  // 여행 정보
+  const tripData = location.state.tripData;
   // 시티 센터 값 설정
-  const [mapCenter, setMapCenter] = useState(cityLocation.center);
+  const [mapCenter, setMapCenter] = useState(null);
   const [zoom, setZoom] = useState(12); // 초기 줌 레벨 설정
   const [autocomplete, setAutocomplete] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null); // 초기값을 null로 설정
   const [placeType, setPlaceType] = useState(""); // 장소 유형 상태 추가
   const [markers, setMarkers] = useState([]); // 모든 마커 저장
+  const [placesInfo,setPlacesInfo] = useState({accommodation:tripData.accommodation, attraction:tripData.attraction, restaurant:tripData.restaurant, cafe:tripData.cafe});
   const inputRef = useRef(null);
+  console.log(placesInfo)
 
-  // 장소
-  const [places, setPlaces] = useState([]);
-
+  
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries: ["places"],
   });
 
+  //           function           //
+ //         센터 정보 셋팅          //
+  const matchMapCenter = () => {
+    const tripDataCity = tripData.city;
+    const citys = JSON.parse(localStorage.getItem("citys"));
+    const cityCenter = citys.find((city) => city.id === tripDataCity).center;
+    setMapCenter(cityCenter);
+  }
+  //           trip 정보 세션에 저장          //
+  const setTripInfoInSessionStorage = ()=>{
+    sessionStorage.setItem("trip", JSON.stringify(tripData));
+  };
+
   const onLoadAutocomplete = (autocompleteInstance) => {
     setAutocomplete(autocompleteInstance);
   };
-  
-  //           trip 정보 세션에 저장          //
-  const setTripInStorage = () => {
-    const trips = JSON.parse(localStorage.getItem("trips"));
-    const tripId = trips.length < 10 ? `trip00${trips.length + 1}` : trips.length > 10 ? `trip0${trips.length + 1}` : `trip${trips.length + 1}`;
-
-    // 1. 로그인 상태일 경우
-    if (user !== null) {
-      // (1) 기존 tripData가 없는 경우
-      if (tripData !== null) {
-        const newTrip = {
-          id: `trip001`,
-          userId: user.id,
-          title: tripData.title,
-          startDate: tripData.startDate,
-          endDate: tripData.endDate,
-          city: tripData.city,
-          accommodation: tripData.accommodation,
-          attraction: tripData.attraction,
-          restaurant: tripData.restaurant,
-          cafe: tripData.cafe,
-          groupedByDate: tripData.groupedByDate,
-          dailyTimeSlots: tripData.dailyTimeSlots,
-        };
-        sessionStorage.setItem("newtrip", JSON.stringify(newTrip));
-      } 
-      // (2) 기존 tripData가 있는 경우
-      else if (tripData === null) {
-        const newTrip = {
-          id: tripId,
-          userId: user.id,
-          title: null,
-          startDate: null,
-          endDate: null,
-          city: cityLocation.id,
-          accommodation: [],
-          attraction: [],
-          restaurant: [],
-          cafe: [],
-          groupedByDate: {},
-          dailyTimeSlots: {},
-        };
-        sessionStorage.setItem("newtrip", JSON.stringify(newTrip));
-      }
-    }
-    // 2. 로그인 상태 아닐 경우(대쉬보드 또는 메인에서 넘어옴 => 무조건 새로운 생성)
-    if (user === null) {
-      const newTrip = {
-        id: "trip001",
-        userId: "unknown-host",
-        title: null,
-        startDate: null,
-        endDate: null,
-        city: cityLocation.id,
-        accommodation: [],
-        attraction: [],
-        restaurant: [],
-        cafe: [],
-        groupedByDate: {},
-        dailyTimeSlots: {},
-      };
-      sessionStorage.setItem("newtrip", JSON.stringify(newTrip));
-    }
-  };
-
 
   const onPlaceChanged = () => {
     if (autocomplete) {
@@ -193,11 +137,17 @@ function EditTrip(props) {
     }
   };
 
-  useEffect(() => {
-    // 세션 유저 정보
-    setTripInStorage();
-    //
+  useLayoutEffect(() => {
+    // 지역 센터 정보 저장
+    matchMapCenter();
+    // 트립정보 세션에 저장
+    setTripInfoInSessionStorage();
   }, []);
+
+  //           전달할 props           //
+
+  
+
 
   return (
     <>
@@ -246,7 +196,7 @@ function EditTrip(props) {
         ) : (
           <div>Loading Map...</div>
         )}
-        <Sidebar places={places} />
+        <Sidebar placesInfo={placesInfo}  />
       </div>
     </>
   );
