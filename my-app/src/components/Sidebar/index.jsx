@@ -12,7 +12,9 @@ import { useNavigate } from "react-router-dom";
 import $ from "jquery";
 
 function Sidebar(props) {
-  const  {placesInfo}  = props;
+  const { placesInfo, setPlacesInfo } = props.sidebarProps;
+  const { tripDates, setTripDates } = props.sidebarProps;
+  const { dailyTimeSlots, setDailyTimeSlots } = props.sidebarProps;
   const navigate = useNavigate();
   // 사이드바 관련 변수 //
   const [step, setStep] = useState(1); // 1=리스트, 2=날짜, 3=시간, 4=일정
@@ -32,7 +34,6 @@ function Sidebar(props) {
   useEffect(() => {
     console.log();
   });
-
 
   return (
     <div className="sidebar">
@@ -55,9 +56,9 @@ function Sidebar(props) {
         </button>
       </div>
       {/* 단계별로 컴포넌트 보여주기 */}
-      {step === 1 && <PlaceList placesInfo={placesInfo} categoryColors={categoryColors} onNext={() => setStep(2)} />}
-      {step === 2 && <DateSelection />}
-      {step === 3 && <TimeSelection />}
+      {step === 1 && <PlaceList placesInfo={placesInfo} categoryColors={categoryColors}/>}
+      {step === 2 && <DateSelection tripDates={tripDates} setTripDates={setTripDates} />}
+      {step === 3 && <TimeSelection tripDates={tripDates} dailyTimeSlots={dailyTimeSlots} setDailyTimeSlots={setDailyTimeSlots} />}
       {step === 4 && <ScheduleCreation />}
       {step === 5 && <Viewer />}
 

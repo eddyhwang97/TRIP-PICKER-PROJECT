@@ -30,11 +30,13 @@ function EditTrip(props) {
   const [markerPosition, setMarkerPosition] = useState(null); // 초기값을 null로 설정
   const [placeType, setPlaceType] = useState(""); // 장소 유형 상태 추가
   const [markers, setMarkers] = useState([]); // 모든 마커 저장
-  const [placesInfo,setPlacesInfo] = useState({accommodation:tripData.accommodation, attraction:tripData.attraction, restaurant:tripData.restaurant, cafe:tripData.cafe});
   const inputRef = useRef(null);
-  console.log(placesInfo)
 
-  
+  // 여행 정보 셋팅 및 저장 상태 변수 //
+  const [placesInfo, setPlacesInfo] = useState({ accommodation: tripData.accommodation, attraction: tripData.attraction, restaurant: tripData.restaurant, cafe: tripData.cafe });
+  const [tripDates, setTripDates] = useState([tripData.startDate, tripData.endDate]);
+  const [dailyTimeSlots, setDailyTimeSlots] = useState(tripData.dailyTimeSlots);
+
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -42,15 +44,15 @@ function EditTrip(props) {
   });
 
   //           function           //
- //         센터 정보 셋팅          //
+  //         센터 정보 셋팅          //
   const matchMapCenter = () => {
     const tripDataCity = tripData.city;
     const citys = JSON.parse(localStorage.getItem("citys"));
     const cityCenter = citys.find((city) => city.id === tripDataCity).center;
     setMapCenter(cityCenter);
-  }
+  };
   //           trip 정보 세션에 저장          //
-  const setTripInfoInSessionStorage = ()=>{
+  const setTripInfoInSessionStorage = () => {
     sessionStorage.setItem("trip", JSON.stringify(tripData));
   };
 
@@ -137,17 +139,27 @@ function EditTrip(props) {
     }
   };
 
+  //           useLayoutEffect          //
   useLayoutEffect(() => {
     // 지역 센터 정보 저장
     matchMapCenter();
     // 트립정보 세션에 저장
     setTripInfoInSessionStorage();
   }, []);
+  //           useEffect           //
+  useEffect(() => {
+    console.log(placesInfo, tripDates, dailyTimeSlots);
+  }, [placesInfo, tripDates, dailyTimeSlots]);
 
   //           전달할 props           //
-
-  
-
+  const sidebarProps = {
+    placesInfo,
+    setPlacesInfo,
+    tripDates,
+    setTripDates,
+    dailyTimeSlots,
+    setDailyTimeSlots,
+  };
 
   return (
     <>
@@ -196,7 +208,7 @@ function EditTrip(props) {
         ) : (
           <div>Loading Map...</div>
         )}
-        <Sidebar placesInfo={placesInfo}  />
+        <Sidebar sidebarProps={sidebarProps} />
       </div>
     </>
   );

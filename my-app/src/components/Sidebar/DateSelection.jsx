@@ -3,31 +3,22 @@ import Flatpickr from "react-flatpickr";
 import { format } from "date-fns";
 import "flatpickr/dist/flatpickr.min.css";
 import $ from "jquery";
-// 캘린더
 
-// scss
-export default function DateSelection() {
-  const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+export default function DateSelection(props) {
+  const { tripDates, setTripDates } = props;
+  const [dateRange, setDateRange] = useState(tripDates.length>0?tripDates:[new Date(), new Date()]);
 
+  //           function          //
+  //          날짜 선택 감지        //
   const handleDateChange = () => {
     const setDate = dateRange.map((date) => format(date, "yyyy-MM-dd"));
-    console.log(setDate);
-    setTripsDate(setDate);
+    setTripDates(setDate);
   };
-  const setTripsDate = (setDate) => {
-    let trips = JSON.parse(localStorage.getItem("trips"));
-    const startDate = setDate[0];
-    const endDate = setDate[1];
-    console.log(startDate, endDate);
-    trips = trips.map((trip) => {
-      return { ...trip, startDate, endDate };
-    });
-    localStorage.setItem("trips", JSON.stringify(trips));
-  };
+  //           useEffect          //
   useEffect(() => {
     $(".flatpickr-input").css({ display: "none" });
     handleDateChange();
-  });
+  },[dateRange]);
   return (
     <div className="contents-container date-select-container">
       <div className="p-6">
