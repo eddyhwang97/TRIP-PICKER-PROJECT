@@ -93,50 +93,67 @@ function EditTrip(props) {
       return;
     }
 
-    const newMarker = {
-      position: markerPosition,
-      type: placeType,
+    const newPlace = {
+      id: `${placeType}_${Date.now()}`,
+      location: markerPosition,
+      name: markerPosition.name || '',
+      address: markerPosition.address || ''
     };
 
-    setMarkers((prevMarkers) => [...prevMarkers, newMarker]); // 마커 추가
+    setPlacesInfo(prevInfo => ({
+      ...prevInfo,
+      [placeType]: [...(prevInfo[placeType] || []), newPlace]
+    }));
+
     setMarkerPosition(null); // 마커 위치 초기화
     setPlaceType(""); // 장소 유형 초기화
 
-    // 로컬스토리지에 저장
-    const savedPlaces = JSON.parse(localStorage.getItem("places")) || [];
-    savedPlaces.push(newMarker);
-    localStorage.setItem("places", JSON.stringify(savedPlaces));
     alert("장소가 저장되었습니다!");
   };
 
+  // placesInfo가 변경될 때마다 마커 업데이트
+  useEffect(() => {
+    const newMarkers = [];
+
+    // 각 장소 유형별로 마커 생성
+    Object.entries(placesInfo).forEach(([type, places]) => {
+      places.map((place) => {
+        newMarkers.push(place);
+      });
+    });
+    console.log(newMarkers);
+    setMarkers(newMarkers);
+  }, [placesInfo]);
+
   const getMarkerIcon = (type) => {
-    switch (type) {
-      case "accommodation":
-        return {
-          url: accommodationIcon,
-          scaledSize: new window.google.maps.Size(40, 40),
-        };
-      case "restaurant":
-        return {
-          url: restaurantIcon,
-          scaledSize: new window.google.maps.Size(40, 40),
-        };
-      case "attraction":
-        return {
-          url: placeIcon,
-          scaledSize: new window.google.maps.Size(40, 40),
-        };
-      case "cafe":
-        return {
-          url: cafeIcon,
-          scaledSize: new window.google.maps.Size(40, 40),
-        };
-      default:
-        return {
-          url: addIcon,
-          scaledSize: new window.google.maps.Size(40, 40),
-        };
+    if (type === "accommodation" || type.includes("accom")) {
+      return {
+        url: accommodationIcon,
+        scaledSize: new window.google.maps.Size(40, 40),
+      };
     }
+    if (type === "restaurant" || type.includes("rest")) {
+      return {
+        url: restaurantIcon,
+        scaledSize: new window.google.maps.Size(40, 40),
+      };
+    }
+    if (type === "attraction" || type.includes("attr")) {
+      return {
+        url: placeIcon,
+        scaledSize: new window.google.maps.Size(40, 40),
+      };
+    }
+    if (type === "cafe" || type.includes("cafe")) {
+      return {
+        url: cafeIcon,
+        scaledSize: new window.google.maps.Size(40, 40),
+      };
+    }
+    return {
+      url: addIcon,
+      scaledSize: new window.google.maps.Size(40, 40),
+    };
   };
 
   //           useLayoutEffect          //
@@ -192,7 +209,12 @@ function EditTrip(props) {
               }}
             >
               {markers.map((marker, index) => (
-                <Marker key={index} position={marker.position} icon={getMarkerIcon(marker.type)} />
+                <Marker
+                  key={marker.id}
+                  position={marker.location}
+                  icon={getMarkerIcon(marker.id)}
+                  title={marker.name || marker.address} // 마커에 마우스를 올리면 이름 또는 주소 표시
+                />
               ))}
               {markerPosition && (
                 <Marker

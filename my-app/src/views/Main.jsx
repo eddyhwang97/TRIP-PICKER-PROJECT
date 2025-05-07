@@ -24,8 +24,8 @@ function Main(props) {
       setStart(true);
     },
     makeTrip: (city) => {
-      const usersTrip = user.trips;
-      const createTripId = usersTrip.length < 10 ? `trip00${usersTrip.length + 1}` : usersTrip.length > 10 ? `trip0${usersTrip.length + 1}` : `trip${usersTrip.length + 1}`;
+      const usersTrip = user ? user.trips : null;
+      const createTripId = usersTrip!==null?usersTrip.length < 10 ? `trip00${usersTrip.length + 1}` : usersTrip.length > 10 ? `trip0${usersTrip.length + 1}` : `trip${usersTrip.length + 1}`:"trip001";
       let tripData;
       // 1. 로그인 상태일 경우
       if (user !== null) {
@@ -45,12 +45,11 @@ function Main(props) {
             groupedByDate: {},
             dailyTimeSlots: {},
           };
-
-        } 
+        }
         // (2) 사용자 trips가 없을경우
         else if (usersTrip.length === 0) {
           tripData = {
-            id: "trip001",
+            id: createTripId,
             userId: user.id,
             title: "Untitled Trip",
             startDate: null,
@@ -68,7 +67,7 @@ function Main(props) {
       // 2. 로그인 상태 아닐 경우(대쉬보드 또는 메인에서 넘어옴 => 무조건 새로운 생성)
       if (user === null) {
         tripData = {
-          id: "trip001",
+          id: createTripId,
           userId: "unknown-host",
           title: "Untitled Trip",
           startDate: null,
@@ -83,7 +82,7 @@ function Main(props) {
         };
       }
       console.log(tripData);
-      navigate("/edittrip", { state: { tripData: tripData} });
+      navigate("/edittrip", { state: { tripData: tripData } });
     },
   };
   // 실시간 검색 함수

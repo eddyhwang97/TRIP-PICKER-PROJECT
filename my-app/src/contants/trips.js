@@ -11,42 +11,42 @@ export const trips = [
       {
         id: "accom1",
         name: "숙소 - 서울역 호텔",
+        adress: "서울특별시 중구 서촌로 100",
         location: { lat: 37.5547, lng: 126.9706 },
-        image: "https://example.com/seoul_hotel.jpg",
       },
     ],
     attraction: [
       {
         id: "attr1",
         name: "경복궁",
+        adress: "서울특별시 종로구 세종로 1-1",
         location: { lat: 37.5796, lng: 126.977 },
-        image: "https://example.com/gyeongbokgung.jpg",
       },
       {
         id: "attr2",
         name: "남산타워",
+        adress: "서울특별시 중구 남산공원로 105",
         location: { lat: 37.5512, lng: 126.9882 },
-        image: "https://example.com/namsan.jpg",
       },
       {
         id: "attr3",
         name: "롯데월드",
+        adress: "서울특별시 송파구 올림픽로 300",
         location: { lat: 37.511, lng: 127.098 },
-        image: "https://example.com/lotteworld.jpg",
       },
     ],
     restaurant: [
       {
         id: "rest1",
         name: "광화문 근처 맛집",
+        adress: "서울특별시 종로구 광화문로 1",
         location: { lat: 37.571, lng: 126.9769 },
-        image: "https://example.com/gwanghwamun_food.jpg",
       },
       {
         id: "rest2",
         name: "명동 맛집",
+        adress: "서울특별시 중구 명동 10-1",
         location: { lat: 37.5636, lng: 126.982 },
-        image: "https://example.com/myeongdong_food.jpg",
       },
     ],
     cafe: [], // 일단 빈배열 id는 cafe1부터 시작

@@ -54,7 +54,29 @@
     flex: 1;
     gap: 10px;
     height: 100%;
-    overflow: hidden;
+    overflow-y: scroll;
+    scrollbar-width: none;
+  }
+  .place-category {
+    font-size: 0.9rem;
+    padding: 4px 10px;
+    border-radius: 5px;
+    margin-bottom: 4px;
+    color: white;
+    display: inline-block;
+
+    &.category-red {
+      background-color: #eb8989;
+    }
+    &.category-blue {
+      background-color: #6987e9;
+    }
+    &.category-yellow {
+      background-color: #d39d42;
+    }
+    &.category-green {
+      background-color: #3aaa6a;
+    }
   }
   .place-list {
     list-style: none;
@@ -94,26 +116,7 @@
             font-weight: bold;
           }
 
-          .place-category {
-            font-size: 0.9rem;
-            padding: 4px 10px;
-            border-radius: 5px;
-            margin-left: 8px;
-            color: white;
-
-            &.category-red {
-              background-color: #eb8989;
-            }
-            &.category-blue {
-              background-color: #6987e9;
-            }
-            &.category-yellow {
-              background-color: #d39d42;
-            }
-            &.category-green {
-              background-color: #3aaa6a;
-            }
-          }
+          
         }
 
         .place-address {
