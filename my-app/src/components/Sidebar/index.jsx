@@ -59,7 +59,7 @@ function Sidebar(props) {
       {step === 1 && <PlaceList placesInfo={placesInfo} categoryColors={categoryColors}/>}
       {step === 2 && <DateSelection tripDates={tripDates} setTripDates={setTripDates} />}
       {step === 3 && <TimeSelection tripDates={tripDates} dailyTimeSlots={dailyTimeSlots} setDailyTimeSlots={setDailyTimeSlots} />}
-      {step === 4 && <ScheduleCreation />}
+      {step === 4 && <ScheduleCreation placesInfo={placesInfo} categoryColors={categoryColors}/>}
       {step === 5 && <Viewer />}
 
       <SidebarButton step={step} setStep={setStep} />

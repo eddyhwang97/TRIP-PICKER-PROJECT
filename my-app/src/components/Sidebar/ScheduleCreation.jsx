@@ -1,29 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-
-const tempSchedule = [
-  {
-    date: "5/1 목",
-    place: "서울타워",
-    category: "관광",
-    address: "서울 송파구 올림픽로 240",
-    imageUrl: "https://example.com/image.jpg",
-  },
-  {
-    date: "5/2 금",
-    place: "남산 한옥마을호텔",
-    category: "숙소",
-    address: "서울 송파구 올림픽로 240",
-    imageUrl: "https://example.com/image.jpg",
-  },
-  {
-    date: "5/3 토",
-    place: "경복궁식당",
-    category: "식당",
-    address: "서울 송파구 올림픽로 240",
-    imageUrl: "https://example.com/image.jpg",
-  },
-];
+import { format, parseISO } from "date-fns"; // npm install date-fns
+import ko from "date-fns/locale/ko";
 
 const categoryColors = {
   숙소: "category-red",
@@ -32,9 +10,32 @@ const categoryColors = {
   관광: "category-green",
 };
 
-export default function ScheduleCreation({ onNext, onPrev }) {
+export default function ScheduleCreation({ onNext, onPrev, placesInfo }) {
   const [expandedDates, setExpandedDates] = useState([]);
-  const [schedule, setSchedule] = useState(tempSchedule); // 원본 데이터 상태
+  const [schedule, setSchedule] = useState([]); // 원본 데이터 상태
+
+  useEffect(() => {
+    if (placesInfo) {
+      const newSchedule = [];
+
+      // 각 카테고리별로 순회
+      Object.entries(placesInfo).forEach(([category, places]) => {
+        places.forEach((place) => {
+          newSchedule.push({
+            date: "5/1 목", // 초기엔 임의로 지정 (필요 시 배정 로직 추가)
+            place: place.name,
+            category: category, // '숙소', '관광', etc.
+            address: place.adress,
+            imageUrl: "https://example.com/image.jpg", // 실제 이미지 URL이 있으면 사용
+          });
+        });
+      });
+
+      setSchedule(newSchedule);
+    }
+  }, [placesInfo]);
+
+  console.log("ScheduleCreation placesInfo", placesInfo);
 
   // 날짜별로 그룹화
   const grouped = schedule.reduce((acc, curr) => {
