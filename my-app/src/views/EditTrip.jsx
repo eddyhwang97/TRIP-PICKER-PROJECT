@@ -41,6 +41,7 @@ function EditTrip(props) {
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries: ["places"],
+    language: "ko", 
   });
 
   //           function           //
