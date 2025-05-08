@@ -37,7 +37,6 @@ export default function ScheduleCreation({ onNext, onPrev, placesInfo }) {
     }
   }, [placesInfo]);
 
-  console.log("ScheduleCreation placesInfo", placesInfo);
 
   // 날짜별로 그룹화
   const grouped = schedule.reduce((acc, curr) => {
