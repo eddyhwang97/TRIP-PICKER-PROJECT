@@ -3,11 +3,12 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { format, parseISO } from "date-fns"; // npm install date-fns
 import ko from "date-fns/locale/ko";
 
+// 카테고리 색상
 const categoryColors = {
-  숙소: "category-red",
-  식당: "category-blue",
-  카페: "category-yellow",
-  관광: "category-green",
+  accommodation: { title: "숙소", color: "category-red" },
+  attraction: { title: "관광지", color: "category-green" },
+  restaurant: { title: "식당", color: "category-blue" },
+  cafe: { title: "카페", color: "category-yellow" },
 };
 
 export default function ScheduleCreation({ onNext, onPrev, placesInfo }) {
@@ -27,6 +28,7 @@ export default function ScheduleCreation({ onNext, onPrev, placesInfo }) {
             category: category, // '숙소', '관광', etc.
             address: place.adress,
             imageUrl: "https://example.com/image.jpg", // 실제 이미지 URL이 있으면 사용
+            color: categoryColors, // 카테고리 색상
           });
         });
       });
@@ -181,10 +183,12 @@ export default function ScheduleCreation({ onNext, onPrev, placesInfo }) {
                                   {item.category && (
                                     <span
                                       className={`place-category ${
-                                        categoryColors[item.category] || ""
+                                        categoryColors[item.category]?.color ||
+                                        ""
                                       }`}
                                     >
-                                      {item.category}
+                                      {categoryColors[item.category]?.title ||
+                                        item.category}
                                     </span>
                                   )}
                                 </div>
