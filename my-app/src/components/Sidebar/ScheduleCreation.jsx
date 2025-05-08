@@ -19,7 +19,7 @@ const tempSchedule = [
   {
     date: "5/3 토",
     place: "경복궁식당",
-    category: "음식점",
+    category: "식당",
     address: "서울 송파구 올림픽로 240",
     imageUrl: "https://example.com/image.jpg",
   },
@@ -27,7 +27,7 @@ const tempSchedule = [
 
 const categoryColors = {
   숙소: "category-red",
-  음식점: "category-blue",
+  식당: "category-blue",
   카페: "category-yellow",
   관광: "category-green",
 };
