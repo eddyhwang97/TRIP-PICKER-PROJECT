@@ -100,13 +100,13 @@ function EditTrip(props) {
     const newPlace = {
       id: `${placeType}_${Date.now()}`,
       location: markerPosition,
-      name: markerPosition.name || '',
-      address: markerPosition.address || ''
+      name: markerPosition.name || "",
+      address: markerPosition.address || "",
     };
 
-    setPlacesInfo(prevInfo => ({
+    setPlacesInfo((prevInfo) => ({
       ...prevInfo,
-      [placeType]: [...(prevInfo[placeType] || []), newPlace]
+      [placeType]: [...(prevInfo[placeType] || []), newPlace],
     }));
 
     setMarkerPosition(null); // 마커 위치 초기화

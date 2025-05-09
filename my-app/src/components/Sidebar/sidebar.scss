@@ -90,6 +90,8 @@
     .place-item {
       display: flex;
       align-items: center;
+      height: 60px;
+      box-sizing: border-box;
       padding: 10px;
       border: 1px solid #eee;
       border-radius: 5px;
@@ -113,7 +115,12 @@
           margin-bottom: 5px;
 
           .place-name {
+            font-size: 13px;
             font-weight: bold;
+          }
+          input{
+            font-size: 13px;
+            height: 16.5px;
           }
 
           
@@ -125,7 +132,8 @@
         }
       }
 
-      .delete-button {
+      button {
+        padding: 3px;
         background: none;
         border: none;
         color: #aaa;
