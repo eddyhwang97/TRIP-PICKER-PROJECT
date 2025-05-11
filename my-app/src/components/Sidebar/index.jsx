@@ -56,7 +56,7 @@ function Sidebar(props) {
         </button>
       </div>
       {/* 단계별로 컴포넌트 보여주기 */}
-      {step === 1 && <PlaceList placesInfo={placesInfo} categoryColors={categoryColors}/>}
+      {step === 1 && <PlaceList placesInfo={placesInfo} setPlacesInfo={setPlacesInfo} categoryColors={categoryColors}/>}
       {step === 2 && <DateSelection tripDates={tripDates} setTripDates={setTripDates} />}
       {step === 3 && <TimeSelection tripDates={tripDates} dailyTimeSlots={dailyTimeSlots} setDailyTimeSlots={setDailyTimeSlots} />}
       {step === 4 && <ScheduleCreation placesInfo={placesInfo} categoryColors={categoryColors}/>}
