@@ -23,6 +23,9 @@ export default function ScheduleCreation({ onNext, onPrev, placesInfo }) {
       Object.entries(placesInfo).forEach(([category, places]) => {
         places.forEach((place) => {
           newSchedule.push({
+            id: `${category}-${place.name}-${Math.random()
+              .toString(36)
+              .substr(2, 9)}`, // 고유 ID
             date: "5/1 목", // 초기엔 임의로 지정 (필요 시 배정 로직 추가)
             place: place.name,
             category: category, // '숙소', '관광', etc.
@@ -36,7 +39,6 @@ export default function ScheduleCreation({ onNext, onPrev, placesInfo }) {
       setSchedule(newSchedule);
     }
   }, [placesInfo]);
-
 
   // 날짜별로 그룹화
   const grouped = schedule.reduce((acc, curr) => {
@@ -54,25 +56,11 @@ export default function ScheduleCreation({ onNext, onPrev, placesInfo }) {
   const sortedDates = Object.keys(grouped).sort();
 
   // 일정 삭제 함수
-  const handleDeleteItem = (targetDate, targetIndex) => {
+  const handleDeleteItem = (targetId) => {
     const confirmDelete = window.confirm("정말 이 일정을 삭제하시겠습니까?");
     if (!confirmDelete) return;
-    // date가 targetDate인 항목들 중 targetIndex 번째 항목을 제거
-    const newSchedule = schedule.reduce((acc, item) => {
-      if (item.date !== targetDate) return [...acc, item];
-
-      const sameDateItems = acc.filter((i) => i.date === targetDate);
-      const indexInSameDate = sameDateItems.length;
-
-      // 해당 index에 도달하지 않은 경우 추가
-      if (indexInSameDate !== targetIndex) {
-        return [...acc, item];
-      }
-
-      // 삭제할 항목은 skip
-      return acc;
-    }, []);
-
+  
+    const newSchedule = schedule.filter((item) => item.id !== targetId);
     setSchedule(newSchedule);
   };
 
@@ -149,7 +137,7 @@ export default function ScheduleCreation({ onNext, onPrev, placesInfo }) {
                 {idx + 1}일차 ({date})
               </h3>
               {expandedDates.includes(date) && (
-                <Droppable droppableId={date}>
+                <Droppable draggableId={date}>
                   {(provided) => (
                     <ul
                       className="place-list"
@@ -158,8 +146,8 @@ export default function ScheduleCreation({ onNext, onPrev, placesInfo }) {
                     >
                       {grouped[date].map((item, i) => (
                         <Draggable
-                          key={item.place} // 항목에 고유한 key를 줘야 해
-                          draggableId={item.place}
+                          key={item.id} // 항목에 고유한 key를 줘야 해
+                          draggableId={item.id}
                           index={i}
                         >
                           {(provided) => (
@@ -197,7 +185,7 @@ export default function ScheduleCreation({ onNext, onPrev, placesInfo }) {
                               </div>
                               <button
                                 className="delete-button"
-                                onClick={() => handleDeleteItem(date, i)}
+                                onClick={() => handleDeleteItem(item.id)}
                               >
                                 삭제
                               </button>
