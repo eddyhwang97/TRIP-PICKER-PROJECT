@@ -19,6 +19,9 @@ const containerStyle = {
   height: "100vh",
 };
 
+// 컴포넌트 외부에 상수로 선언
+const libraries = ["places"];
+
 function EditTrip(props) {
   const location = useLocation();
   // 여행 정보
@@ -40,8 +43,8 @@ function EditTrip(props) {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries: ["places"],
-    language: "ko",
+    libraries,
+    language: "ko", 
   });
 
   //           function           //
