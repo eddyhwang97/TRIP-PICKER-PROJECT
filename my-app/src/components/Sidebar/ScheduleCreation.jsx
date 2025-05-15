@@ -11,7 +11,7 @@ const categoryColors = {
   cafe: { title: "카페", color: "category-yellow" },
 };
 
-export default function ScheduleCreation({ onNext, onPrev, placesInfo }) {
+export default function ScheduleCreation({placesInfo,dailyTimeSlots }) {
   const [expandedDates, setExpandedDates] = useState([]);
   const [schedule, setSchedule] = useState([]); // 원본 데이터 상태
 
@@ -38,6 +38,7 @@ export default function ScheduleCreation({ onNext, onPrev, placesInfo }) {
 
       setSchedule(newSchedule);
     }
+    console.log(schedule)
   }, [placesInfo]);
 
   // 날짜별로 그룹화
