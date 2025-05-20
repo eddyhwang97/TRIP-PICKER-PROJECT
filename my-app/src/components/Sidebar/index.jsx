@@ -15,6 +15,7 @@ function Sidebar(props) {
   const { placesInfo, setPlacesInfo } = props.sidebarProps;
   const { tripDates, setTripDates } = props.sidebarProps;
   const { dailyTimeSlots, setDailyTimeSlots } = props.sidebarProps;
+  const { schedule, setSchedule } = props.sidebarProps;
   const navigate = useNavigate();
   // 사이드바 관련 변수 //
   const [step, setStep] = useState(1); // 1=리스트, 2=날짜, 3=시간, 4=일정
@@ -56,13 +57,12 @@ function Sidebar(props) {
         </button>
       </div>
       {/* 단계별로 컴포넌트 보여주기 */}
-      {step === 1 && <PlaceList placesInfo={placesInfo} setPlacesInfo={setPlacesInfo} categoryColors={categoryColors}/>}
-      {step === 2 && <DateSelection tripDates={tripDates} setTripDates={setTripDates} />}
-      {step === 3 && <TimeSelection tripDates={tripDates} dailyTimeSlots={dailyTimeSlots} setDailyTimeSlots={setDailyTimeSlots} />}
-      {step === 4 && <ScheduleCreation placesInfo={placesInfo} categoryColors={categoryColors} dailyTimeSlots={dailyTimeSlots} />}
-      {step === 5 && <Viewer />}
+      {step === 1 && <PlaceList placesInfo={placesInfo} setPlacesInfo={setPlacesInfo} categoryColors={categoryColors} step={step} setStep={setStep} />}
+      {step === 2 && <DateSelection tripDates={tripDates} setTripDates={setTripDates} step={step} setStep={setStep} />}
+      {step === 3 && <TimeSelection tripDates={tripDates} dailyTimeSlots={dailyTimeSlots} setDailyTimeSlots={setDailyTimeSlots} step={step} setStep={setStep} />}
+      {step === 4 && <ScheduleCreation placesInfo={placesInfo} categoryColors={categoryColors} dailyTimeSlots={dailyTimeSlots} step={step} setStep={setStep} />}
+      {step === 5 && <Viewer step={step} setStep={setStep}/>}
 
-      <SidebarButton step={step} setStep={setStep} />
     </div>
   );
 }

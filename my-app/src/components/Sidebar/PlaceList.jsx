@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { SidebarButton } from "../../assets";
 
 export default function PlaceList(props) {
   const { categoryColors, placesInfo, setPlacesInfo } = props;
@@ -86,10 +87,13 @@ export default function PlaceList(props) {
   };
 
   return (
-    <div className="contents-container place-list-container">
-      {Object.entries(placesInfo).map(([category, places]) => (
-        <div key={category}>{renderPlaceComponent(category, places)}</div>
-      ))}
-    </div>
+    <>
+      <div className="contents-container place-list-container">
+        {Object.entries(placesInfo).map(([category, places]) => (
+          <div key={category}>{renderPlaceComponent(category, places)}</div>
+        ))}
+      </div>
+      <SidebarButton step={1} setStep={props.setStep} />
+    </>
   );
 }

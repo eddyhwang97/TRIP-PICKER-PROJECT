@@ -23,10 +23,9 @@ const containerStyle = {
 const libraries = ["places"];
 
 function EditTrip(props) {
-  const location = useLocation();
   // 여행 정보
-  const tripData = location.state.tripData;
-  // 시티 센터 값 설정
+  //           hooks          //
+  const location = useLocation();
   const [mapCenter, setMapCenter] = useState(null);
   const [zoom, setZoom] = useState(12); // 초기 줌 레벨 설정
   const [autocomplete, setAutocomplete] = useState(null);
@@ -35,19 +34,25 @@ function EditTrip(props) {
   const [markers, setMarkers] = useState([]); // 모든 마커 저장
   const inputRef = useRef(null);
 
-  // 여행 정보 셋팅 및 저장 상태 변수 //
+  //           variables : 여행정보 셋팅 및 저장 상태 변수 //
+  const tripData = location.state.tripData;
+  // PlaceList
   const [placesInfo, setPlacesInfo] = useState({ accommodation: tripData.accommodation, attraction: tripData.attraction, restaurant: tripData.restaurant, cafe: tripData.cafe });
+  // DateSelection
   const [tripDates, setTripDates] = useState([tripData.startDate, tripData.endDate]);
+  // TimeSelection
   const [dailyTimeSlots, setDailyTimeSlots] = useState(tripData.dailyTimeSlots);
+  // ScheduleCreation
+  const [schedule, setSchedule] = useState(tripData.schedule);
 
+  //           function           //
+  // 구글맵 API 로드
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
-    language: "ko", 
+    language: "ko",
   });
-
-  //           function           //
   //         센터 정보 셋팅          //
   const matchMapCenter = () => {
     const tripDataCity = tripData.city;
@@ -59,7 +64,6 @@ function EditTrip(props) {
   const setTripInfoInSessionStorage = () => {
     sessionStorage.setItem("trip", JSON.stringify(tripData));
   };
-
   const onLoadAutocomplete = (autocompleteInstance) => {
     setAutocomplete(autocompleteInstance);
   };
@@ -115,7 +119,7 @@ function EditTrip(props) {
     alert("장소가 저장되었습니다!");
   };
 
-  // placesInfo가 변경될 때마다 마커 업데이트
+  //           useEffect : placesInfo가 변경될 때마다 마커 업데이트          //
   useEffect(() => {
     const newMarkers = [];
 
@@ -125,10 +129,10 @@ function EditTrip(props) {
         newMarkers.push(place);
       });
     });
-    console.log(newMarkers);
     setMarkers(newMarkers);
   }, [placesInfo]);
 
+  //           function : 마커 아이콘 설정          //
   const getMarkerIcon = (type) => {
     if (type === "accommodation" || type.includes("accom")) {
       return {
@@ -169,8 +173,8 @@ function EditTrip(props) {
   }, []);
   //           useEffect           //
   useEffect(() => {
-    console.log(placesInfo, tripDates, dailyTimeSlots);
-  }, [placesInfo, tripDates, dailyTimeSlots]);
+    console.log("placesInfo", placesInfo, "tripDates", tripDates, "dailyTimeSlots", dailyTimeSlots, "schedule", schedule);
+  }, [placesInfo, tripDates, dailyTimeSlots, schedule]);
 
   //           전달할 props           //
   const sidebarProps = {
@@ -180,6 +184,8 @@ function EditTrip(props) {
     setTripDates,
     dailyTimeSlots,
     setDailyTimeSlots,
+    schedule,
+    setSchedule,
   };
 
   return (
