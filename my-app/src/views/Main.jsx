@@ -25,7 +25,9 @@ function Main(props) {
     },
     makeTrip: (city) => {
       const usersTrip = user ? user.trips : null;
-      const createTripId = usersTrip!==null?usersTrip.length < 10 ? `trip00${usersTrip.length + 1}` : usersTrip.length > 10 ? `trip0${usersTrip.length + 1}` : `trip${usersTrip.length + 1}`:"trip001";
+      const createTripId = usersTrip !== null ? (usersTrip.length < 10 ? `trip00${usersTrip.length + 1}` : usersTrip.length > 10 ? `trip0${usersTrip.length + 1}` : `trip${usersTrip.length + 1}`) : "trip001";
+      const today = new Date();
+      const todayDate = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, "0"), String(today.getDate()).padStart(2, "0")].join("-");
       let tripData;
       // 1. 로그인 상태일 경우
       if (user !== null) {
@@ -35,8 +37,8 @@ function Main(props) {
             id: createTripId,
             userId: user.id,
             title: "Untitled Trip",
-            startDate: null,
-            endDate: null,
+            startDate: todayDate,
+            endDate: todayDate,
             city: city.id,
             accommodation: [],
             attraction: [],
@@ -52,8 +54,8 @@ function Main(props) {
             id: createTripId,
             userId: user.id,
             title: "Untitled Trip",
-            startDate: null,
-            endDate: null,
+            startDate: todayDate,
+            endDate: todayDate,
             city: city.id,
             accommodation: [],
             attraction: [],
@@ -70,8 +72,8 @@ function Main(props) {
           id: createTripId,
           userId: "unknown-host",
           title: "Untitled Trip",
-          startDate: null,
-          endDate: null,
+          startDate: todayDate,
+          endDate: todayDate,
           city: city.id,
           accommodation: [],
           attraction: [],

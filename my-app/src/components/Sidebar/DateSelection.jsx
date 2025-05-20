@@ -7,18 +7,31 @@ import { SidebarButton } from "../../assets";
 
 export default function DateSelection(props) {
   const { tripDates, setTripDates } = props;
-  const [dateRange, setDateRange] = useState(tripDates.length > 0 ? tripDates : [new Date(), new Date()]);
+  const [dateRange, setDateRange] = useState(tripDates);
 
-  //           function          //
-  //          날짜 선택 감지        //
+  //           function : 날짜 선택 감지            //
   const handleDateChange = () => {
     const setDate = dateRange.map((date) => format(date, "yyyy-MM-dd"));
     setTripDates(setDate);
   };
-  //           useEffect          //
+
+  //           function : 날짜 선택 유효성 검사            //
+  const validateDateRange = () => {
+    const today = new Date();
+    const todayDate = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, "0"), String(today.getDate()).padStart(2, "0")].join("-");
+    // 1. 오늘보다 전날은 선택 불가
+    if (dateRange !== null && dateRange[0] < new Date()) {
+      setTripDates([todayDate, todayDate]);
+      setDateRange([todayDate, todayDate]);
+      return alert("시작날이 오늘보다 빠를수는 없습니다.");
+    }
+  };
+  //           useEffect :  tripDates null값일때 오늘날짜로 설정            //
+
+  //           useEffect :  dateRange 감지            //
   useEffect(() => {
-    $(".flatpickr-input").css({ display: "none" });
     handleDateChange();
+    validateDateRange();
   }, [dateRange]);
   return (
     <>

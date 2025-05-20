@@ -7,48 +7,41 @@ export default function TimeSelection(props) {
 
   //           function : dailyTimeSlots날짜 셋팅하기           //
   const setDailyTimeSlotsWithTripDates = () => {
-    const dailyTimeSlotsLength = Object.keys(dailyTimeSlots).length;
+    // 날짜 배열 생성 함수
+    const generateDateRange = (startDate, endDate) => {
+      const dateArray = [];
+      const currentDate = new Date(startDate);
+      const endDateObj = new Date(endDate);
 
-    // 1. 기존 dailyTimeSlots 데이터 없을 경우
-    if (dailyTimeSlotsLength === 0) {
-      // 1) 날짜 배열 생성
-      const generateDateRange = (startDate, endDate) => {
-        const dateArray = [];
-        const currentDate = new Date(startDate);
-        const endDateObj = new Date(endDate);
+      const daysKor = ["일", "월", "화", "수", "목", "금", "토"];
 
-        const daysKor = ["일", "월", "화", "수", "목", "금", "토"];
+      while (currentDate <= endDateObj) {
+        const month = currentDate.getMonth() + 1;
+        const day = currentDate.getDate();
+        const dayOfWeek = daysKor[currentDate.getDay()];
+        const formatted = `${month}/${day} ${dayOfWeek}`;
+        dateArray.push(formatted);
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      return dateArray;
+    };
 
-        while (currentDate <= endDateObj) {
-          const month = currentDate.getMonth() + 1; // 0-indexed
-          const day = currentDate.getDate();
-          const dayOfWeek = daysKor[currentDate.getDay()]; // 요일
+    const dateArray = generateDateRange(tripDates[0], tripDates[1]);
 
-          const formatted = `${month}/${day} ${dayOfWeek}`;
-          dateArray.push(formatted);
+    // 기존 dailyTimeSlots에서 날짜가 겹치는 값은 유지, 새로운 날짜는 기본값으로 추가
+    const newDailyTimeSlots = dateArray.reduce((acc, date) => {
+      acc[date] = dailyTimeSlots[date] || { start: "00:00", end: "00:00" };
+      return acc;
+    }, {});
 
-          currentDate.setDate(currentDate.getDate() + 1);
-        }
-        return dateArray;
-      };
-      const dateArray = generateDateRange(tripDates[0], tripDates[1]);
-
-      // 2) 날짜에 대해 시간 셋팅
-      const dailyTimeSlots = dateArray.reduce((acc, date) => {
-        acc[date] = { start: "00:00", end: "00:00" };
-        return acc;
-      }, {});
-      setDailyTimeSlots(dailyTimeSlots);
-    }
-    // 2. 기존 dailyTimeSlots 데이터 있을 경우
-    else if(dailyTimeSlotsLength !== 0){
-      setDailyTimeSlots(dailyTimeSlots);
-    }
-    
+    setDailyTimeSlots(newDailyTimeSlots);
   };
+
+  //           useEffect : tripDates 감지           //
+  // tripDates가 변경될 때마다 실행
   useEffect(() => {
     setDailyTimeSlotsWithTripDates();
-  }, []);
+  }, [tripDates]);
 
   //           function : 시간 변경 핸들러          //
   const handleTimeChange = (date, type, part, value) => {
