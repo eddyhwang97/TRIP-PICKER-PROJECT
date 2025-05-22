@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { SidebarButton } from "../../assets";
+import { SidebarButton } from "../../../assets";
+import "./style.scss";
 
 export default function TimeSelection(props) {
   const { tripDates, dailyTimeSlots, setDailyTimeSlots } = props;
@@ -9,21 +10,17 @@ export default function TimeSelection(props) {
   const setDailyTimeSlotsWithTripDates = () => {
     // 날짜 배열 생성 함수
     const generateDateRange = (startDate, endDate) => {
-      const dateArray = [];
-      const currentDate = new Date(startDate);
-      const endDateObj = new Date(endDate);
+      const result = [];
+      let current = new Date(startDate);
+      const end = new Date(endDate);
 
-      const daysKor = ["일", "월", "화", "수", "목", "금", "토"];
-
-      while (currentDate <= endDateObj) {
-        const month = currentDate.getMonth() + 1;
-        const day = currentDate.getDate();
-        const dayOfWeek = daysKor[currentDate.getDay()];
-        const formatted = `${month}/${day} ${dayOfWeek}`;
-        dateArray.push(formatted);
-        currentDate.setDate(currentDate.getDate() + 1);
+      while (current <= end) {
+        // yyyy-mm-dd 형식으로 포맷
+        const formatted = [current.getFullYear(), String(current.getMonth() + 1).padStart(2, "0"), String(current.getDate()).padStart(2, "0")].join("-");
+        result.push(formatted);
+        current.setDate(current.getDate() + 1);
       }
-      return dateArray;
+      return result;
     };
 
     const dateArray = generateDateRange(tripDates[0], tripDates[1]);
@@ -35,6 +32,14 @@ export default function TimeSelection(props) {
     }, {});
 
     setDailyTimeSlots(newDailyTimeSlots);
+  };
+  const changeDateFormat = (dateStr) => {
+    const daysKor = ["일", "월", "화", "수", "목", "금", "토"];
+    const date = new Date(dateStr);
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const dayOfWeek = daysKor[date.getDay()];
+    return `${month}/${day} ${dayOfWeek}`;
   };
 
   //           useEffect : tripDates 감지           //
@@ -66,7 +71,7 @@ export default function TimeSelection(props) {
           <div key={date} className="date-time-box">
             <div className="date-box">
               <div className="date-title">일자</div>
-              <div className="date">{date}</div>
+              <div className="date">{changeDateFormat(date)}</div>
             </div>
             <div>
               <label htmlFor={`start-time-${date}`}>시작 시간</label>
@@ -112,7 +117,7 @@ export default function TimeSelection(props) {
           </div>
         ))}
       </div>
-      <SidebarButton step={3} setStep={props.setStep} />
+      <SidebarButton step={2} setStep={props.setStep} />
     </>
   );
 }

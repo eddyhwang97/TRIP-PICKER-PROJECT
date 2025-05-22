@@ -1,5 +1,6 @@
 import React from "react";
-import { SidebarButton } from "../../assets";
+import { SidebarButton } from "../../../assets";
+import "./style.scss";
 
 export default function Viewer(props) {
   return (

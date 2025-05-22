@@ -1,0 +1,74 @@
+.place-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .place-item {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background: #fafafa;
+    gap: 2px;
+    .place-image {
+      width: 50px;
+      height: 50px;
+      border-radius: 5px;
+      margin-right: 10px;
+      object-fit: cover;
+    }
+
+    .place-info {
+      flex: 1;
+
+      .place-name-category {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+
+        .place-name {
+          font-size: 13px;
+          font-weight: bold;
+        }
+        input {
+          font-size: 13px;
+          height: 16.5px;
+        }
+      }
+
+      .place-address {
+        font-size: 0.85rem;
+        color: #666;
+      }
+    }
+    .button-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    button {
+      padding: 3px;
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+  }
+}
+.accommodation-dates {
+  display: flex;
+  flex-direction: column;
+  label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

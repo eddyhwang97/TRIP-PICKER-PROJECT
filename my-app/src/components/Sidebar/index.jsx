@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css"; // 스타일 임포트
 import DateSelection from "./DateSelection";
 import TimeSelection from "./TimeSelection";
@@ -6,16 +6,15 @@ import ScheduleCreation from "./ScheduleCreation";
 import PlaceList from "./PlaceList";
 import Viewer from "./Viewer";
 
-import "./sidebar.scss";
+import "./style.scss";
 import { SidebarButton } from "../../assets";
 import { useNavigate } from "react-router-dom";
 import $ from "jquery";
 
 function Sidebar(props) {
-  const { placesInfo, setPlacesInfo } = props.sidebarProps;
-  const { tripDates, setTripDates } = props.sidebarProps;
-  const { dailyTimeSlots, setDailyTimeSlots } = props.sidebarProps;
-  const { schedule, setSchedule } = props.sidebarProps;
+  // sidebarProps가 undefined일 때를 대비해 기본값을 {}로 설정
+  const { checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, placesInfo, setPlacesInfo, placeType, tripDates, setTripDates, dailyTimeSlots, setDailyTimeSlots, schedule, setSchedule, handelClusterization } = props.sidebarProps;
+
   const navigate = useNavigate();
   // 사이드바 관련 변수 //
   const [step, setStep] = useState(1); // 1=리스트, 2=날짜, 3=시간, 4=일정
@@ -26,15 +25,6 @@ function Sidebar(props) {
     cafe: "category-yellow",
     attraction: "category-green",
   };
-
-  const handleContainer = () => {
-    const placeList = $(".place-list-container");
-    const dateSelection = $(".date-selection-container");
-    const timeSelection = $(".time-selection-container");
-  };
-  useEffect(() => {
-    console.log();
-  });
 
   return (
     <div className="sidebar">
@@ -57,12 +47,26 @@ function Sidebar(props) {
         </button>
       </div>
       {/* 단계별로 컴포넌트 보여주기 */}
-      {step === 1 && <PlaceList placesInfo={placesInfo} setPlacesInfo={setPlacesInfo} categoryColors={categoryColors} step={step} setStep={setStep} />}
-      {step === 2 && <DateSelection tripDates={tripDates} setTripDates={setTripDates} step={step} setStep={setStep} />}
-      {step === 3 && <TimeSelection tripDates={tripDates} dailyTimeSlots={dailyTimeSlots} setDailyTimeSlots={setDailyTimeSlots} step={step} setStep={setStep} />}
-      {step === 4 && <ScheduleCreation placesInfo={placesInfo} categoryColors={categoryColors} dailyTimeSlots={dailyTimeSlots} step={step} setStep={setStep} />}
-      {step === 5 && <Viewer step={step} setStep={setStep}/>}
-
+      {step === 1 && <DateSelection tripDates={tripDates} setTripDates={setTripDates} step={step} setStep={setStep} />}
+      {step === 2 && <TimeSelection tripDates={tripDates} dailyTimeSlots={dailyTimeSlots} setDailyTimeSlots={setDailyTimeSlots} step={step} setStep={setStep} />}
+      {step === 3 && (
+        <PlaceList
+          checkOutDate={checkOutDate}
+          setCheckOutDate={setCheckOutDate}
+          dailyTimeSlots={dailyTimeSlots}
+          checkInDate={checkInDate}
+          setCheckInDate={setCheckInDate}
+          placeType={placeType}
+          placesInfo={placesInfo}
+          setPlacesInfo={setPlacesInfo}
+          categoryColors={categoryColors}
+          step={step}
+          setStep={setStep}
+          handelClusterization={handelClusterization}
+        />
+      )}
+      {step === 4 && <ScheduleCreation placesInfo={placesInfo} setPlacesInfo={setPlacesInfo} categoryColors={categoryColors} dailyTimeSlots={dailyTimeSlots} schedule={schedule} setSchedule={setSchedule} step={step} setStep={setStep} />}
+      {step === 5 && <Viewer step={step} setStep={setStep} />}
     </div>
   );
 }

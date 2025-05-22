@@ -13,6 +13,16 @@ export const trips = [
         name: "숙소 - 서울역 호텔",
         adress: "서울특별시 중구 서촌로 100",
         location: { lat: 37.5547, lng: 126.9706 },
+        checkIn: "2025-05-01",
+        checkOut: "2025-05-02",
+      },
+      {
+        id: "accom2",
+        name: "숙소 - 명동 호텔",
+        adress: "서울특별시 중구 명동 10-1",
+        location: { lat: 37.5636, lng: 126.982 },
+        checkIn: "2025-05-02",
+        checkOut: "2025-05-03",
       },
     ],
     attraction: [

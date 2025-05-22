@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
-import { GoogleMap, useJsApiLoader, Autocomplete, Marker } from "@react-google-maps/api";
+import { Loader, GoogleMap, useJsApiLoader, Autocomplete, Marker, DirectionsRenderer } from "@react-google-maps/api";
 import { useLocation } from "react-router-dom";
 import { useStore } from "../stores/store.API";
-
+import { kmeans } from "ml-kmeans";
 // css
 import "./css/editTrip.scss";
 
@@ -19,19 +19,18 @@ const containerStyle = {
   height: "100vh",
 };
 
-// 컴포넌트 외부에 상수로 선언
-const libraries = ["places"];
-
 function EditTrip(props) {
   // 여행 정보
-  //           hooks          //
   const location = useLocation();
   const [mapCenter, setMapCenter] = useState(null);
-  const [zoom, setZoom] = useState(12); // 초기 줌 레벨 설정
+  const [zoom, setZoom] = useState(12);
   const [autocomplete, setAutocomplete] = useState(null);
-  const [markerPosition, setMarkerPosition] = useState(null); // 초기값을 null로 설정
-  const [placeType, setPlaceType] = useState(""); // 장소 유형 상태 추가
-  const [markers, setMarkers] = useState([]); // 모든 마커 저장
+  const [markerPosition, setMarkerPosition] = useState(null);
+  const [placeType, setPlaceType] = useState("");
+  const [checkInDate, setCheckInDate] = useState("");
+  const [checkOutDate, setCheckOutDate] = useState("");
+  const [markers, setMarkers] = useState([]);
+  const [directions, setDirections] = useState(null);
   const inputRef = useRef(null);
 
   //           variables : 여행정보 셋팅 및 저장 상태 변수 //
@@ -43,27 +42,28 @@ function EditTrip(props) {
   // TimeSelection
   const [dailyTimeSlots, setDailyTimeSlots] = useState(tripData.dailyTimeSlots);
   // ScheduleCreation
-  const [schedule, setSchedule] = useState(tripData.schedule);
-
-  //           function           //
-  // 구글맵 API 로드
+  const [schedule, setSchedule] = useState(tripData.groupedByDate);
+  //           function : 구글맵 API 로드         //
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries,
+    libraries: ["places"],
     language: "ko",
   });
-  //         센터 정보 셋팅          //
+  //          function : 센터 정보 셋팅          //
   const matchMapCenter = () => {
     const tripDataCity = tripData.city;
     const citys = JSON.parse(localStorage.getItem("citys"));
     const cityCenter = citys.find((city) => city.id === tripDataCity).center;
     setMapCenter(cityCenter);
   };
-  //           trip 정보 세션에 저장          //
+
+  //          function : 세션 스토리지에 여행정보 저장          //
   const setTripInfoInSessionStorage = () => {
-    sessionStorage.setItem("trip", JSON.stringify(tripData));
+    const trip = tripData;
+    localStorage.setItem("trip", JSON.stringify(trip));
   };
+
   const onLoadAutocomplete = (autocompleteInstance) => {
     setAutocomplete(autocompleteInstance);
   };
@@ -95,12 +95,29 @@ function EditTrip(props) {
     setMarkerPosition(clickedPosition); // 마커 위치 업데이트
   };
 
+  //          function : 장소 저장          //
   const savePlace = () => {
     if (!markerPosition || !placeType) {
       alert("장소와 유형을 선택해주세요.");
       return;
     }
 
+    // 현재 일정의 총 일수 계산
+    const tripDays = Object.keys(dailyTimeSlots).length;
+
+    // 숙소 개수가 일정 일수를 초과하는지 확인
+    if (placeType === "accommodation" && placesInfo.accommodation.length >= tripDays - 1) {
+      alert(`숙소는 총 ${tripDays}개를 초과할 수 없습니다.`);
+      return;
+    }
+
+    // 숙소 유형일 때 체크인/체크아웃이 입력되지 않으면 경고
+    if (placeType === "accommodation" && (!checkInDate || !checkOutDate)) {
+      alert("숙소의 체크인 및 체크아웃 날짜를 입력해주세요.");
+      return;
+    }
+
+    // 새로운 장소 데이터 생성
     const newPlace = {
       id: `${placeType}_${Date.now()}`,
       location: markerPosition,
@@ -108,13 +125,23 @@ function EditTrip(props) {
       address: markerPosition.address || "",
     };
 
+    // 숙소 유형일 경우 체크인/체크아웃 데이터 추가
+    if (placeType === "accommodation") {
+      newPlace.checkIn = checkInDate;
+      newPlace.checkOut = checkOutDate;
+    }
+
+    // 장소 데이터 업데이트
     setPlacesInfo((prevInfo) => ({
       ...prevInfo,
       [placeType]: [...(prevInfo[placeType] || []), newPlace],
     }));
 
+    // 상태 초기화
     setMarkerPosition(null); // 마커 위치 초기화
     setPlaceType(""); // 장소 유형 초기화
+    setCheckInDate(""); // 체크인 날짜 초기화
+    setCheckOutDate(""); // 체크아웃 날짜 초기화
 
     alert("장소가 저장되었습니다!");
   };
@@ -164,6 +191,58 @@ function EditTrip(props) {
     };
   };
 
+  //           function : k-means 알고리즘으로 일정 생성하기           //
+  const [selectedRoute, setSelectedRoute] = useState(null);
+
+  //          function : 클러스터링 및 일정 생성          //
+  const handelClusterization = async () => {
+    // 전체 places 정보에서 장소리스트 가져와서 배열만들기
+    const places = Object.entries(placesInfo)
+      .map(([type, places]) => places)
+      .flat();
+
+    const startDate = new Date(tripDates[0]);
+    places.forEach((place) => {
+      place.checkInDate = place.checkIn ? (new Date(place.checkIn) - startDate) / (1000 * 60 * 60 * 24) : 0;
+    });
+
+    const locations = places.map((place) => [place.location.lat, place.location.lng, place.checkInDate || 0]);
+
+    const numberOfDays = Object.keys(dailyTimeSlots).length;
+
+    // 1. 날짜별 중심점(centroid) 만들기
+    const dateKeys = Object.keys(dailyTimeSlots);
+    const accommodationPlaces = placesInfo.accommodation || [];
+    const centroids = dateKeys.map((date, idx) => {
+      // date: yyyy-mm-dd 형식
+      // 체크인 ≤ date < 체크아웃인 숙소 찾기
+      // (체크아웃 당일은 숙소에 머물지 않는다고 가정)
+      const matched = accommodationPlaces.filter((acc) => acc.checkIn && acc.checkOut && acc.checkIn <= date && date < acc.checkOut).sort((a, b) => a.checkIn.localeCompare(b.checkIn)); // 체크인 오름차순 정렬
+
+      if (matched.length > 0) {
+        // 여러 숙소가 있으면 가장 먼저 체크인한 숙소를 centroid로 사용
+        return [matched[0].location.lat, matched[0].location.lng, idx];
+      }
+      // 숙소가 없으면 지도 중심 또는 0,0 등 기본값 사용
+      return [mapCenter?.lat || 0, mapCenter?.lng || 0, idx];
+    });
+
+    // 2. kmeans에 centroid 지정
+    const clusters = kmeans(locations, numberOfDays, { initialization: centroids });
+    console.log("K-means 클러스터링 결과:", clusters);
+
+    // 3. 그룹핑
+    const groupedByDate = {};
+    clusters.clusters.forEach((cluster, index) => {
+      const date = dateKeys[cluster];
+      if (!groupedByDate[date]) groupedByDate[date] = [];
+      groupedByDate[date].push(places[index]);
+    });
+
+    setSchedule(groupedByDate);
+    console.log("Grouped by date:", groupedByDate);
+  };
+
   //           useLayoutEffect          //
   useLayoutEffect(() => {
     // 지역 센터 정보 저장
@@ -171,22 +250,10 @@ function EditTrip(props) {
     // 트립정보 세션에 저장
     setTripInfoInSessionStorage();
   }, []);
-  //           useEffect           //
+
   useEffect(() => {
     console.log("placesInfo", placesInfo, "tripDates", tripDates, "dailyTimeSlots", dailyTimeSlots, "schedule", schedule);
   }, [placesInfo, tripDates, dailyTimeSlots, schedule]);
-
-  //           전달할 props           //
-  const sidebarProps = {
-    placesInfo,
-    setPlacesInfo,
-    tripDates,
-    setTripDates,
-    dailyTimeSlots,
-    setDailyTimeSlots,
-    schedule,
-    setSchedule,
-  };
 
   return (
     <>
@@ -206,7 +273,38 @@ function EditTrip(props) {
                 <option value="restaurant">식당</option>
                 <option value="cafe">카페</option>
               </select>
+              {/* 숙소 선택 시 표시되는 체크인/체크아웃 입력 */}
+              {placeType === "accommodation" && (
+                <div className="accommodation-dates">
+                  <label>
+                    <span>체크인:</span>
+                    <select value={checkInDate} onChange={(e) => setCheckInDate(e.target.value)} defaultValue={Object.keys(dailyTimeSlots)[0]} name="checkInDate" id="checkInDate">
+                      {Object.keys(dailyTimeSlots)
+                        .slice(0, -1)
+                        .map((date) => (
+                          <option key={date} value={date}>
+                            {date}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                  <label>
+                    <span>체크아웃:</span>
+                    <select value={checkOutDate} onChange={(e) => setCheckOutDate(e.target.value)} defaultValue={Object.keys(dailyTimeSlots)[1]} name="checkOutDate" id="checkOutDate">
+                      {Object.keys(dailyTimeSlots)
+                        .slice(1)
+                        .map((date) => (
+                          <option key={date} value={date}>
+                            {date}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                </div>
+              )}
+
               <button onClick={savePlace}>저장</button>
+              <button onClick={handelClusterization}>일정 생성하기</button>
             </div>
             <GoogleMap
               mapContainerStyle={containerStyle}
@@ -226,21 +324,29 @@ function EditTrip(props) {
                   title={marker.name || marker.address} // 마커에 마우스를 올리면 이름 또는 주소 표시
                 />
               ))}
-              {markerPosition && (
-                <Marker
-                  position={markerPosition}
-                  icon={{
-                    url: addIcon,
-                    scaledSize: new window.google.maps.Size(40, 40),
-                  }}
-                />
-              )}
             </GoogleMap>
           </>
         ) : (
           <div>Loading Map...</div>
         )}
-        <Sidebar sidebarProps={sidebarProps} />
+        <Sidebar
+          sidebarProps={{
+            placesInfo,
+            setPlacesInfo,
+            checkInDate,
+            setCheckInDate,
+            checkOutDate,
+            setCheckOutDate,
+            placeType,
+            tripDates,
+            setTripDates,
+            dailyTimeSlots,
+            setDailyTimeSlots,
+            schedule,
+            setSchedule,
+            handelClusterization
+          }}
+        />
       </div>
     </>
   );
