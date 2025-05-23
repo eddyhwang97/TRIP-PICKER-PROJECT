@@ -172,7 +172,7 @@ function EditTrip(props) {
 
   //           function : 마커 아이콘 설정          //
   // 마커 아이콘 함수 useCallback으로 최적화
-  const getMarkerIcon = useCallback((type) => {
+  const getMarkerIcon = (type) => {
     if (type === "accommodation" || type.includes("accom")) {
       return { url: accommodationIcon, scaledSize: new window.google.maps.Size(40, 40) };
     }
@@ -186,7 +186,7 @@ function EditTrip(props) {
       return { url: cafeIcon, scaledSize: new window.google.maps.Size(40, 40) };
     }
     return { url: addIcon, scaledSize: new window.google.maps.Size(40, 40) };
-  }, []);
+  };
 
   //           function : k-means 알고리즘으로 일정 생성하기           //
 
@@ -225,7 +225,7 @@ function EditTrip(props) {
 
     // 2. kmeans에 centroid 지정
     const clusters = kmeans(locations, numberOfDays, { initialization: centroids });
-    console.log("K-means 클러스터링 결과:", clusters);
+    console.log("K-means 클러스터링 결과:", clusters,centroids);
 
     // 3. 그룹핑
     const groupedByDate = {};
@@ -314,10 +314,10 @@ function EditTrip(props) {
             >
               {/* 저장된 마커들 */}
               {markers.map((marker, index) => (
-                <Marker key={marker.id} position={marker.location} icon={getMarkerIcon(marker.type)} title={marker.name || marker.address} />
+                <Marker key={marker.id} position={marker.location} icon={getMarkerIcon(marker.id)} title={marker.name || marker.address} />
               ))}
               {/* 임시 마커(아직 저장 안 된 위치) */}
-              {markerPosition && <Marker position={markerPosition} icon={getMarkerIcon(addIcon)} title="새 장소" />}
+              {markerPosition && <Marker position={markerPosition} icon={addIcon} title="새 장소" />}
             </GoogleMap>
           </>
         ) : (
