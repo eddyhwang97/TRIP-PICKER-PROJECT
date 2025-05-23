@@ -59,7 +59,26 @@ export const trips = [
         location: { lat: 37.5636, lng: 126.982 },
       },
     ],
-    cafe: [], // 일단 빈배열 id는 cafe1부터 시작
+    cafe: [
+      {
+        id: "cafe1",
+        name: "명동 카페",
+        adress: "서울특별시 중구 명동 15-9",
+        location: { lat: 37.5, lng: 126.9 },
+      },
+      {
+        id: "cafe2",
+        name: "홍대 카페",
+        adress: "서울특별시 마포구 홍익로 1",
+        location: { lat: 37.549, lng: 126.925 },
+      },
+      {
+        id: "cafe3",
+        name: "강남 카페",
+        adress: "서울특별시 강남구 테헤란로 1",
+        location: { lat: 37.497, lng: 127.027 },
+      },
+    ], // 일단 빈배열 id는 cafe1부터 시작
 
     groupedByDate: {
       "2025-05-01": [],

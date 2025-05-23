@@ -20,7 +20,7 @@ const containerStyle = {
 };
 
 function EditTrip(props) {
-  // 여행 정보
+  //           state : 여행정보 셋팅 및 저장 상태 변수 //
   const location = useLocation();
   const [mapCenter, setMapCenter] = useState(null);
   const [zoom, setZoom] = useState(12);
@@ -188,19 +188,16 @@ function EditTrip(props) {
     return { url: addIcon, scaledSize: new window.google.maps.Size(40, 40) };
   };
 
-  //           function : k-means 알고리즘으로 일정 생성하기           //
-
   //          function : 클러스터링 및 일정 생성          //
   const handelClusterization = async () => {
     // 전체 places 정보에서 장소리스트 가져와서 배열만들기
-    const places = Object.entries(placesInfo)
-      .map(([type, places]) => places)
-      .flat();
+    const places =Object.entries(placesInfo).map(([type, places]) => type !== "accommodation" ? places : []).flat()
 
-    const startDate = new Date(tripDates[0]);
-    places.forEach((place) => {
-      place.checkInDate = place.checkIn ? (new Date(place.checkIn) - startDate) / (1000 * 60 * 60 * 24) : 0;
-    });
+      console.log("places", );
+
+    const accommodation = placesInfo.accommodation || [];
+
+  
 
     const locations = places.map((place) => [place.location.lat, place.location.lng, place.checkInDate || 0]);
 
@@ -209,23 +206,10 @@ function EditTrip(props) {
     // 1. 날짜별 중심점(centroid) 만들기
     const dateKeys = Object.keys(dailyTimeSlots);
     const accommodationPlaces = placesInfo.accommodation || [];
-    const centroids = dateKeys.map((date, idx) => {
-      // date: yyyy-mm-dd 형식
-      // 체크인 ≤ date < 체크아웃인 숙소 찾기
-      // (체크아웃 당일은 숙소에 머물지 않는다고 가정)
-      const matched = accommodationPlaces.filter((acc) => acc.checkIn && acc.checkOut && acc.checkIn <= date && date < acc.checkOut).sort((a, b) => a.checkIn.localeCompare(b.checkIn)); // 체크인 오름차순 정렬
 
-      if (matched.length > 0) {
-        // 여러 숙소가 있으면 가장 먼저 체크인한 숙소를 centroid로 사용
-        return [matched[0].location.lat, matched[0].location.lng, idx];
-      }
-      // 숙소가 없으면 지도 중심 또는 0,0 등 기본값 사용
-      return [mapCenter?.lat || 0, mapCenter?.lng || 0, idx];
-    });
-
-    // 2. kmeans에 centroid 지정
-    const clusters = kmeans(locations, numberOfDays, { initialization: centroids });
-    console.log("K-means 클러스터링 결과:", clusters,centroids);
+    // 2. kmeans 클러스터링
+    const clusters = kmeans(locations, numberOfDays);
+    console.log("K-means 클러스터링 결과:", clusters);
 
     // 3. 그룹핑
     const groupedByDate = {};
@@ -239,7 +223,9 @@ function EditTrip(props) {
     console.log("Grouped by date:", groupedByDate);
   };
 
-  //           useLayoutEffect          //
+  
+
+  //           effect : useLayoutEffect          //
   useLayoutEffect(() => {
     // 지역 센터 정보 저장
     matchMapCenter();
@@ -251,6 +237,7 @@ function EditTrip(props) {
     console.log("placesInfo", placesInfo, "tripDates", tripDates, "dailyTimeSlots", dailyTimeSlots, "schedule", schedule);
   }, [placesInfo, tripDates, dailyTimeSlots, schedule]);
 
+  //          render : EditTrip 컴포넌트          //
   return (
     <>
       <div className="container">

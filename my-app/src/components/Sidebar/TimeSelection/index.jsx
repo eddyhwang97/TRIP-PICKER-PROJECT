@@ -44,7 +44,7 @@ export default function TimeSelection(props) {
   // tripDates가 변경될 때마다 실행
   useEffect(() => {
     setDailyTimeSlotsWithTripDates();
-  }, [setDailyTimeSlotsWithTripDates]);
+  }, [tripDates]);
 
   //           function :handleTimeChange          //
   // 시간 변경 핸들러
