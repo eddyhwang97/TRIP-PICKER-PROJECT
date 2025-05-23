@@ -43,27 +43,29 @@ export default function ScheduleCreation(props) {
     <>
       <div className="contents-container schedule-creation">
         <div className="schedule-summary">
-          {Object.entries(schedule).map(([day, places], index) => (
-            <div className="day-group" key={day}>
-              <h3 className="day-title">{`${index + 1}일차(${changeDateFormat(day)})`}</h3>
-              <ul className="place-list">
-                {places.map((place) => (
-                  <li className="place-item" key={place.id}>
-                    <div className="place-info">
-                      <div className="place-name-category">
-                        <span className="place-name">{place.name}</span>
-                        <span className={`place-category ${categoryColors[place.type]?.color || ""}`}></span>
+          {Object.entries(schedule)
+            .sort(([a], [b]) => new Date(a) - new Date(b)) // 날짜 오름차순 정렬
+            .map(([day, places], index) => (
+              <div className="day-group" key={day}>
+                <h3 className="day-title">{`${index + 1}일차(${changeDateFormat(day)})`}</h3>
+                <ul className="place-list">
+                  {places.map((place) => (
+                    <li className="place-item" key={place.id}>
+                      <div className="place-info">
+                        <div className="place-name-category">
+                          <span className="place-name">{place.name}</span>
+                          <span className={`place-category ${categoryColors[place.type]?.color || ""}`}></span>
+                        </div>
+                        <div className="place-address">{place.adress}</div>
                       </div>
-                      <div className="place-address">{place.adress}</div>
-                    </div>
-                    <button className="delete-button" onClick={() => handleDelete(place.id)}>
-                      삭제
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+                      <button className="delete-button" onClick={() => handleDelete(place.id)}>
+                        삭제
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
         </div>
       </div>
       <SidebarButton step={4} setStep={props.setStep} handelClusterization={handelClusterization} />

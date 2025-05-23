@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useRef, useEffect, useLayoutEffect } from "react";
-import { Loader, GoogleMap, useJsApiLoader, Autocomplete, Marker, DirectionsRenderer } from "@react-google-maps/api";
+import { Loader, GoogleMap, useJsApiLoader, Autocomplete, Marker, computeDistanceBetween, DirectionsRenderer } from "@react-google-maps/api";
 import { useLocation } from "react-router-dom";
 import { useStore } from "../stores/store.API";
 import { kmeans } from "ml-kmeans";
@@ -47,7 +47,7 @@ function EditTrip(props) {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries: ["places"],
+    libraries: ["places", "geometry"],
     language: "ko",
   });
   //          function : matchMapCenter          //
@@ -191,39 +191,121 @@ function EditTrip(props) {
   //          function : 클러스터링 및 일정 생성          //
   const handelClusterization = async () => {
     // 전체 places 정보에서 장소리스트 가져와서 배열만들기
-    const places =Object.entries(placesInfo).map(([type, places]) => type !== "accommodation" ? places : []).flat()
+    const places = Object.entries(placesInfo)
+      .map(([type, places]) => (type !== "accommodation" ? places : []))
+      .flat();
 
-      console.log("places", );
+    console.log("places");
 
     const accommodation = placesInfo.accommodation || [];
-
-  
 
     const locations = places.map((place) => [place.location.lat, place.location.lng, place.checkInDate || 0]);
 
     const numberOfDays = Object.keys(dailyTimeSlots).length;
 
-    // 1. 날짜별 중심점(centroid) 만들기
-    const dateKeys = Object.keys(dailyTimeSlots);
     const accommodationPlaces = placesInfo.accommodation || [];
 
     // 2. kmeans 클러스터링
     const clusters = kmeans(locations, numberOfDays);
-    console.log("K-means 클러스터링 결과:", clusters);
+    console.log("K-means 클러스터링 결과:", clusters, accommodationPlaces);
 
-    // 3. 그룹핑
-    const groupedByDate = {};
-    clusters.clusters.forEach((cluster, index) => {
-      const date = dateKeys[cluster];
-      if (!groupedByDate[date]) groupedByDate[date] = [];
-      groupedByDate[date].push(places[index]);
+    // 3. 클러스터링 결과 데이터로 중심값과 장소 정보 매핑
+    // 클러스터링 결과에서 중심점과 해당 클러스터에 속하는 장소들을 매핑
+    const clusterData = clusters.centroids.map((centroid, clusterIndex) => {
+      console.log("centroid", centroid, "clusterIndex", clusterIndex);
+      const clusterPlaces = places.filter((_, index) => clusters.clusters[index] === clusterIndex);
+
+      return {
+        centroid: {
+          lat: centroid[0],
+          lng: centroid[1],
+        },
+        places: clusterPlaces,
+      };
     });
 
-    setSchedule(groupedByDate);
-    console.log("Grouped by date:", groupedByDate);
-  };
+    console.log("Cluster Data:", clusterData);
 
-  
+    // 4. 숙소 체크인 날짜 기반으로 배열 객체 만들기
+    const groupedByDate = {};
+    for (let i = 0; i < numberOfDays; i++) {
+      const date = Object.keys(dailyTimeSlots)[i];
+      groupedByDate[date] = {
+        accommodation: [],
+        places: [],
+      };
+    }
+    accommodationPlaces.forEach((place) => {
+      const checkInDate = place.checkIn;
+      const checkOutDate = place.checkOut;
+
+      // 체크인 날짜 accommodation[0]에 저장
+      if (groupedByDate[checkInDate]) {
+        groupedByDate[checkInDate].accommodation[0] = place || null;
+      }
+      // 체크아웃 날짜 accommodation[1]에 저장
+      if (groupedByDate[checkOutDate]) {
+        groupedByDate[checkOutDate].accommodation[1] = place || null;
+      }
+    });
+    // 4. 클러스터링 중심과 숙소 위치 정보를 비교하여 일정 생성
+    const matchClustersWithAccommodations = () => {
+      // 사용된 클러스터를 추적하기 위한 Set
+      const usedClusters = new Set();
+      
+      // 각 날짜별로 처리
+      Object.keys(groupedByDate).forEach((date) => {
+        const accommodation = groupedByDate[date].accommodation[0];
+        if (!accommodation) return;
+
+        // 각 클러스터와의 거리 계산
+        const distances = clusterData.map((cluster, index) => {
+          const distance = window.google.maps.geometry.spherical.computeDistanceBetween(new window.google.maps.LatLng(accommodation.location.lat, accommodation.location.lng), new window.google.maps.LatLng(cluster.centroid.lat, cluster.centroid.lng));
+          return { index, distance };
+        });
+
+        // 거리순으로 정렬
+        distances.sort((a, b) => a.distance - b.distance);
+
+        // 아직 사용되지 않은 가장 가까운 클러스터 찾기
+        let selectedCluster = null;
+        for (const { index } of distances) {
+          if (!usedClusters.has(index)) {
+            selectedCluster = index;
+            usedClusters.add(index);
+            break;
+          }
+        }
+
+        // 만약 모든 클러스터가 사용되었다면, 가장 가까운 클러스터 사용
+        if (selectedCluster === null) {
+          selectedCluster = distances[0].index;
+        }
+
+        // 해당 클러스터의 장소들을 해당 날짜의 places에 할당
+        groupedByDate[date].places = clusterData[selectedCluster].places;
+      });
+
+      // 사용되지 않은 클러스터 찾기
+      const unusedClusters = clusterData.filter((_, index) => !usedClusters.has(index));
+      
+      // places가 비어있는 날짜 찾기
+      const emptyDates = Object.keys(groupedByDate).filter(date => 
+        !groupedByDate[date].places || groupedByDate[date].places.length === 0
+      );
+
+      // 사용되지 않은 클러스터를 빈 날짜에 할당
+      unusedClusters.forEach((cluster, index) => {
+        if (index < emptyDates.length) {
+          const date = emptyDates[index];
+          groupedByDate[date].places = cluster.places;
+        }
+      });
+    };
+
+    matchClustersWithAccommodations();
+    console.log("groupedByDate", groupedByDate);
+  };
 
   //           effect : useLayoutEffect          //
   useLayoutEffect(() => {
