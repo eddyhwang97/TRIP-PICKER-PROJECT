@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import React, { useCallback, useState, useRef, useEffect, useLayoutEffect } from "react";
 import { Loader, GoogleMap, useJsApiLoader, Autocomplete, Marker, DirectionsRenderer } from "@react-google-maps/api";
 import { useLocation } from "react-router-dom";
 import { useStore } from "../stores/store.API";
@@ -50,7 +50,8 @@ function EditTrip(props) {
     libraries: ["places"],
     language: "ko",
   });
-  //          function : 센터 정보 셋팅          //
+  //          function : matchMapCenter          //
+  // 지역 센터 정보 저장
   const matchMapCenter = () => {
     const tripDataCity = tripData.city;
     const citys = JSON.parse(localStorage.getItem("citys"));
@@ -59,15 +60,20 @@ function EditTrip(props) {
   };
 
   //          function : 세션 스토리지에 여행정보 저장          //
+  // 여행정보 세션에 저장
   const setTripInfoInSessionStorage = () => {
     const trip = tripData;
     localStorage.setItem("trip", JSON.stringify(trip));
   };
 
+  //          function : onLoadAutocomplete          //
+  // Autocomplete 인스턴스 저장
   const onLoadAutocomplete = (autocompleteInstance) => {
     setAutocomplete(autocompleteInstance);
   };
 
+  //         function : onPlaceChanged         //
+  // 장소 검색 후 마커 위치 업데이트
   const onPlaceChanged = () => {
     if (autocomplete) {
       const place = autocomplete.getPlace();
@@ -86,17 +92,22 @@ function EditTrip(props) {
     }
   };
 
-  const onMapClick = (event) => {
-    const clickedPosition = {
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng(),
-    };
-
-    setMarkerPosition(clickedPosition); // 마커 위치 업데이트
-  };
+  //         function : onMapClick         //
+  // 지도 클릭 핸들러 useCallback 적용
+  const onMapClick = useCallback(
+    (event) => {
+      const clickedPosition = {
+        lat: event.latLng.lat(),
+        lng: event.latLng.lng(),
+      };
+      setMarkerPosition(clickedPosition);
+    },
+    [setMarkerPosition]
+  );
 
   //          function : 장소 저장          //
-  const savePlace = () => {
+  // 장소 저장 핸들러
+  const savePlace = useCallback(() => {
     if (!markerPosition || !placeType) {
       alert("장소와 유형을 선택해주세요.");
       return;
@@ -144,12 +155,12 @@ function EditTrip(props) {
     setCheckOutDate(""); // 체크아웃 날짜 초기화
 
     alert("장소가 저장되었습니다!");
-  };
+  }, [markerPosition, placeType, checkInDate, checkOutDate, dailyTimeSlots, placesInfo, setPlacesInfo, setMarkerPosition, setPlaceType, setCheckInDate, setCheckOutDate]);
 
-  //           useEffect : placesInfo가 변경될 때마다 마커 업데이트          //
+  //           function : useEffect           //
+  // placesInfo가 변경될 때마다 마커 업데이트          //
   useEffect(() => {
     const newMarkers = [];
-
     // 각 장소 유형별로 마커 생성
     Object.entries(placesInfo).forEach(([type, places]) => {
       places.map((place) => {
@@ -160,39 +171,24 @@ function EditTrip(props) {
   }, [placesInfo]);
 
   //           function : 마커 아이콘 설정          //
-  const getMarkerIcon = (type) => {
+  // 마커 아이콘 함수 useCallback으로 최적화
+  const getMarkerIcon = useCallback((type) => {
     if (type === "accommodation" || type.includes("accom")) {
-      return {
-        url: accommodationIcon,
-        scaledSize: new window.google.maps.Size(40, 40),
-      };
+      return { url: accommodationIcon, scaledSize: new window.google.maps.Size(40, 40) };
     }
     if (type === "restaurant" || type.includes("rest")) {
-      return {
-        url: restaurantIcon,
-        scaledSize: new window.google.maps.Size(40, 40),
-      };
+      return { url: restaurantIcon, scaledSize: new window.google.maps.Size(40, 40) };
     }
     if (type === "attraction" || type.includes("attr")) {
-      return {
-        url: placeIcon,
-        scaledSize: new window.google.maps.Size(40, 40),
-      };
+      return { url: placeIcon, scaledSize: new window.google.maps.Size(40, 40) };
     }
     if (type === "cafe" || type.includes("cafe")) {
-      return {
-        url: cafeIcon,
-        scaledSize: new window.google.maps.Size(40, 40),
-      };
+      return { url: cafeIcon, scaledSize: new window.google.maps.Size(40, 40) };
     }
-    return {
-      url: addIcon,
-      scaledSize: new window.google.maps.Size(40, 40),
-    };
-  };
+    return { url: addIcon, scaledSize: new window.google.maps.Size(40, 40) };
+  }, []);
 
   //           function : k-means 알고리즘으로 일정 생성하기           //
-  const [selectedRoute, setSelectedRoute] = useState(null);
 
   //          function : 클러스터링 및 일정 생성          //
   const handelClusterization = async () => {
@@ -316,14 +312,12 @@ function EditTrip(props) {
                 zoomControl: false,
               }}
             >
+              {/* 저장된 마커들 */}
               {markers.map((marker, index) => (
-                <Marker
-                  key={marker.id}
-                  position={marker.location}
-                  icon={getMarkerIcon(marker.id)}
-                  title={marker.name || marker.address} // 마커에 마우스를 올리면 이름 또는 주소 표시
-                />
+                <Marker key={marker.id} position={marker.location} icon={getMarkerIcon(marker.type)} title={marker.name || marker.address} />
               ))}
+              {/* 임시 마커(아직 저장 안 된 위치) */}
+              {markerPosition && <Marker position={markerPosition} icon={getMarkerIcon(addIcon)} title="새 장소" />}
             </GoogleMap>
           </>
         ) : (
@@ -344,7 +338,7 @@ function EditTrip(props) {
             setDailyTimeSlots,
             schedule,
             setSchedule,
-            handelClusterization
+            handelClusterization,
           }}
         />
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useCallback, useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import { format } from "date-fns";
 import "flatpickr/dist/flatpickr.min.css";
@@ -18,22 +18,20 @@ export default function DateSelection(props) {
 
   //           function : 날짜 선택 유효성 검사            //
   const validateDateRange = () => {
-    if (dateRange !==null) return;
-    else {
-      const today = new Date();
-      const todayDate = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, "0"), String(today.getDate()).padStart(2, "0")].join("-");
-      // 오늘 날짜를 문자열로 비교
-      if (dateRange !== null && dateRange[0] && format(new Date(dateRange[0]), "yyyy-MM-dd") < todayDate) {
-        setTripDates([todayDate, todayDate]);
-        setDateRange([todayDate, todayDate]);
-        alert("시작날이 오늘보다 빠를 수는 없습니다.");
-      }
+  if (dateRange && dateRange[0]) {
+    const today = new Date();
+    const todayDate = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, "0"), String(today.getDate()).padStart(2, "0")].join("-");
+    if (format(new Date(dateRange[0]), "yyyy-MM-dd") < todayDate) {
+      setTripDates([todayDate, todayDate]);
+      setDateRange([todayDate, todayDate]);
+      alert("시작날이 오늘보다 빠를 수는 없습니다.");
     }
-  };
+  }
+};
   //           useEffect :  dateRange 감지            //
   useEffect(() => {
     handleDateChange();
-    validateDateRange();
+    // validateDateRange();
   }, [dateRange]);
   return (
     <>

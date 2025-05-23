@@ -1,30 +1,29 @@
-import React, { useEffect, useState } from "react";
-import "react-datepicker/dist/react-datepicker.css"; // 스타일 임포트
+import React, { useMemo, useState } from "react";
+import "react-datepicker/dist/react-datepicker.css";
 import DateSelection from "./DateSelection";
 import TimeSelection from "./TimeSelection";
 import ScheduleCreation from "./ScheduleCreation";
 import PlaceList from "./PlaceList";
 import Viewer from "./Viewer";
-
 import "./style.scss";
-import { SidebarButton } from "../../assets";
 import { useNavigate } from "react-router-dom";
-import $ from "jquery";
 
 function Sidebar(props) {
-  // sidebarProps가 undefined일 때를 대비해 기본값을 {}로 설정
   const { checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, placesInfo, setPlacesInfo, placeType, tripDates, setTripDates, dailyTimeSlots, setDailyTimeSlots, schedule, setSchedule, handelClusterization } = props.sidebarProps;
 
   const navigate = useNavigate();
-  // 사이드바 관련 변수 //
-  const [step, setStep] = useState(1); // 1=리스트, 2=날짜, 3=시간, 4=일정
+  const [step, setStep] = useState(1);
 
-  const categoryColors = {
-    accommodation: "category-red",
-    restaurant: "category-blue",
-    cafe: "category-yellow",
-    attraction: "category-green",
-  };
+  // 카테고리 색상 useMemo로 최적화
+  const categoryColors = useMemo(
+    () => ({
+      accommodation: "category-red",
+      restaurant: "category-blue",
+      cafe: "category-yellow",
+      attraction: "category-green",
+    }),
+    []
+  );
 
   return (
     <div className="sidebar">

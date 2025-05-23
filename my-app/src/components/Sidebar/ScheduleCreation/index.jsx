@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { SidebarButton } from "../../../assets";
-import { kmeans } from "ml-kmeans";
 import "./style.scss";
 
 // 카테고리 색상
@@ -12,33 +11,34 @@ const categoryColors = {
 };
 
 export default function ScheduleCreation(props) {
-  const { placesInfo, setPlacesInfo, categoryColors, dailyTimeSlots, schedule, setSchedule, handelClusterization } = props;
-  console.log(schedule);
+  const { placesInfo, setPlacesInfo, dailyTimeSlots, schedule, setSchedule, handelClusterization } = props;
 
-  //          function : 날짜 변환          //
-  const changeDateFormat = (dateStr) => {
+  // 날짜 변환
+  const changeDateFormat = useCallback((dateStr) => {
     const daysKor = ["일", "월", "화", "수", "목", "금", "토"];
     const date = new Date(dateStr);
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     const dayOfWeek = daysKor[date.getDay()];
     return `${month}/${day} ${dayOfWeek}`;
-  };
+  }, []);
 
-  //         function : 리스트 삭제          //
-  const handleDelete = (placeId) => {
-    const confirmDelete = window.confirm("삭제하시겠습니까?");
-    if (confirmDelete) {
-      setPlacesInfo((prevPlacesInfo) => {
-        const updatedPlacesInfo = { ...prevPlacesInfo };
-        Object.keys(updatedPlacesInfo).forEach((category) => {
-          updatedPlacesInfo[category] = updatedPlacesInfo[category].filter((place) => place.id !== placeId);
+  // 리스트 삭제
+  const handleDelete = useCallback(
+    (placeId) => {
+      if (window.confirm("삭제하시겠습니까?")) {
+        setPlacesInfo((prevPlacesInfo) => {
+          const updatedPlacesInfo = { ...prevPlacesInfo };
+          Object.keys(updatedPlacesInfo).forEach((category) => {
+            updatedPlacesInfo[category] = updatedPlacesInfo[category].filter((place) => place.id !== placeId);
+          });
+          return updatedPlacesInfo;
         });
-        return updatedPlacesInfo;
-      });
-    }
-  }
-  useEffect(() => {}, []);
+      }
+    },
+    [setPlacesInfo]
+  );
+
   return (
     <>
       <div className="contents-container schedule-creation">
@@ -48,15 +48,17 @@ export default function ScheduleCreation(props) {
               <h3 className="day-title">{`${index + 1}일차(${changeDateFormat(day)})`}</h3>
               <ul className="place-list">
                 {places.map((place) => (
-                  <li className="place-item">
+                  <li className="place-item" key={place.id}>
                     <div className="place-info">
                       <div className="place-name-category">
                         <span className="place-name">{place.name}</span>
-                        <span className={`place-category `}></span>
+                        <span className={`place-category ${categoryColors[place.type]?.color || ""}`}></span>
                       </div>
                       <div className="place-address">{place.adress}</div>
                     </div>
-                    <button className="delete-button" onClick={() => handleDelete(place.id)}>삭제</button>
+                    <button className="delete-button" onClick={() => handleDelete(place.id)}>
+                      삭제
+                    </button>
                   </li>
                 ))}
               </ul>
