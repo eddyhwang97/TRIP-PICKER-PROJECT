@@ -62,8 +62,8 @@ export const trips = [
     cafe: [
       {
         id: "cafe1",
-        name: "명동 카페",
-        adress: "서울특별시 중구 명동 15-9",
+        name: "구로 카페",
+        adress: "서울특별시 구로구 대림동 685-2",
         location: { lat: 37.5, lng: 126.9 },
       },
       {
