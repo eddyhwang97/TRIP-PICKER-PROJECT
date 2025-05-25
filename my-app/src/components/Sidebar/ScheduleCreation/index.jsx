@@ -1,14 +1,6 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { SidebarButton } from "../../../assets";
 import "./style.scss";
-
-// 카테고리 색상
-const categoryColors = {
-  accommodation: { title: "숙소", color: "category-red" },
-  attraction: { title: "관광지", color: "category-green" },
-  restaurant: { title: "식당", color: "category-blue" },
-  cafe: { title: "카페", color: "category-yellow" },
-};
 
 export default function ScheduleCreation(props) {
   const { placesInfo, setPlacesInfo, dailyTimeSlots, schedule, setSchedule, handelClusterization } = props;
@@ -38,34 +30,47 @@ export default function ScheduleCreation(props) {
     },
     [setPlacesInfo]
   );
+  // 카테고리 색상
+  const RenderCategory = (placeId) => {
+    let categoryInfo;
+    if (placeId.includes("accom")) {
+      categoryInfo = ["숙소", "category-red"];
+    } else if (placeId.includes("attr")) {
+      categoryInfo = ["관광지", "category-green"];
+    } else if (placeId.includes("rest")) {
+      categoryInfo = ["식당", "category-blue"];
+    } else if (placeId.includes("cafe")) {
+      categoryInfo = ["카페", "category-yellow"];
+    }
+
+    return <span className={`place-category ${categoryInfo[1]}`}>{categoryInfo[0]}</span>;
+  };
 
   return (
     <>
       <div className="contents-container schedule-creation">
         <div className="schedule-summary">
-          {Object.entries(schedule)
-            .sort(([a], [b]) => new Date(a) - new Date(b)) // 날짜 오름차순 정렬
-            .map(([day, places], index) => (
-              <div className="day-group" key={day}>
-                <h3 className="day-title">{`${index + 1}일차(${changeDateFormat(day)})`}</h3>
-                <ul className="place-list">
-                  {places.map((place) => (
-                    <li className="place-item" key={place.id}>
-                      <div className="place-info">
-                        <div className="place-name-category">
-                          <span className="place-name">{place.name}</span>
-                          <span className={`place-category ${categoryColors[place.type]?.color || ""}`}></span>
-                        </div>
-                        <div className="place-address">{place.adress}</div>
+          {Object.entries(schedule).map(([day, dateInfo], index) => (
+            <div className="day-group" key={day}>
+              <h3 className="day-title">{`${index + 1}일차(${changeDateFormat(day)})`}</h3>
+              <ul className="place-list">
+                {[...(dateInfo.accommodation && dateInfo.accommodation[1] ? [dateInfo.accommodation[1]] : []), ...(dateInfo.places || []), ...(dateInfo.accommodation && dateInfo.accommodation[0] ? [dateInfo.accommodation[0]] : [])].map((place) => (
+                  <li className="place-item" key={place.id}>
+                    <div className="place-info">
+                      <div className="place-name-category">
+                        <span className="place-name">{place.name}</span>
+                        {place.id && RenderCategory(place.id)}
                       </div>
-                      <button className="delete-button" onClick={() => handleDelete(place.id)}>
-                        삭제
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+                      <div className="place-address">{place.adress}</div>
+                    </div>
+                    <button className="delete-button" onClick={() => handleDelete(place.id)}>
+                      삭제
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
       <SidebarButton step={4} setStep={props.setStep} handelClusterization={handelClusterization} />

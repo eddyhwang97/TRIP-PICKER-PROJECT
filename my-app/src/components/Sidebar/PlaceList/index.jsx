@@ -70,7 +70,7 @@ export default function PlaceList(props) {
   );
   //          function : 장소 카테고리별 렌더링          //
   // 카테고리별 렌더링
-  const renderPlaceComponent = useCallback(
+  const RenderPlaceComponent = useCallback(
     (category, places) => {
       const categoryConfig = {
         accommodation: { title: "숙소", color: "category-red" },
@@ -150,7 +150,7 @@ export default function PlaceList(props) {
     <>
       <div className="contents-container place-list-container">
         {Object.entries(placesInfo).map(([category, places]) => (
-          <div key={category}>{renderPlaceComponent(category, places)}</div>
+          <div key={category}>{RenderPlaceComponent(category, places)}</div>
         ))}
       </div>
       <SidebarButton step={3} setStep={setStep} handelClusterization={handelClusterization} />

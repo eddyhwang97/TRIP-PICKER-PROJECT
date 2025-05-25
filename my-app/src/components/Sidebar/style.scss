@@ -50,7 +50,6 @@
   .contents-container {
     display: flex;
     flex-direction: column;
-    // justify-content: space-between;
     flex: 1;
     gap: 10px;
     height: 100%;
@@ -59,9 +58,8 @@
   }
   .place-category {
     font-size: 0.9rem;
-    padding: 4px 10px;
+    padding: 4px 8px;
     border-radius: 5px;
-    margin-bottom: 4px;
     color: white;
     display: inline-block;
 
@@ -90,3 +88,4 @@
     cursor: pointer;
   }
 }
+

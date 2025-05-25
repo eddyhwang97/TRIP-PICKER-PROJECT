@@ -13,6 +13,7 @@ import restaurantIcon from "../assets/images/restaurant_pin.png";
 import placeIcon from "../assets/images/place_pin.png";
 import cafeIcon from "../assets/images/cafe_pin.png";
 import addIcon from "../assets/images/add_pin.png";
+import { set } from "date-fns";
 
 const containerStyle = {
   width: "100vw",
@@ -171,7 +172,6 @@ function EditTrip(props) {
   }, [placesInfo]);
 
   //           function : 마커 아이콘 설정          //
-  // 마커 아이콘 함수 useCallback으로 최적화
   const getMarkerIcon = (type) => {
     if (type === "accommodation" || type.includes("accom")) {
       return { url: accommodationIcon, scaledSize: new window.google.maps.Size(40, 40) };
@@ -226,12 +226,12 @@ function EditTrip(props) {
 
     console.log("Cluster Data:", clusterData);
 
-    // 4. 숙소 체크인 날짜 기반으로 배열 객체 만들기
+    // 4. 일정 기반으로 배열 생성후 일정에 맞는 숙소 넣기
     const groupedByDate = {};
     for (let i = 0; i < numberOfDays; i++) {
       const date = Object.keys(dailyTimeSlots)[i];
       groupedByDate[date] = {
-        accommodation: [],
+        accommodation: [null, null],
         places: [],
       };
     }
@@ -304,6 +304,7 @@ function EditTrip(props) {
     };
 
     matchClustersWithAccommodations();
+    setSchedule(groupedByDate);
     console.log("groupedByDate", groupedByDate);
   };
 
