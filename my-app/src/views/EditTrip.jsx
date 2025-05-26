@@ -34,7 +34,7 @@ function EditTrip(props) {
   const [directions, setDirections] = useState(null);
   const inputRef = useRef(null);
 
-  //           variables : 여행정보 셋팅 및 저장 상태 변수 //
+  //           state : 여행정보 셋팅 및 저장 상태 변수 //
   const tripData = location.state.tripData;
   // PlaceList
   const [placesInfo, setPlacesInfo] = useState({ accommodation: tripData.accommodation, attraction: tripData.attraction, restaurant: tripData.restaurant, cafe: tripData.cafe });
@@ -315,6 +315,9 @@ function EditTrip(props) {
     // 트립정보 세션에 저장
     setTripInfoInSessionStorage();
   }, []);
+  //           effect : useEffect          //
+
+  
 
   useEffect(() => {
     console.log("placesInfo", placesInfo, "tripDates", tripDates, "dailyTimeSlots", dailyTimeSlots, "schedule", schedule);
@@ -387,7 +390,7 @@ function EditTrip(props) {
                 <Marker key={marker.id} position={marker.location} icon={getMarkerIcon(marker.id)} title={marker.name || marker.address} />
               ))}
               {/* 임시 마커(아직 저장 안 된 위치) */}
-              {markerPosition && <Marker position={markerPosition} icon={addIcon} title="새 장소" />}
+              {markerPosition && <Marker position={markerPosition} icon={getMarkerIcon(addIcon)} title="새 장소" />}
             </GoogleMap>
           </>
         ) : (
