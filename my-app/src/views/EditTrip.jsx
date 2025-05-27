@@ -290,10 +290,11 @@ function EditTrip(props) {
 
       // 각 날짜별로 처리
       Object.keys(groupedByDate).forEach((date) => {
+        // 체크인 숙소
         const accommodation = groupedByDate[date].accommodation[0];
         if (!accommodation) return;
 
-        // 각 클러스터와의 거리 계산
+        // 체크인 숙소 위치와 각 클러스터의 중심점 거리 계산
         const distances = clusterData.map((cluster, index) => {
           const distance = window.google.maps.geometry.spherical.computeDistanceBetween(new window.google.maps.LatLng(accommodation.location.lat, accommodation.location.lng), new window.google.maps.LatLng(cluster.centroid.lat, cluster.centroid.lng));
           return { index, distance };
