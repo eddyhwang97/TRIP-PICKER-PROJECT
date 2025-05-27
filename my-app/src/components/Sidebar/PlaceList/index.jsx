@@ -2,10 +2,25 @@ import React, { useCallback, useRef, useState } from "react";
 import { SidebarButton } from "../../../assets";
 import "./style.scss";
 export default function PlaceList(props) {
-  const { placesInfo = {}, setPlacesInfo, placeType, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, dailyTimeSlots, handelClusterization, setStep } = props;
+  const { placesInfo = {}, setPlacesInfo, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, dailyTimeSlots, handelClusterization, setStep } = props;
   // 수정 중인 장소의 ID를 저장하는 state 추가
   const [editingPlaceId, setEditingPlaceId] = useState(null);
   const inputRefs = useRef({});
+
+  //            function : handleOnclickAtPlaceList          //
+  const handleOnclickAtPlaceList = () => {
+    const placesInfoLength = Object.entries(placesInfo)
+      .map(([type, places]) => places)
+      .flat();
+
+    if (placesInfoLength.length === 0) {
+      alert("장소를 추가해주세요.");
+      return;
+    } else {
+      setStep(4);
+      handelClusterization();
+    }
+  };
 
   //           function : handleDelete          //
   // 장소 삭제
@@ -40,9 +55,9 @@ export default function PlaceList(props) {
     [setPlacesInfo]
   );
 
-  //           function : onHandelCheckInDate         //
+  //           function : handelCheckInDate         //
   // 체크인 날짜 변경
-  const onHandelCheckInDate = useCallback(
+  const handelCheckInDate = useCallback(
     (e, placeId) => {
       const selectedDate = e.target.value;
       setCheckInDate(selectedDate);
@@ -56,7 +71,7 @@ export default function PlaceList(props) {
   );
 
   // 체크아웃 날짜 변경
-  const onHandelCheckOutDate = useCallback(
+  const handelCheckOutDate = useCallback(
     (e, placeId) => {
       const selectedDate = e.target.value;
       setCheckOutDate(selectedDate);
@@ -82,7 +97,7 @@ export default function PlaceList(props) {
       if (!config) return null;
 
       return (
-        <div className="place-category-container">
+        <div className="place-category-container" key={category}>
           <span className={`place-category ${config.color}`}>{config.title}</span>
           <ul className="place-list">
             {places.map((place) => (
@@ -92,13 +107,13 @@ export default function PlaceList(props) {
                     {editingPlaceId !== place.id && <span className="place-name">{place.name}</span>}
                     {editingPlaceId === place.id && <input ref={(el) => (inputRefs.current[place.id] = el)} defaultValue={place.name} />}
                   </div>
-                  <p className="place-address">{place.adress}</p>
+                  <p className="place-address">{place.address}</p>
                 </div>
                 {category === "accommodation" && (
                   <div className="accommodation-dates">
                     <label>
                       <span>체크인:</span>
-                      <select value={place.checkIn || checkInDate} onChange={(e) => onHandelCheckInDate(e, place.id)} name="checkInDate" id="checkInDate">
+                      <select value={place.checkIn || checkInDate} onChange={(e) => handelCheckInDate(e, place.id)} name="checkInDate" id="checkInDate">
                         {Object.keys(dailyTimeSlots)
                           .slice(0, -1)
                           .map((date) => (
@@ -110,7 +125,7 @@ export default function PlaceList(props) {
                     </label>
                     <label>
                       <span>체크아웃:</span>
-                      <select value={place.checkOut || checkOutDate} onChange={(e) => onHandelCheckOutDate(e, place.id)} name="checkOutDate" id="checkOutDate">
+                      <select value={place.checkOut || checkOutDate} onChange={(e) => handelCheckOutDate(e, place.id)} name="checkOutDate" id="checkOutDate">
                         {Object.keys(dailyTimeSlots)
                           .slice(1)
                           .map((date) => (
@@ -143,17 +158,17 @@ export default function PlaceList(props) {
         </div>
       );
     },
-    [checkInDate, checkOutDate, dailyTimeSlots, editingPlaceId, handleDelete, handleModified, handleSaved, onHandelCheckInDate, onHandelCheckOutDate]
+    [checkInDate, checkOutDate, dailyTimeSlots, editingPlaceId, handleDelete, handleModified, handleSaved, handelCheckInDate, handelCheckOutDate]
   );
 
   return (
     <>
       <div className="contents-container place-list-container">
         {Object.entries(placesInfo).map(([category, places]) => (
-          <div key={category}>{RenderPlaceComponent(category, places)}</div>
+          RenderPlaceComponent(category, places)
         ))}
       </div>
-      <SidebarButton step={3} setStep={setStep} handelClusterization={handelClusterization} />
+      <SidebarButton step={3} setStep={setStep} handleOnclickAtPlaceList={handleOnclickAtPlaceList} />
     </>
   );
 }

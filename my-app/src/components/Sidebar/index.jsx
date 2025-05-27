@@ -29,9 +29,9 @@ function Sidebar(props) {
     <div className="sidebar">
       <div className="sidebar-header">
         <h2>
-          {step === 1 && "리스트"}
-          {step === 2 && "날짜 선택"}
-          {step === 3 && "활동 시간 선택"}
+          {step === 1 && "날짜 선택"}
+          {step === 2 && "활동 시간 선택"}
+          {step === 3 && "리스트 생성하기"}
           {step === 4 && "일정 생성"}
           {step === 5 && "일정 뷰어"}
         </h2>

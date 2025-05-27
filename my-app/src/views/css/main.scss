@@ -20,6 +20,15 @@
     text-align: center;
     font-weight: bold;
     display: flex;
+    @media screen and (max-width: 1024px) {
+      font-size: 8rem;
+    }
+    @media screen and (max-width: 870px) {
+      font-size: 6rem;
+    }
+    @media screen and (max-width: 690px) {
+      font-size: 4rem;
+    }
 
     .main-intro-title {
       overflow: hidden;
@@ -29,6 +38,7 @@
     }
     .main-intro-title:nth-child(2) {
       display: flex;
+      align-items: center;
     }
   }
   .main-intro-logo {
@@ -40,6 +50,24 @@
     font-family: "Jura", sans-serif;
     transform: translateY(100%);
     animation: wordAnimation2 1s cubic-bezier(0.77, 0, 0.175, 1) 0.7s forwards;
+    img {
+      width: 84px;
+      height: 74px;
+      max-width: 100%;
+
+      @media screen and (max-width: 1024px) {
+        width: calc(84px * 0.8);
+        height: calc(74px * 0.8);
+      }
+      @media screen and (max-width: 870px) {
+        width: calc(84px * 0.6);
+        height: calc(74px * 0.6);
+      }
+      @media screen and (max-width: 690px) {
+        width: calc(84px * 0.4);
+        height: calc(74px * 0.6);
+      }
+    }
   }
 }
 
@@ -138,7 +166,7 @@
     height: 1px;
     background-color: #00000020;
   }
-  &.no-result{
+  &.no-result {
     height: 100%;
     display: flex;
     justify-content: center;
@@ -152,8 +180,8 @@
   height: 55px;
   border-radius: 5px;
   background-color: #d49b9b;
-  
-  img{
+
+  img {
     width: 100%;
     height: 100%;
     border-radius: 5px;

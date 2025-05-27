@@ -1,3 +1,7 @@
+.place-category-container{
+  border-bottom: .3px solid #eee;
+  padding-bottom: 5px;
+}
 .place-list {
   list-style: none;
   padding: 0;
@@ -34,6 +38,7 @@
         align-items: center;
         margin-bottom: 5px;
         gap: 4px;
+        
 
         .place-name {
           font-size: 13px;

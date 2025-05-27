@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useRef, useEffect, useLayoutEffect } from "react";
 import { Loader, GoogleMap, useJsApiLoader, Autocomplete, Marker, computeDistanceBetween, DirectionsRenderer } from "@react-google-maps/api";
 import { useLocation } from "react-router-dom";
-import { useStore } from "../stores/store.API";
 import { kmeans } from "ml-kmeans";
 // css
 import "./css/editTrip.scss";
@@ -13,12 +12,12 @@ import restaurantIcon from "../assets/images/restaurant_pin.png";
 import placeIcon from "../assets/images/place_pin.png";
 import cafeIcon from "../assets/images/cafe_pin.png";
 import addIcon from "../assets/images/add_pin.png";
-import { set } from "date-fns";
 
 const containerStyle = {
   width: "100vw",
   height: "100vh",
 };
+const libraries = ["places", "geometry"];
 
 function EditTrip(props) {
   //           state : 여행정보 셋팅 및 저장 상태 변수 //
@@ -48,7 +47,7 @@ function EditTrip(props) {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries: ["places", "geometry"],
+    libraries: libraries,
     language: "ko",
   });
   //          function : matchMapCenter          //
@@ -64,7 +63,7 @@ function EditTrip(props) {
   // 여행정보 세션에 저장
   const setTripInfoInSessionStorage = () => {
     const trip = tripData;
-    localStorage.setItem("trip", JSON.stringify(trip));
+    sessionStorage.setItem("trip", JSON.stringify(trip));
   };
 
   //          function : onLoadAutocomplete          //
@@ -93,20 +92,7 @@ function EditTrip(props) {
     }
   };
 
-  //         function : onMapClick         //
-  // 지도 클릭 핸들러 useCallback 적용
-  const onMapClick = useCallback(
-    (event) => {
-      const clickedPosition = {
-        lat: event.latLng.lat(),
-        lng: event.latLng.lng(),
-      };
-      setMarkerPosition(clickedPosition);
-    },
-    [setMarkerPosition]
-  );
-
-  //          function : 장소 저장          //
+  //          function : savePlace          //
   // 장소 저장 핸들러
   const savePlace = useCallback(() => {
     if (!markerPosition || !placeType) {
@@ -132,7 +118,7 @@ function EditTrip(props) {
     // 새로운 장소 데이터 생성
     const newPlace = {
       id: `${placeType}_${Date.now()}`,
-      location: markerPosition,
+      location: { lat: markerPosition.lat, lng: markerPosition.lng },
       name: markerPosition.name || "",
       address: markerPosition.address || "",
     };
@@ -171,6 +157,65 @@ function EditTrip(props) {
     setMarkers(newMarkers);
   }, [placesInfo]);
 
+  //           function : fetchLocationInfoOnMapClick          //
+  // 지도 클릭 시 위치 정보 불러오기
+  const fetchLocationInfoOnMapClick = useCallback(async (event, setLocationInfo) => {
+    const clickedPosition = {
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
+    };
+
+    try {
+      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${clickedPosition.lat},${clickedPosition.lng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
+      const data = await response.json();
+
+      const { Place } = await window.google.maps.importLibrary("places");
+
+      if (data.status === "OK" && data.results.length > 0) {
+        const locationInfo = data.results[0];
+
+        const place = new Place({
+          id: data.results[0].place_id,
+          requestedLanguage: "ko", // optional
+        });
+
+        // Call fetchFields, passing the desired data fields.
+        await place.fetchFields({
+          fields: ["displayName"],
+        });
+
+        setLocationInfo(locationInfo, place.displayName);
+        // 위치 정보에 따라 필요한 동작 수행
+      } else {
+        console.error("위치 정보를 불러오지 못했습니다.");
+      }
+    } catch (error) {
+      console.error("에러 발생:", error);
+    }
+  }, []);
+
+  //           function : onMapClick          //
+  // 지도 클릭 핸들러에 추가
+  const getPlaceInfo = useCallback(
+    (event) => {
+      const setLocationInfo = (locationInfo, displayName) => {
+        if (locationInfo) {
+          const clickedPosition = {
+            name: displayName,
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng(),
+            address: locationInfo.formatted_address,
+          };
+          console.log(clickedPosition);
+          setMarkerPosition(clickedPosition);
+        }
+        return;
+      };
+      fetchLocationInfoOnMapClick(event, setLocationInfo);
+    },
+    [setMarkerPosition]
+  );
+
   //           function : 마커 아이콘 설정          //
   const getMarkerIcon = (type) => {
     if (type === "accommodation" || type.includes("accom")) {
@@ -190,24 +235,21 @@ function EditTrip(props) {
 
   //          function : 클러스터링 및 일정 생성          //
   const handelClusterization = async () => {
-    // 전체 places 정보에서 장소리스트 가져와서 배열만들기
+    // 1. k-means 클러스터링 변수
+    // 1.1 클러스터링에 사용할 장소 배열
     const places = Object.entries(placesInfo)
       .map(([type, places]) => (type !== "accommodation" ? places : []))
       .flat();
-
-    console.log("places");
-
-    const accommodation = placesInfo.accommodation || [];
-
+    // 1.2 클러스터링에 사용할 장소 데이터
     const locations = places.map((place) => [place.location.lat, place.location.lng, place.checkInDate || 0]);
-
+    // 1.3 클러스터링에 사용할 일정 데이터 - k값
     const numberOfDays = Object.keys(dailyTimeSlots).length;
-
+    // 1.3 클러스터링에 사용할 장소 데이터 - 숙소데이터
     const accommodationPlaces = placesInfo.accommodation || [];
 
     // 2. kmeans 클러스터링
     const clusters = kmeans(locations, numberOfDays);
-    console.log("K-means 클러스터링 결과:", clusters, accommodationPlaces);
+    console.log("K-means 클러스터링 결과:", clusters);
 
     // 3. 클러스터링 결과 데이터로 중심값과 장소 정보 매핑
     // 클러스터링 결과에서 중심점과 해당 클러스터에 속하는 장소들을 매핑
@@ -248,11 +290,12 @@ function EditTrip(props) {
         groupedByDate[checkOutDate].accommodation[1] = place || null;
       }
     });
-    // 4. 클러스터링 중심과 숙소 위치 정보를 비교하여 일정 생성
+
+    // 5. 클러스터링 중심과 숙소 위치 정보를 비교하여 일정 생성
     const matchClustersWithAccommodations = () => {
       // 사용된 클러스터를 추적하기 위한 Set
       const usedClusters = new Set();
-      
+
       // 각 날짜별로 처리
       Object.keys(groupedByDate).forEach((date) => {
         const accommodation = groupedByDate[date].accommodation[0];
@@ -288,11 +331,9 @@ function EditTrip(props) {
 
       // 사용되지 않은 클러스터 찾기
       const unusedClusters = clusterData.filter((_, index) => !usedClusters.has(index));
-      
+
       // places가 비어있는 날짜 찾기
-      const emptyDates = Object.keys(groupedByDate).filter(date => 
-        !groupedByDate[date].places || groupedByDate[date].places.length === 0
-      );
+      const emptyDates = Object.keys(groupedByDate).filter((date) => !groupedByDate[date].places || groupedByDate[date].places.length === 0);
 
       // 사용되지 않은 클러스터를 빈 날짜에 할당
       unusedClusters.forEach((cluster, index) => {
@@ -315,14 +356,90 @@ function EditTrip(props) {
     // 트립정보 세션에 저장
     setTripInfoInSessionStorage();
   }, []);
-  //           effect : useEffect          //
+
+  //           state : 검색어 관련           //
+  const [query, setQuery] = useState(""); // 검색어
+  const [suggestions, setSuggestions] = useState([]); // 자동완성 결과
+  const [isApiLoaded, setIsApiLoaded] = useState(false);
+
+  //           effect : google map api로드 확인          //
+  useEffect(() => {
+    // Google Maps API 로드 확인
+    if (window.google && window.google.maps && window.google.maps.places) {
+      setIsApiLoaded(true);
+    } else {
+      const interval = setInterval(() => {
+        if (window.google && window.google.maps && window.google.maps.places) {
+          setIsApiLoaded(true);
+          clearInterval(interval);
+        }
+      }, 100); // 100ms 간격으로 확인
+    }
+  }, []);
+  //           function : fetchSuggestions - 검색어를 이용한 자동완성         //
+  const fetchSuggestions = () => {
+    if (!query || !isApiLoaded) {
+      setSuggestions([]);
+      return;
+    }
+
+    const autocompleteService = new window.google.maps.places.AutocompleteService();
+
+    autocompleteService.getPlacePredictions({ input: query, location: new window.google.maps.LatLng(37.5665, 126.978), radius: 5000 }, (predictions, status) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        setSuggestions(predictions);
+      } else {
+        setSuggestions([]);
+      }
+    });
+  };
+  //           effect :
+  useEffect(() => {
+    const timeoutId = setTimeout(fetchSuggestions, 300); // 디바운싱
+    return () => clearTimeout(timeoutId);
+  }, [query, isApiLoaded]);
+
+  //           function : handlePlaceSelect - 자동완성 결과를 이용한 장소 선택         //
+  const handlePlaceSelect = (place) => {
+    setQuery(place.description);
+    setSuggestions([]);
+    fetchPlaceDetails(place.place_id);
+  };
+
+  const [placeDetails, setPlaceDetails] = useState(null);
+
+  const fetchPlaceDetails = (placeId) => {
+    if (!placeId) {
+      console.error("장소 id정보가 없습니다");
+      return;
+    }
+
+    const service = new window.google.maps.places.PlacesService(document.createElement("div"));
+
+    const request = {
+      placeId: placeId,
+      fields: ["name", "formatted_address", "geometry.location"],
+    };
+
+    service.getDetails(request, (place, status) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        console.log("장소 정보:", place.geometry.location.lat(), place.geometry.location.lng());
+        const newCenter = {
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
+        };
+        setMarkerPosition(newCenter);
+        setPlaceDetails(place);
+      } else {
+        console.error("장소 정보를 가져오는 데 실패했습니다:", status);
+      }
+    });
+  };
+
+
+
 
   
-
-  useEffect(() => {
-    console.log("placesInfo", placesInfo, "tripDates", tripDates, "dailyTimeSlots", dailyTimeSlots, "schedule", schedule);
-  }, [placesInfo, tripDates, dailyTimeSlots, schedule]);
-
   //          render : EditTrip 컴포넌트          //
   return (
     <>
@@ -330,20 +447,30 @@ function EditTrip(props) {
         {isLoaded ? (
           <>
             <div className="map-group">
-              <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={onPlaceChanged}>
-                <input className="map-control" type="text" placeholder="주소 검색" ref={inputRef} />
-              </Autocomplete>
+              <div className="search-container">
+                <input type="text" value={query} placeholder="장소를 검색하세요..." onChange={(e) => setQuery(e.target.value)} className="search-input map-control" />
+                {/* 자동완성 결과 */}
+                {suggestions.length > 0 && (
+                  <ul className="search-results">
+                    {suggestions.map((place) => (
+                      <li key={place.place_id} onClick={() => handlePlaceSelect(place)} className="result">
+                        {place.description}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
             <div className="place-control">
-              <select value={placeType} onChange={(e) => setPlaceType(e.target.value)}>
+              {/* <select value={placeType} onChange={(e) => setPlaceType(e.target.value)}>
                 <option value="">장소 유형</option>
                 <option value="accommodation">숙소</option>
                 <option value="attraction">관광지</option>
                 <option value="restaurant">식당</option>
                 <option value="cafe">카페</option>
-              </select>
+              </select> */}
               {/* 숙소 선택 시 표시되는 체크인/체크아웃 입력 */}
-              {placeType === "accommodation" && (
+              {/* {placeType === "accommodation" && (
                 <div className="accommodation-dates">
                   <label>
                     <span>체크인:</span>
@@ -370,16 +497,16 @@ function EditTrip(props) {
                     </select>
                   </label>
                 </div>
-              )}
+              )} */}
 
-              <button onClick={savePlace}>저장</button>
-              <button onClick={handelClusterization}>일정 생성하기</button>
+              {/* <button onClick={savePlace}>저장</button>
+              <button onClick={handelClusterization}>일정 생성하기</button> */}
             </div>
             <GoogleMap
               mapContainerStyle={containerStyle}
               center={mapCenter}
               zoom={zoom}
-              onClick={onMapClick}
+              onClick={getPlaceInfo}
               options={{
                 disableDefaultUI: true,
                 zoomControl: false,
@@ -390,7 +517,8 @@ function EditTrip(props) {
                 <Marker key={marker.id} position={marker.location} icon={getMarkerIcon(marker.id)} title={marker.name || marker.address} />
               ))}
               {/* 임시 마커(아직 저장 안 된 위치) */}
-              {markerPosition && <Marker position={markerPosition} icon={getMarkerIcon(addIcon)} title="새 장소" />}
+              {markerPosition && <Marker clickable={false} draggable={true} onDragEnd={getPlaceInfo} position={markerPosition} icon={getMarkerIcon(addIcon)} title="새 장소" />}
+              
             </GoogleMap>
           </>
         ) : (

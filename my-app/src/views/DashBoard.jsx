@@ -3,7 +3,7 @@ import "./css/dashboard.scss";
 import DashBoardItem from "../components/DashBoardItem";
 import noticeIcon from "../assets/icon/notice.png";
 import { useStore } from "../stores/store.API";
-import { StaticRouterProvider, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function DashBoard(props) {
   const user = useStore((state) => state.user);

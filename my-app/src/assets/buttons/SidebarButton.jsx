@@ -2,7 +2,7 @@ import React from "react";
 import "./style.scss";
 
 export default function SidebarButton(props) {
-  const { step, setStep, handelClusterization } = props;
+  const { step, setStep, handleOnclickAtPlaceList } = props;
   const RenderSidebarButtonComponent = (step, setStep) => {
     switch (step) {
       case 1:
@@ -33,8 +33,7 @@ export default function SidebarButton(props) {
             <button
               className="next-button"
               onClick={() => {
-                setStep(4);
-                handelClusterization();
+                handleOnclickAtPlaceList();
               }}
             >
               일정 생성하기
