@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 
 function Sidebar(props) {
   const { checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, placesInfo, setPlacesInfo, placeType, tripDates, setTripDates, dailyTimeSlots, setDailyTimeSlots, schedule, setSchedule, handelClusterization } = props.sidebarProps;
-
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
 
