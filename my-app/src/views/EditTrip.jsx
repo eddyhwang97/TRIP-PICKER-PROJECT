@@ -63,13 +63,6 @@ function EditTrip(props) {
     setMapCenter(cityCenter);
   };
 
-  //          function : 세션 스토리지에 여행정보 저장          //
-  // 여행정보 세션에 저장
-  const setTripInfoInSessionStorage = () => {
-    const trip = tripData;
-    sessionStorage.setItem("trip", JSON.stringify(trip));
-  };
-
   //          function : savePlace          //
   // 장소 저장 핸들러
   const savePlace = useCallback(() => {
@@ -135,19 +128,6 @@ function EditTrip(props) {
     alert("장소가 저장되었습니다!");
   }, [markerPosition, placeType, checkInDate, checkOutDate, dailyTimeSlots, placesInfo, setPlacesInfo, setMarkerPosition, setPlaceType, setCheckInDate, setCheckOutDate]);
   useEffect(() => {}, [placesInfo]);
-
-  //           function : useEffect           //
-  // placesInfo가 변경될 때마다 마커 업데이트          //
-  useEffect(() => {
-    const newMarkers = [];
-    // 각 장소 유형별로 마커 생성
-    Object.entries(placesInfo).forEach(([type, places]) => {
-      places.map((place) => {
-        newMarkers.push(place);
-      });
-    });
-    setMarkers(newMarkers);
-  }, [placesInfo]);
 
   //           function : fetchLocationInfoOnMapClick          //
   // 지도 클릭 시 위치 정보 불러오기
@@ -226,7 +206,7 @@ function EditTrip(props) {
   };
 
   //          function : 클러스터링 및 일정 생성          //
-  const handelClusterization = async () => {
+  const handelClusterization = useCallback(async () => {
     // 1. k-means 클러스터링 변수
     // 1.1 클러스터링에 사용할 장소 배열
     const places = Object.entries(placesInfo)
@@ -340,35 +320,13 @@ function EditTrip(props) {
     matchClustersWithAccommodations();
     setSchedule(groupedByDate);
     console.log("groupedByDate", groupedByDate);
-  };
-
-  //           effect : useLayoutEffect          //
-  useLayoutEffect(() => {
-    // 지역 센터 정보 저장
-    matchMapCenter();
-    // 트립정보 세션에 저장
-    setTripInfoInSessionStorage();
-  }, []);
+  });
 
   //           state : 검색어 관련           //
   const [query, setQuery] = useState(""); // 검색어
   const [suggestions, setSuggestions] = useState([]); // 자동완성 결과
   const [isApiLoaded, setIsApiLoaded] = useState(false);
 
-  //           effect : google map api로드 확인          //
-  useEffect(() => {
-    // Google Maps API 로드 확인
-    if (window.google && window.google.maps && window.google.maps.places) {
-      setIsApiLoaded(true);
-    } else {
-      const interval = setInterval(() => {
-        if (window.google && window.google.maps && window.google.maps.places) {
-          setIsApiLoaded(true);
-          clearInterval(interval);
-        }
-      }, 100); // 100ms 간격으로 확인
-    }
-  }, []);
   //           function : fetchSuggestions - 검색어를 이용한 자동완성         //
   const fetchSuggestions = () => {
     if (!query || !isApiLoaded) {
@@ -386,11 +344,6 @@ function EditTrip(props) {
       }
     });
   };
-  //           effect :
-  useEffect(() => {
-    const timeoutId = setTimeout(fetchSuggestions, 300); // 디바운싱
-    return () => clearTimeout(timeoutId);
-  }, [query, isApiLoaded]);
 
   //           function : handlePlaceSelect - 자동완성 결과를 이용한 장소 선택         //
   const handlePlaceSelect = (place) => {
@@ -432,6 +385,51 @@ function EditTrip(props) {
       }
     });
   };
+
+  //           effect : useLayoutEffect          //
+  useLayoutEffect(() => {
+    // 지역 센터 정보 저장
+    matchMapCenter();
+    // 트립정보 세션에 저장
+  }, []);
+
+  //           effect : google map api로드 확인          //
+  useEffect(() => {
+    // Google Maps API 로드 확인
+    if (window.google && window.google.maps && window.google.maps.places) {
+      setIsApiLoaded(true);
+    } else {
+      const interval = setInterval(() => {
+        if (window.google && window.google.maps && window.google.maps.places) {
+          setIsApiLoaded(true);
+          clearInterval(interval);
+        }
+      }, 100); // 100ms 간격으로 확인
+    }
+  }, []);
+
+  //           Effect : 트립정보 세션 저장          //
+  useEffect(() => {
+    sessionStorage.setItem("trip", JSON.stringify(tripData));
+  }, [tripData]);
+
+  //           Effect : placesInfo가 변경될 때마다 마커 업데이트           //
+  useEffect(() => {
+    const newMarkers = [];
+    // 각 장소 유형별로 마커 생성
+    Object.entries(placesInfo).forEach(([type, places]) => {
+      places.map((place) => {
+        newMarkers.push(place);
+      });
+    });
+    setMarkers(newMarkers);
+  }, [placesInfo]);
+
+  //           effect : 검색어를 이용한 자동완성          //
+  useEffect(() => {
+    const timeoutId = setTimeout(fetchSuggestions, 300); // 디바운싱
+    return () => clearTimeout(timeoutId);
+  }, [query, isApiLoaded]);
 
   //          render : EditTrip 컴포넌트          //
   return (

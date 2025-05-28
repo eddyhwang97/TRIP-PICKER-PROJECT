@@ -61,7 +61,7 @@ export default function ScheduleCreation(props) {
                         <span className="place-name">{place.name}</span>
                         {place.id && RenderCategory(place.id)}
                       </div>
-                      <div className="place-address">{place.adress}</div>
+                      <div className="place-address">{place.address}</div>
                     </div>
                     <button className="delete-button" onClick={() => handleDelete(place.id)}>
                       삭제
