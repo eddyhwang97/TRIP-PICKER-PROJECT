@@ -3,7 +3,7 @@ import $ from "jquery";
 import "./style.scss";
 
 export default function PlaceInfo(props) {
-  const { savePlace, markerPosition, setMarkerPosition, setPlaceType, setCheckInDate, setCheckOutDate, placeType, checkInDate, checkOutDate, dailyTimeSlots } = props;
+  const { savePlace, markerPosition, setPlaceType, setCheckInDate, setCheckOutDate, placeType, checkInDate, checkOutDate, dailyTimeSlots } = props;
 
   return (
     <div className="info-window position-info-container" style={{ padding: "5px" }}>

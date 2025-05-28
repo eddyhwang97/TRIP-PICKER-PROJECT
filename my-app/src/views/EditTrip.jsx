@@ -21,15 +21,12 @@ const containerStyle = {
 const libraries = ["places", "geometry"];
 
 function EditTrip(props) {
-  //           state : 여행정보 셋팅 및 저장 상태 변수 //
+  //           state : 지도관련 //
   const location = useLocation();
-  const [mapCenter, setMapCenter] = useState(null);
-  const [zoom, setZoom] = useState(12);
-  const [markerPosition, setMarkerPosition] = useState(null);
-  const [placeType, setPlaceType] = useState("attraction");
-  const [checkInDate, setCheckInDate] = useState("");
-  const [checkOutDate, setCheckOutDate] = useState("");
-  const [markers, setMarkers] = useState([]);
+  const [mapCenter, setMapCenter] = useState(null); // 지도 중심
+  const [zoom, setZoom] = useState(12); // 지도 줌
+  const [markerPosition, setMarkerPosition] = useState(null); // 마커 위치
+  const [markers, setMarkers] = useState([]); // 저장된 마커
   const [directions, setDirections] = useState(null);
 
   //           state : 여행정보 셋팅 및 저장 상태 변수 //
@@ -42,10 +39,17 @@ function EditTrip(props) {
   const [dailyTimeSlots, setDailyTimeSlots] = useState(tripData.dailyTimeSlots);
   // ScheduleCreation
   const [schedule, setSchedule] = useState(tripData.groupedByDate);
-  useEffect(() => {
-    setCheckInDate(Object.keys(dailyTimeSlots)[0]);
-    setCheckOutDate(Object.keys(dailyTimeSlots)[1]);
-  }, [dailyTimeSlots]);
+  // 장소 유형
+  const [placeType, setPlaceType] = useState("attraction"); 
+  // 체크인
+  const [checkInDate, setCheckInDate] = useState(Object.keys(dailyTimeSlots)[0]); 
+  // 체크아웃
+  const [checkOutDate, setCheckOutDate] = useState(Object.keys(dailyTimeSlots)[1]); 
+
+  //           state : 검색어 관련           //
+  const [query, setQuery] = useState(""); // 검색어
+  const [suggestions, setSuggestions] = useState([]); // 자동완성 결과
+  const [isApiLoaded, setIsApiLoaded] = useState(false);
 
   //           function : 구글맵 API 로드         //
   const { isLoaded } = useJsApiLoader({
@@ -63,7 +67,7 @@ function EditTrip(props) {
     setMapCenter(cityCenter);
   };
 
-  //          function : savePlace          //
+  //          function : savePlace - 장소 저장         //
   // 장소 저장 핸들러
   const savePlace = useCallback(() => {
     if (!markerPosition || !placeType) {
@@ -93,11 +97,17 @@ function EditTrip(props) {
       return;
     }
 
-    // 숙소 유형일 때 체크인/체크아웃이 입력되지 않으면 경고
-    if (placeType === "accommodation" && (!checkInDate || !checkOutDate)) {
-      alert("숙소의 체크인 및 체크아웃 날짜를 입력해주세요.");
+    // 체크인 날짜와 체크아웃 날짜 비교
+    if(placeType === "accommodation" && checkInDate > checkOutDate){
+      alert("체크인 날짜은 체크아웃 날짜보다 작은 날짜을 선택해주세요.");
       return;
     }
+    // 체크인 날짜와 체크아웃 날짜 비교(같은날짜)
+    if(placeType === "accommodation" && checkInDate === checkOutDate){
+      alert("체크인 날짜은 체크아웃 날짜보다 작은 날짜을 선택해주세요.");
+      return;
+    }
+    // 체크인 날짜와 체크아웃 날짜 비교(겹치는 날짜)
 
     // 새로운 장소 데이터 생성
     const newPlace = {
@@ -322,11 +332,6 @@ function EditTrip(props) {
     console.log("groupedByDate", groupedByDate);
   });
 
-  //           state : 검색어 관련           //
-  const [query, setQuery] = useState(""); // 검색어
-  const [suggestions, setSuggestions] = useState([]); // 자동완성 결과
-  const [isApiLoaded, setIsApiLoaded] = useState(false);
-
   //           function : fetchSuggestions - 검색어를 이용한 자동완성         //
   const fetchSuggestions = () => {
     if (!query || !isApiLoaded) {
@@ -429,7 +434,8 @@ function EditTrip(props) {
   useEffect(() => {
     const timeoutId = setTimeout(fetchSuggestions, 300); // 디바운싱
     return () => clearTimeout(timeoutId);
-  }, [query, isApiLoaded]);
+  });
+
 
   //          render : EditTrip 컴포넌트          //
   return (
