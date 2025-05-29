@@ -175,7 +175,7 @@ const [mapCenter, setMapCenter] = useState(null); // 지도 중심
       }
 
       try {
-        const apiKey = "5b3ce3597851110001cf6248631846b4c63c4b48a00a1b942d468684"; // 여기에 OpenRouteService API 키를 입력하세요.
+        const apiKey = process.env.REACE_APP_OPEN_ROOT_SERVICES_API_KEY; // 여기에 OpenRouteService API 키를 입력하세요.
 
         const coordinates = Object.entries(temp).flatMap(([type, places]) => places.map((place) => [place.location.lng, place.location.lat]));
 
