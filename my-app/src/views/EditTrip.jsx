@@ -14,7 +14,7 @@ import { set } from "date-fns";
 
 function EditTrip(props) {
   const location = useLocation();
-const [mapCenter, setMapCenter] = useState(null); // 지도 중심
+  const [mapCenter, setMapCenter] = useState(null); // 지도 중심
   //           state : 여행정보 셋팅 및 저장 상태 변수 //
   const tripData = location.state.tripData;
   // PlaceList
@@ -179,13 +179,15 @@ const [mapCenter, setMapCenter] = useState(null); // 지도 중심
 
         const coordinates = Object.entries(temp).flatMap(([type, places]) => places.map((place) => [place.location.lng, place.location.lat]));
 
-        const response = await fetch("https://api.openrouteservice.org/v2/directions/driving-car", {
+        const response = await fetch("/api/directions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
           },
-          body: JSON.stringify({ coordinates }),
+          body: JSON.stringify({
+            // openrouteservice에 전달할 body 내용
+            coordinates,
+          }),
         });
 
         if (!response.ok) {
@@ -245,7 +247,8 @@ const [mapCenter, setMapCenter] = useState(null); // 지도 중심
             setSchedule,
             route,
             setRoute,
-            mapCenter, setMapCenter
+            mapCenter,
+            setMapCenter,
           }}
         />
         <Sidebar
