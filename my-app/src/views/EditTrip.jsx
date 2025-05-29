@@ -175,8 +175,6 @@ function EditTrip(props) {
       }
 
       try {
-        const apiKey = process.env.REACE_APP_OPEN_ROOT_SERVICES_API_KEY; // 여기에 OpenRouteService API 키를 입력하세요.
-
         const coordinates = Object.entries(temp).flatMap(([type, places]) => places.map((place) => [place.location.lng, place.location.lat]));
 
         const response = await fetch("/api/directions", {
@@ -195,7 +193,7 @@ function EditTrip(props) {
         }
 
         const data = await response.json();
-        console.log("Response Data:", data.routes[0]);
+        console.log("Response Data:", data);
         // Encoded polyline 데이터
         const encodedPolyline = data.routes[0].geometry;
 
