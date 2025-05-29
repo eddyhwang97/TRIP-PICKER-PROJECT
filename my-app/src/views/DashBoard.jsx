@@ -13,10 +13,7 @@ function DashBoard(props) {
   const [checkedItems, setCheckedItems] = useState([]);
   const tripRef = useRef(null);
 
-  
-
-
-  //           fucnction          //
+  //           function          //
 
   // 여행목록 체크박스 클릭 감지
   const handleCheck = (id, isChecked) => {
@@ -26,7 +23,6 @@ function DashBoard(props) {
   const handleDeleteTripList = () => {
     setTripList((prev) => prev.filter((item) => !checkedItems.includes(item.id)));
   };
-  const handleSaveTripList = () => {};
 
   // 사용자 여행목록 가져오기
   const getTripList = () => {
@@ -38,9 +34,8 @@ function DashBoard(props) {
   const getCurrentTripData = (trip) => {
     tripRef.current = trip;
     const tripData = tripRef.current;
-    navigateEditTrip(tripData)
+    navigateEditTrip(tripData);
   };
-  
 
   // 로컬시티데이터와 선택한 시티데이터 매칭 후 center 뽑기
 
@@ -54,8 +49,6 @@ function DashBoard(props) {
   useLayoutEffect(() => {
     getTripList();
   }, []);
-
-  
 
   return (
     <div className="container">
