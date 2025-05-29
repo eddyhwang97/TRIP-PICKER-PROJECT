@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/TRIP-PICKER-PROJECT/static/css/main.23cc6103.css",
+    "main.js": "/TRIP-PICKER-PROJECT/static/js/main.2a5522cc.js",
+    "static/media/naver-logo.ico": "/TRIP-PICKER-PROJECT/static/media/naver-logo.0bfbbd54abb05f2676ab.ico",
+    "index.html": "/TRIP-PICKER-PROJECT/index.html",
+    "main.23cc6103.css.map": "/TRIP-PICKER-PROJECT/static/css/main.23cc6103.css.map",
+    "main.2a5522cc.js.map": "/TRIP-PICKER-PROJECT/static/js/main.2a5522cc.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.23cc6103.css",
+    "static/js/main.2a5522cc.js"
+  ]
+}
