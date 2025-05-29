@@ -1,14 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>404</title>
+    <meta http-equiv="refresh" content="0; url=./" />
   </head>
-  <script>
-    // GitHub Pages에서 라우팅 문제 해결
-    const redirect = window.location.pathname.replace("/TRIP-PICKER-PROJECT", "");
-    window.location.href = "/" + redirect;
-  </script>
-  <body></body>
+  <body>
+    <script>
+      // GitHub Pages SPA routing fix
+      var redirect = sessionStorage.redirect;
+      delete sessionStorage.redirect;
+      if (redirect && redirect != location.href) {
+        history.replaceState(null, null, redirect);
+        location.replace(redirect);
+      }
+    </script>
+    <h1>404 - Not Found</h1>
+    <p>Redirecting...</p>
+  </body>
 </html>
