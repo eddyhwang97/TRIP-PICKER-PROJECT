@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Polyline } from "@react-google-maps/api";
-import polyline from "@mapbox/polyline";
 
 import PlaceInfo from "../PlaceInfo";
 import accommodationIcon from "../../assets/images/accommodation_pin.png";
@@ -14,10 +13,10 @@ const containerStyle = {
 };
 const libraries = ["places", "geometry"];
 function GoogleMaps(props) {
-  const { tripData, placesInfo, setPlacesInfo, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, placeType, setPlaceType, tripDates, setTripDates, dailyTimeSlots, setDailyTimeSlots, schedule, setSchedule } = props.props;
+  const { tripData, placesInfo, setPlacesInfo, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, placeType, setPlaceType, tripDates, setTripDates, dailyTimeSlots, setDailyTimeSlots, schedule, setSchedule, route, setRoute, mapCenter, setMapCenter } = props.props;
   const [markerPosition, setMarkerPosition] = useState(null); // 마커 위치
   const [markers, setMarkers] = useState([]); // 저장된 마커
-  const [mapCenter, setMapCenter] = useState(null); // 지도 중심
+
   const [zoom, setZoom] = useState(12); // 지도 줌
   //           state : 검색어 관련           //
   const [query, setQuery] = useState(""); // 검색어
@@ -214,55 +213,6 @@ function GoogleMaps(props) {
     return { url: addIcon, scaledSize: new window.google.maps.Size(40, 40) };
   });
 
-  const [route, setRoute] = useState([]); // 경로 데이터
-  // 경로 데이터를 OpenRouteService에서 가져오는 함수
-  const fetchRoute = useCallback(async () => {
-    if (!schedule || schedule.length < 2) {
-      alert("경로를 생성하려면 두 개 이상의 장소가 필요합니다.");
-      return;
-    }
-
-    try {
-      const apiKey = "5b3ce3597851110001cf6248631846b4c63c4b48a00a1b942d468684"; // 여기에 OpenRouteService API 키를 입력하세요.
-
-      const coordinates = Object.entries(schedule).flatMap(([type, places]) => places.map((place) => [place.location.lng, place.location.lat]));
-
-      const response = await fetch("https://api.openrouteservice.org/v2/directions/driving-car", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({ coordinates }),
-      });
-
-      if (!response.ok) {
-        throw new Error("경로 데이터를 가져오는 데 실패했습니다.");
-      }
-
-      const data = await response.json();
-      console.log("Response Data:", data.routes[0]);
-      // Encoded polyline 데이터
-      const encodedPolyline = data.routes[0].geometry;
-
-      // Polyline 디코딩
-      const decodedCoordinates = polyline.decode(encodedPolyline);
-
-      // 'routes[0].segments[0].steps'를 통해 경로를 얻음
-      const routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({
-        lat,
-        lng,
-      }));
-      console.log("Decoded Route Coordinates:", routeCoordinates);
-
-      // 지도 중심 이동 (예: Leaflet.js)
-      setMapCenter(routeCoordinates[0]);
-      setRoute(routeCoordinates);
-    } catch (error) {
-      console.error("경로 데이터를 가져오는 중 오류 발생:", error);
-    }
-  }, [schedule, route]);
-
   //          Effect : 지도 센터위치 조정         //
   // Match the map center with the trip's city
   useLayoutEffect(() => {
@@ -378,18 +328,6 @@ function GoogleMaps(props) {
               />
             )}
           </GoogleMap>
-          <button
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              zIndex: 1,
-            }}
-            onClick={fetchRoute}
-          >
-            루트 생성
-          </button>
         </>
       ) : (
         <div>Loading Map...</div>

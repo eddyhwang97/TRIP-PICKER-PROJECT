@@ -2,6 +2,7 @@ import { useCallback, useState, useEffect } from "react";
 
 import { useLocation } from "react-router-dom";
 import { kmeans } from "ml-kmeans";
+import polyline from "@mapbox/polyline";
 // css
 import "./css/editTrip.scss";
 
@@ -13,7 +14,7 @@ import { set } from "date-fns";
 
 function EditTrip(props) {
   const location = useLocation();
-
+const [mapCenter, setMapCenter] = useState(null); // 지도 중심
   //           state : 여행정보 셋팅 및 저장 상태 변수 //
   const tripData = location.state.tripData;
   // PlaceList
@@ -161,7 +162,60 @@ function EditTrip(props) {
     });
     console.log("temp", temp);
     setSchedule(temp);
+    fetchRoute(temp);
   }, []);
+
+  const [route, setRoute] = useState([]); // 경로 데이터
+  // 경로 데이터를 OpenRouteService에서 가져오는 함수
+  const fetchRoute = useCallback(
+    async (temp) => {
+      if (!temp || temp.length < 2) {
+        alert("경로를 생성하려면 두 개 이상의 장소가 필요합니다.");
+        return;
+      }
+
+      try {
+        const apiKey = "5b3ce3597851110001cf6248631846b4c63c4b48a00a1b942d468684"; // 여기에 OpenRouteService API 키를 입력하세요.
+
+        const coordinates = Object.entries(temp).flatMap(([type, places]) => places.map((place) => [place.location.lng, place.location.lat]));
+
+        const response = await fetch("https://api.openrouteservice.org/v2/directions/driving-car", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({ coordinates }),
+        });
+
+        if (!response.ok) {
+          throw new Error("경로 데이터를 가져오는 데 실패했습니다.");
+        }
+
+        const data = await response.json();
+        console.log("Response Data:", data.routes[0]);
+        // Encoded polyline 데이터
+        const encodedPolyline = data.routes[0].geometry;
+
+        // Polyline 디코딩
+        const decodedCoordinates = polyline.decode(encodedPolyline);
+
+        // 'routes[0].segments[0].steps'를 통해 경로를 얻음
+        const routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({
+          lat,
+          lng,
+        }));
+        console.log("Decoded Route Coordinates:", routeCoordinates);
+
+        // 지도 중심 이동 (예: Leaflet.js)
+        setMapCenter(routeCoordinates[0]);
+        setRoute(routeCoordinates);
+      } catch (error) {
+        console.error("경로 데이터를 가져오는 중 오류 발생:", error);
+      }
+    },
+    [schedule, route]
+  );
 
   //           Effect : 트립정보 세션 저장          //
   useEffect(() => {
@@ -189,6 +243,9 @@ function EditTrip(props) {
             setDailyTimeSlots,
             schedule,
             setSchedule,
+            route,
+            setRoute,
+            mapCenter, setMapCenter
           }}
         />
         <Sidebar
