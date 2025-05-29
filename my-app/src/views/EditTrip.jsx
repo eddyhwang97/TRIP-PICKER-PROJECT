@@ -14,7 +14,7 @@ import { set } from "date-fns";
 
 function EditTrip(props) {
   const location = useLocation();
-  const [mapCenter, setMapCenter] = useState(null); // 지도 중심
+const [mapCenter, setMapCenter] = useState(null); // 지도 중심
   //           state : 여행정보 셋팅 및 저장 상태 변수 //
   const tripData = location.state.tripData;
   // PlaceList
@@ -175,17 +175,17 @@ function EditTrip(props) {
       }
 
       try {
+        const apiKey = process.env.OPENROUTESERVICE_API_KEY; // 여기에 OpenRouteService API 키를 입력하세요.
+
         const coordinates = Object.entries(temp).flatMap(([type, places]) => places.map((place) => [place.location.lng, place.location.lat]));
 
-        const response = await fetch("/api/directions", {
+        const response = await fetch("https://api.openrouteservice.org/v2/directions/driving-car", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
           },
-          body: JSON.stringify({
-            // openrouteservice에 전달할 body 내용
-            coordinates,
-          }),
+          body: JSON.stringify({ coordinates }),
         });
 
         if (!response.ok) {
@@ -193,9 +193,9 @@ function EditTrip(props) {
         }
 
         const data = await response.json();
-        console.log("Response Data:", data);
+        console.log("Response Data:", data.routes[0]);
         // Encoded polyline 데이터
-        const encodedPolyline = data.routes[0].geometry;
+        const encodedPolyline = data.routes[0].geometry;  
 
         // Polyline 디코딩
         const decodedCoordinates = polyline.decode(encodedPolyline);
@@ -245,8 +245,7 @@ function EditTrip(props) {
             setSchedule,
             route,
             setRoute,
-            mapCenter,
-            setMapCenter,
+            mapCenter, setMapCenter
           }}
         />
         <Sidebar
