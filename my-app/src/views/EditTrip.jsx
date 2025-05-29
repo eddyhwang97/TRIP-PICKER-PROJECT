@@ -9,6 +9,7 @@ import "./css/editTrip.scss";
 import Sidebar from "../components/Sidebar";
 
 import GoogleMaps from "../components/GoogleMaps";
+import { set } from "date-fns";
 
 function EditTrip(props) {
   const location = useLocation();
@@ -22,7 +23,7 @@ function EditTrip(props) {
   // TimeSelection
   const [dailyTimeSlots, setDailyTimeSlots] = useState(tripData.dailyTimeSlots);
   // ScheduleCreation
-  const [schedule, setSchedule] = useState(tripData.groupedByDate);
+  const [schedule, setSchedule] = useState(null);
   // 장소 유형
   const [placeType, setPlaceType] = useState("attraction");
   // 체크인
@@ -142,10 +143,25 @@ function EditTrip(props) {
       });
     };
 
+    // 6. 일정 생성
+
     matchClustersWithAccommodations();
-    setSchedule(groupedByDate);
-    console.log("groupedByDate", groupedByDate);
+    makeSchedule(groupedByDate);
   });
+  const makeSchedule = useCallback((groupedByDate) => {
+    const temp = {};
+    Object.keys(groupedByDate).forEach((date) => {
+      temp[date] = groupedByDate[date].places;
+      if (groupedByDate[date].accommodation[1] !== null) {
+        temp[date].unshift(groupedByDate[date].accommodation[1]);
+      }
+      if (groupedByDate[date].accommodation[0] !== null) {
+        temp[date].push(groupedByDate[date].accommodation[0]);
+      }
+    });
+    console.log("temp", temp);
+    setSchedule(temp);
+  }, []);
 
   //           Effect : 트립정보 세션 저장          //
   useEffect(() => {

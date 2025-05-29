@@ -63,7 +63,7 @@ function Sidebar(props) {
           handelClusterization={handelClusterization}
         />
       )}
-      {step === 4 && <ScheduleCreation placesInfo={placesInfo} setPlacesInfo={setPlacesInfo} categoryColors={categoryColors} dailyTimeSlots={dailyTimeSlots} schedule={schedule} setSchedule={setSchedule} step={step} setStep={setStep} />}
+      {step === 4 && <ScheduleCreation placesInfo={placesInfo} setPlacesInfo={setPlacesInfo} categoryColors={categoryColors} schedule={schedule} setSchedule={setSchedule} step={step} setStep={setStep} />}
       {step === 5 && <Viewer step={step} setStep={setStep} />}
     </div>
   );

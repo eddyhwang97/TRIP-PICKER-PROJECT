@@ -1,5 +1,7 @@
-import React, { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { Loader, GoogleMap, useJsApiLoader, Marker, InfoWindow, DirectionsService, DirectionsRenderer } from "@react-google-maps/api";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Polyline } from "@react-google-maps/api";
+import polyline from "@mapbox/polyline";
+
 import PlaceInfo from "../PlaceInfo";
 import accommodationIcon from "../../assets/images/accommodation_pin.png";
 import restaurantIcon from "../../assets/images/restaurant_pin.png";
@@ -21,15 +23,6 @@ function GoogleMaps(props) {
   const [query, setQuery] = useState(""); // 검색어
   const [suggestions, setSuggestions] = useState([]); // 자동완성 결과
   const [isApiLoaded, setIsApiLoaded] = useState(false);
-
-  //          function : matchMapCenter          //
-  // 지역 센터 정보 저장
-  const matchMapCenter = () => {
-    const tripDataCity = tripData.city;
-    const citys = JSON.parse(localStorage.getItem("citys"));
-    const cityCenter = citys.find((city) => city.id === tripDataCity).center;
-    setMapCenter(cityCenter);
-  };
 
   //           function : 구글맵 API 로드         //
   const { isLoaded } = useJsApiLoader({
@@ -108,19 +101,13 @@ function GoogleMaps(props) {
     setCheckOutDate(""); // 체크아웃 날짜 초기화
 
     alert("장소가 저장되었습니다!");
-  }, [markerPosition, placeType, checkInDate, checkOutDate, dailyTimeSlots, placesInfo, setPlacesInfo, setMarkerPosition, setPlaceType, setCheckInDate, setCheckOutDate]);
-  useEffect(() => {}, [placesInfo]);
+  }, [markerPosition, placeType, checkInDate, checkOutDate, setPlacesInfo]);
 
-  //           function : fetchLocationInfoOnMapClick          //
+  //           function : fetchPlaceOnClick          //
   // 지도 클릭 시 위치 정보 불러오기
-  const fetchLocationInfoOnMapClick = useCallback(async (event, setLocationInfo) => {
-    const clickedPosition = {
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng(),
-    };
-
+  const fetchPlaceOnClicknDrag = useCallback(async (event) => {
     try {
-      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${clickedPosition.lat},${clickedPosition.lng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
+      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${event.latLng.lat()},${event.latLng.lng()}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
       const data = await response.json();
 
       const { Place } = await window.google.maps.importLibrary("places");
@@ -137,8 +124,13 @@ function GoogleMaps(props) {
         await place.fetchFields({
           fields: ["displayName"],
         });
-
-        setLocationInfo(locationInfo, place.displayName);
+        const clickedPosition = {
+          name: place.displayName,
+          lat: event.latLng.lat(),
+          lng: event.latLng.lng(),
+          address: locationInfo.formatted_address,
+        };
+        return setMarkerPosition(clickedPosition);
         // 위치 정보에 따라 필요한 동작 수행
       } else {
         console.error("위치 정보를 불러오지 못했습니다.");
@@ -147,45 +139,6 @@ function GoogleMaps(props) {
       console.error("에러 발생:", error);
     }
   }, []);
-
-  //           function : onMapClick          //
-  // 지도 클릭 핸들러에 추가
-  const getPlaceInfo = useCallback(
-    (event) => {
-      const setLocationInfo = (locationInfo, displayName) => {
-        if (locationInfo) {
-          const clickedPosition = {
-            name: displayName,
-            lat: event.latLng.lat(),
-            lng: event.latLng.lng(),
-            address: locationInfo.formatted_address,
-          };
-
-          setMarkerPosition(clickedPosition);
-        }
-        return;
-      };
-      fetchLocationInfoOnMapClick(event, setLocationInfo);
-    },
-    [markerPosition]
-  );
-
-  //           function : 마커 아이콘 설정          //
-  const getMarkerIcon = useCallback((type) => {
-    if (type === "accommodation" || type.includes("accom")) {
-      return { url: accommodationIcon, scaledSize: new window.google.maps.Size(40, 40) };
-    }
-    if (type === "restaurant" || type.includes("rest")) {
-      return { url: restaurantIcon, scaledSize: new window.google.maps.Size(40, 40) };
-    }
-    if (type === "attraction" || type.includes("attr")) {
-      return { url: placeIcon, scaledSize: new window.google.maps.Size(40, 40) };
-    }
-    if (type === "cafe" || type.includes("cafe")) {
-      return { url: cafeIcon, scaledSize: new window.google.maps.Size(40, 40) };
-    }
-    return { url: addIcon, scaledSize: new window.google.maps.Size(40, 40) };
-  });
 
   //           function : fetchSuggestions - 검색어를 이용한 자동완성         //
   const fetchSuggestions = useCallback(() => {
@@ -209,13 +162,11 @@ function GoogleMaps(props) {
   const handlePlaceSelect = useCallback((place) => {
     setQuery(place.description);
     setSuggestions([]);
-    fetchPlaceDetails(place.place_id);
+    fetchPlaceOnSearch(place.place_id);
   });
 
-  //
-
-  //           function : fetchPlaceDetails - 장소 정보 가져오기         //
-  const fetchPlaceDetails = useCallback((placeId) => {
+  //           function : fetchPlaceOnSearch- 장소 정보 가져오기         //
+  const fetchPlaceOnSearch = useCallback((placeId) => {
     if (!placeId) {
       console.error("장소 id정보가 없습니다");
       return;
@@ -245,12 +196,80 @@ function GoogleMaps(props) {
       }
     });
   });
-  //           effect : useLayoutEffect          //
+
+  //           function : 마커 아이콘 설정          //
+  const getMarkerIcon = useCallback((type) => {
+    if (type === "accommodation" || type.includes("accom")) {
+      return { url: accommodationIcon, scaledSize: new window.google.maps.Size(40, 40) };
+    }
+    if (type === "restaurant" || type.includes("rest")) {
+      return { url: restaurantIcon, scaledSize: new window.google.maps.Size(40, 40) };
+    }
+    if (type === "attraction" || type.includes("attr")) {
+      return { url: placeIcon, scaledSize: new window.google.maps.Size(40, 40) };
+    }
+    if (type === "cafe" || type.includes("cafe")) {
+      return { url: cafeIcon, scaledSize: new window.google.maps.Size(40, 40) };
+    }
+    return { url: addIcon, scaledSize: new window.google.maps.Size(40, 40) };
+  });
+
+  const [route, setRoute] = useState([]); // 경로 데이터
+  // 경로 데이터를 OpenRouteService에서 가져오는 함수
+  const fetchRoute = useCallback(async () => {
+    if (!schedule || schedule.length < 2) {
+      alert("경로를 생성하려면 두 개 이상의 장소가 필요합니다.");
+      return;
+    }
+
+    try {
+      const apiKey = "5b3ce3597851110001cf6248631846b4c63c4b48a00a1b942d468684"; // 여기에 OpenRouteService API 키를 입력하세요.
+
+      const coordinates = Object.entries(schedule).flatMap(([type, places]) => places.map((place) => [place.location.lng, place.location.lat]));
+
+      const response = await fetch("https://api.openrouteservice.org/v2/directions/driving-car", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({ coordinates }),
+      });
+
+      if (!response.ok) {
+        throw new Error("경로 데이터를 가져오는 데 실패했습니다.");
+      }
+
+      const data = await response.json();
+      console.log("Response Data:", data.routes[0]);
+      // Encoded polyline 데이터
+      const encodedPolyline = data.routes[0].geometry;
+
+      // Polyline 디코딩
+      const decodedCoordinates = polyline.decode(encodedPolyline);
+
+      // 'routes[0].segments[0].steps'를 통해 경로를 얻음
+      const routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({
+        lat,
+        lng,
+      }));
+      console.log("Decoded Route Coordinates:", routeCoordinates);
+
+      // 지도 중심 이동 (예: Leaflet.js)
+      setMapCenter(routeCoordinates[0]);
+      setRoute(routeCoordinates);
+    } catch (error) {
+      console.error("경로 데이터를 가져오는 중 오류 발생:", error);
+    }
+  }, [schedule, route]);
+
+  //          Effect : 지도 센터위치 조정         //
+  // Match the map center with the trip's city
   useLayoutEffect(() => {
-    // 지역 센터 정보 저장
-    matchMapCenter();
-    // 트립정보 세션에 저장
-  }, []);
+    const citys = JSON.parse(localStorage.getItem("citys")) || [];
+    const cityCenter = citys.find((city) => city.id === tripData.city)?.center;
+    if (cityCenter) setMapCenter(cityCenter);
+  }, [tripData.city]);
 
   //           effect : google map api로드 확인          //
   useEffect(() => {
@@ -309,7 +328,7 @@ function GoogleMaps(props) {
             mapContainerStyle={containerStyle}
             center={mapCenter}
             zoom={zoom}
-            onClick={getPlaceInfo}
+            onClick={fetchPlaceOnClicknDrag}
             options={{
               disableDefaultUI: true,
               zoomControl: false,
@@ -322,7 +341,7 @@ function GoogleMaps(props) {
             {/* 임시 마커(아직 저장 안 된 위치) */}
             {markerPosition && (
               <>
-                <Marker clickable={false} draggable={true} onDragEnd={getPlaceInfo} position={markerPosition} icon={getMarkerIcon(addIcon)} title="새 장소">
+                <Marker clickable={false} draggable={true} onDragEnd={fetchPlaceOnClicknDrag} position={markerPosition} icon={getMarkerIcon(addIcon)} title="새 장소">
                   <InfoWindow
                     position={markerPosition}
                     options={{
@@ -347,7 +366,30 @@ function GoogleMaps(props) {
                 </Marker>
               </>
             )}
+            {/* 경로 표시 */}
+            {route.length > 0 && (
+              <Polyline
+                path={route}
+                options={{
+                  strokeColor: "#FF0000",
+                  strokeOpacity: 0.8,
+                  strokeWeight: 4,
+                }}
+              />
+            )}
           </GoogleMap>
+          <button
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 1,
+            }}
+            onClick={fetchRoute}
+          >
+            루트 생성
+          </button>
         </>
       ) : (
         <div>Loading Map...</div>

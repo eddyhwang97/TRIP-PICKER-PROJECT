@@ -3,7 +3,7 @@ import { SidebarButton } from "../../../assets";
 import "./style.scss";
 
 export default function ScheduleCreation(props) {
-  const { placesInfo, setPlacesInfo, dailyTimeSlots, schedule, setSchedule, handelClusterization } = props;
+  const { placesInfo, setPlacesInfo,schedule, setSchedule, handelClusterization } = props;
 
   // 날짜 변환
   const changeDateFormat = useCallback((dateStr) => {
@@ -54,7 +54,7 @@ export default function ScheduleCreation(props) {
             <div className="day-group" key={day}>
               <h3 className="day-title">{`${index + 1}일차(${changeDateFormat(day)})`}</h3>
               <ul className="place-list">
-                {[...(dateInfo.accommodation && dateInfo.accommodation[1] ? [dateInfo.accommodation[1]] : []), ...(dateInfo.places || []), ...(dateInfo.accommodation && dateInfo.accommodation[0] ? [dateInfo.accommodation[0]] : [])].map((place) => (
+                {dateInfo.map((place) => (
                   <li className="place-item" key={place.id}>
                     <div className="place-info">
                       <div className="place-name-category">
