@@ -3,7 +3,6 @@ import { useStore } from "../stores/store.API";
 
 // assets
 import picker from "../assets/logo/picker.png";
-import searchButton from "../assets/images/search-button.png";
 
 // css
 import "./css/main.scss";
