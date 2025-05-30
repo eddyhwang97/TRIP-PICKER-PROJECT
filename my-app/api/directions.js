@@ -1,10 +1,10 @@
-import axios from "axios";
+const axios = require("axios");
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
-console.log(req.body)
+  console.log(req.body);
   const { coordinates } = req.body;
   if (!coordinates || !Array.isArray(coordinates) || coordinates.length < 2) {
     return res.status(400).json({ error: "coordinates 배열이 필요합니다." });
@@ -27,4 +27,4 @@ console.log(req.body)
       details: error.response?.data,
     });
   }
-}
+};
