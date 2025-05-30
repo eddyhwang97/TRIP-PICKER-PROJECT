@@ -162,12 +162,12 @@ function EditTrip(props) {
     });
     console.log("temp", temp);
     setSchedule(temp);
-    console.log(Object.entries(temp).flatMap(([type, places]) => places.map((place) => [place.location.lng, place.location.lat])));
+    fetchRoute(temp)
   }, []);
 
   const [route, setRoute] = useState([]); // 경로 데이터
   // 경로 데이터를 OpenRouteService에서 가져오는 함수
-  const fetchRoute = useCallback(async () => {
+  const fetchRoute = useCallback(async (schedule) => {
     console.log("schedule", schedule);
     if (!schedule || schedule.length < 2) {
       alert("경로를 생성하려면 두 개 이상의 장소가 필요합니다.");
