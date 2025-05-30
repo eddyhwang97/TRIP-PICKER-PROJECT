@@ -178,7 +178,7 @@ function EditTrip(props) {
       const coordinates = Object.entries(schedule).flatMap(([type, places]) => places.map((place) => [place.location.lng, place.location.lat]));
 
       // 프록시 서버로 POST 요청
-      const response = await fetch("http://localhost:4000/api/directions", {
+      const response = await fetch("/api/directions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
