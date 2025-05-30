@@ -82,7 +82,6 @@ function Main(props) {
           dailyTimeSlots: {},
         };
       }
-      console.log(tripData);
       navigate("/edittrip", { state: { tripData: tripData } });
     },
   };
