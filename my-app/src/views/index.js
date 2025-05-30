@@ -1,7 +1,7 @@
-import Main from "./Main.jsx";
-import DashBoard from "./DashBoard.jsx";
-import EditTrip from "./EditTrip.jsx";
-import Login from "./Login.jsx";
-import Join from "./Join.jsx";
+import Main from "./Main";
+import DashBoard from "./DashBoard";
+import EditTrip from "./EditTrip";
+import Login from "./Login";
+import Join from "./Join";
 
 export { Main, DashBoard, EditTrip , Login, Join };

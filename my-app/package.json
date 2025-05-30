@@ -2,7 +2,6 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
     "@mapbox/mapbox-sdk": "^0.16.1",
