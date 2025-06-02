@@ -48,12 +48,12 @@
   font-weight: 500;
   line-height: 140%;
   display: flex;
-  justify-content: space-between
+  justify-content: space-between;
 }
 .dashboard-left-notice-button {
   border: none;
   background: transparent;
-  img{
+  img {
     width: 12.72px;
     height: 13px;
   }
@@ -108,6 +108,7 @@
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: 15px;
+  padding: 0 10px;
 }
 .dashboard-right-top-title {
   font-size: 40px;
@@ -129,8 +130,13 @@
 }
 .dashboard-right-trip-item-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 3fr));
   gap: 20px;
+}
+@media (min-width: 1500px) {
+.dashboard-right-trip-item-list {
+  grid-template-columns: repeat(3, 1fr); // 고정된 열 수로 간격 제한
+}
 }
 .dashboard-right-trip-create-new-item {
   height: auto;
@@ -140,16 +146,25 @@
   }
   .dashboard-right-trip-item-thumb-box {
     width: 100%;
+         max-width: 600px;
     height: 100%;
     display: flex;
     flex-direction: column;
   }
   .dashboard-right-trip-item-thumb-image {
-    width: 100%;
-    height: 190px;
     border-radius: 5px;
     background-color: #dfdfdf93;
     position: relative;
+    width: 100%;
+    min-width: 280px; // 너무 작아지지 않게 제한
+    aspect-ratio: 16 / 9; // 높이 자동 조절
+    border-radius: 5px;
+            scale: .9;
+
+    @media (max-width: 500px) {
+      margin: 0 auto; // 가운데 정렬 (부모가 세로 레이아웃일 때 유효)
+    }
+
     span {
       position: absolute;
       top: 50%;
@@ -169,5 +184,36 @@
     line-height: 140%;
     margin-top: 5px;
     text-align: center;
+  }
+}
+
+@media (max-width: 500px) {
+  .dashboard-box {
+    flex-direction: column; // 사이드바 위, 콘텐츠 아래
+  }
+
+  .dashboard-left {
+    width: 100%;
+    height: auto; // 높이 자동
+    border-right: none;
+    border-bottom: 0.5px solid #e0e0e0;
+  }
+
+  .dashBoard-left-bottom {
+    height: auto;
+  }
+
+  .dashboard-right {
+    width: 100%;
+    padding: 0;
+  }
+
+  .dashboard-right-top-title {
+    font-size: 28px;
+  }
+
+  .dashboard-right-trip-item-list {
+    grid-template-columns: repeat(1, 1fr); // 또는 repeat(2, 1fr)로도 가능
+    gap: 15px;
   }
 }
