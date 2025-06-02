@@ -182,6 +182,7 @@ function EditTrip(props) {
         alert("경로를 생성하려면 두 개 이상의 장소가 필요합니다.");
         return;
       }
+      console.log("schedule[0]", schedule[0]);
 
       const coordinates = schedule[0]
       try {
