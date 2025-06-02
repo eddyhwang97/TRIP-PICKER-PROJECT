@@ -18,7 +18,7 @@ function DashBoard(props) {
   // 여행목록 체크박스 클릭 감지
   const handleCheck = (id, isChecked) => {
     setCheckedItems((prev) => (isChecked ? [...prev, id] : prev.filter((item) => item !== id)));
-    console.log(checkedItems);
+    // console.log(checkedItems);
   };
   const handleDeleteTripList = () => {
     setTripList((prev) => prev.filter((item) => !checkedItems.includes(item.id)));
@@ -28,7 +28,7 @@ function DashBoard(props) {
   const getTripList = () => {
     const userTirpList = user !== null ? JSON.parse(localStorage.getItem("trips")).filter((trip) => trip.userId === user.id) : [];
     setTripList(userTirpList);
-    console.log(userTirpList);
+    // console.log(userTirpList);
   };
   // 클릭한 여행데이터 수집
   const getCurrentTripData = (trip) => {
