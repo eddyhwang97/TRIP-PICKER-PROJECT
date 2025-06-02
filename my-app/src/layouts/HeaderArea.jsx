@@ -15,7 +15,6 @@ function HeaderArea(props) {
   const clearUser = useStore((state) => state.clearUser);
   const navigate = useNavigate();
   const handleLogout = (e) => {
-    e.preventDefault();
     const confirmed = window.confirm("로그아웃 하시겠습니까?");
     if (confirmed) {
       clearUser();
