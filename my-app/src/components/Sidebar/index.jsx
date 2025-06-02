@@ -9,7 +9,24 @@ import "./style.scss";
 import { useNavigate } from "react-router-dom";
 
 function Sidebar(props) {
-  const { checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, placesInfo, setPlacesInfo, placeType, tripDates, setTripDates, dailyTimeSlots, setDailyTimeSlots, schedule, setSchedule, handelClusterization } = props.sidebarProps;
+  
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const {
+    checkInDate,
+    setCheckInDate,
+    checkOutDate,
+    setCheckOutDate,
+    placesInfo,
+    setPlacesInfo,
+    placeType,
+    tripDates,
+    setTripDates,
+    dailyTimeSlots,
+    setDailyTimeSlots,
+    schedule,
+    setSchedule,
+    handelClusterization,
+  } = props.sidebarProps;
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
 
@@ -25,47 +42,81 @@ function Sidebar(props) {
   );
 
   return (
-    <div className="sidebar">
-      <div className="sidebar-header">
-        <h2>
-          {step === 1 && "날짜 선택"}
-          {step === 2 && "활동 시간 선택"}
-          {step === 3 && "리스트 생성하기"}
-          {step === 4 && "일정 생성"}
-          {step === 5 && "일정 뷰어"}
-        </h2>
-        <button
-          className="dashboard-button"
-          onClick={(e) => {
-            e.preventDefault();
-            navigate("/dashboard");
-          }}
-        >
-          Dash Board
-        </button>
+    <>
+      {/* 사이드바 토글 버튼 (1024px 이하에서만 보임) */}
+      <button
+        className="sidebar-toggle"
+        onClick={() => setSidebarOpen((prev) => !prev)}
+      >
+         {sidebarOpen ? "«" : "»"}
+      </button>
+      <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
+        <div className="sidebar-header">
+          <h2>
+            {step === 1 && "날짜 선택"}
+            {step === 2 && "활동 시간 선택"}
+            {step === 3 && "리스트 생성하기"}
+            {step === 4 && "일정 생성"}
+            {step === 5 && "일정 뷰어"}
+          </h2>
+          <button
+            className="dashboard-button"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/dashboard");
+            }}
+          >
+            Dash Board
+          </button>
+        </div>
+        {/* 단계별로 컴포넌트 보여주기 */}
+        {step === 1 && (
+          <DateSelection
+            tripDates={tripDates}
+            setTripDates={setTripDates}
+            step={step}
+            setStep={setStep}
+          />
+        )}
+        {step === 2 && (
+          <TimeSelection
+            tripDates={tripDates}
+            dailyTimeSlots={dailyTimeSlots}
+            setDailyTimeSlots={setDailyTimeSlots}
+            step={step}
+            setStep={setStep}
+          />
+        )}
+        {step === 3 && (
+          <PlaceList
+            checkOutDate={checkOutDate}
+            setCheckOutDate={setCheckOutDate}
+            dailyTimeSlots={dailyTimeSlots}
+            checkInDate={checkInDate}
+            setCheckInDate={setCheckInDate}
+            placeType={placeType}
+            placesInfo={placesInfo}
+            setPlacesInfo={setPlacesInfo}
+            categoryColors={categoryColors}
+            step={step}
+            setStep={setStep}
+            handelClusterization={handelClusterization}
+          />
+        )}
+        {step === 4 && (
+          <ScheduleCreation
+            placesInfo={placesInfo}
+            setPlacesInfo={setPlacesInfo}
+            categoryColors={categoryColors}
+            schedule={schedule}
+            setSchedule={setSchedule}
+            step={step}
+            setStep={setStep}
+          />
+        )}
+        {step === 5 && <Viewer step={step} setStep={setStep} />}
       </div>
-      {/* 단계별로 컴포넌트 보여주기 */}
-      {step === 1 && <DateSelection tripDates={tripDates} setTripDates={setTripDates} step={step} setStep={setStep} />}
-      {step === 2 && <TimeSelection tripDates={tripDates} dailyTimeSlots={dailyTimeSlots} setDailyTimeSlots={setDailyTimeSlots} step={step} setStep={setStep} />}
-      {step === 3 && (
-        <PlaceList
-          checkOutDate={checkOutDate}
-          setCheckOutDate={setCheckOutDate}
-          dailyTimeSlots={dailyTimeSlots}
-          checkInDate={checkInDate}
-          setCheckInDate={setCheckInDate}
-          placeType={placeType}
-          placesInfo={placesInfo}
-          setPlacesInfo={setPlacesInfo}
-          categoryColors={categoryColors}
-          step={step}
-          setStep={setStep}
-          handelClusterization={handelClusterization}
-        />
-      )}
-      {step === 4 && <ScheduleCreation placesInfo={placesInfo} setPlacesInfo={setPlacesInfo} categoryColors={categoryColors} schedule={schedule} setSchedule={setSchedule} step={step} setStep={setStep} />}
-      {step === 5 && <Viewer step={step} setStep={setStep} />}
-    </div>
+    </>
   );
 }
 
