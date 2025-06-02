@@ -15,13 +15,13 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    font-size: 9.6rem;
+    font-size: 9.0rem;
     line-height: 1.5;
     text-align: center;
     font-weight: bold;
     display: flex;
     @media screen and (max-width: 1024px) {
-      font-size: 8rem;
+      font-size: 7.6rem;
     }
     @media screen and (max-width: 870px) {
       font-size: 6rem;
@@ -29,6 +29,10 @@
     @media screen and (max-width: 690px) {
       font-size: 4rem;
     }
+    @media screen and (max-width: 468px) {
+      font-size: 2.6rem;
+    }
+    
 
     .main-intro-title {
       overflow: hidden;
@@ -67,6 +71,10 @@
         width: calc(84px * 0.4);
         height: calc(74px * 0.6);
       }
+      @media screen and (max-width: 468px) {
+        width: calc(84px * 0.3);
+        height: calc(74px * 0.5);
+      }
     }
   }
 }
@@ -85,6 +93,7 @@
     border-radius: 5px;
     border: none;
     cursor: pointer;
+    margin-top: 8rem;
   }
   button:hover {
     background-color: $color-main;
@@ -104,10 +113,14 @@
   border: 1px solid $boarder-color-gray;
   border-radius: 50px;
   text-align: center;
-
+margin-top: 5rem;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media screen and (max-width: 468px) {
+      scale: 0.8;
+      }
 
   input {
     width: 80%;
@@ -135,12 +148,16 @@
   max-height: 200px; // 최대 높이
   top: 80px;
   background-color: #fff;
-  margin-top: 10px;
+  margin-top: 15px;
   overflow-y: scroll;
   scroll-behavior: smooth;
   scrollbar-width: none;
   border-radius: 10px;
   border: 1px solid $boarder-color-gray;
+
+   @media screen and (max-width: 468px) {
+      scale: 0.9;
+      }
 }
 .main-intro-city-list {
   position: relative;
