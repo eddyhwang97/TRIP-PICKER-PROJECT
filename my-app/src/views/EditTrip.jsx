@@ -160,24 +160,45 @@ function EditTrip(props) {
         temp[date].push(groupedByDate[date].accommodation[0]);
       }
     });
-    console.log("temp", temp);
+/*************  ✨ Windsurf Command ⭐  *************/
+const newtemp = Object.keys(groupedByDate).map((date) => {
+  return groupedByDate[date].places.map((place) => [place.location.lng, place.location.lat]);
+});
+
+console.log("newtemp", newtemp);
+
+/*******  79cc65ab-fdd8-41a1-b8f3-ef25c9d89bbb  *******/  
     setSchedule(temp);
-    fetchRoute(temp)
+    
+    fetchRoute(newtemp)
   }, []);
 
-  const [route, setRoute] = useState([]); // 경로 데이터
+
+  //           function : fetchRoute - 경로 생성          //
+  const [route, setRoute] = useState([]); // 루트 1개 데이터
+  const [routes, setRoutes] = useState([]); // 루트 여러개 데이터
   // 경로 데이터를 OpenRouteService에서 가져오는 함수
   const fetchRoute = useCallback(async (schedule) => {
-    console.log("schedule", schedule);
-    if (!schedule || schedule.length < 2) {
-      alert("경로를 생성하려면 두 개 이상의 장소가 필요합니다.");
-      return;
-    }
+  // 루트 1개인지 여러개인지 판별  
+  // 루트 1개: schedule = [[lng,lat],[lng,lat],...]
+  // 루트 여러개: schedule = [ [[lng,lat],[lng,lat],...], [[lng,lat],[lng,lat],...], ... ]
+  const isSingleRoute =
+    Array.isArray(schedule) &&
+    schedule.length > 0 &&
+    Array.isArray(schedule[0]) &&
+    typeof schedule[0][0] === 'number';
 
-    const coordinates = Object.entries(schedule).flatMap(([type, places]) => places.map((place) => [place.location.lng, place.location.lat]));
-    console.log(coordinates);
-    try {
-      // 프록시 서버로 POST 요청
+  const isMultiRoute =
+    Array.isArray(schedule) &&
+    schedule.length > 0 &&
+    Array.isArray(schedule[0]) &&
+    Array.isArray(schedule[0][0]) &&
+    typeof schedule[0][0][0] === 'number';
+
+  try {
+    if (isSingleRoute) {
+      // 루트 1개일 때
+      const coordinates = schedule;
       const response = await fetch("http://localhost:3001/api/directions", {
         method: "POST",
         headers: {
@@ -191,22 +212,53 @@ function EditTrip(props) {
       }
 
       const data = await response.json();
-      console.log("응답 데이터:", data); // 이 줄로 확인!
-      const encodedPolyline = data.routes[0].geometry;
-      const decodedCoordinates = polyline.decode(encodedPolyline);
-
-      const routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({
-        lat,
-        lng,
-      }));
-      console.log("Decoded Route Coordinates:", routeCoordinates);
-
-      setMapCenter(routeCoordinates[0]);
+      // polyline 혹은 geojson 분기
+      let routeCoordinates = [];
+      if (data.routes && data.routes[0].geometry) {
+        const encodedPolyline = data.routes[0].geometry;
+        const decodedCoordinates = polyline.decode(encodedPolyline);
+        routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({ lat, lng }));
+      } else if (data.features && data.features[0].geometry.coordinates) {
+        routeCoordinates = data.features[0].geometry.coordinates.map(([lng, lat]) => ({ lat, lng }));
+      }
       setRoute(routeCoordinates);
-    } catch (error) {
-      console.error("경로 데이터를 가져오는 중 오류 발생:", error);
+      if (routeCoordinates.length > 0) setMapCenter(routeCoordinates[0]);
+    } else if (isMultiRoute) {
+      // 루트 여러개일 때
+      const responses = await Promise.all(
+        schedule.map((coordinates, idx) =>
+          fetch("http://localhost:3001/api/directions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ coordinates }),
+          })
+            .then(async (res) => {
+              if (!res.ok) throw new Error(`경로 ${idx + 1} 데이터를 가져오는 데 실패했습니다.`);
+              const data = await res.json();
+              let routeCoordinates = [];
+              if (data.routes && data.routes[0].geometry) {
+                const encodedPolyline = data.routes[0].geometry;
+                const decodedCoordinates = polyline.decode(encodedPolyline);
+                routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({ lat, lng }));
+              } else if (data.features && data.features[0].geometry.coordinates) {
+                routeCoordinates = data.features[0].geometry.coordinates.map(([lng, lat]) => ({ lat, lng }));
+              }
+              return routeCoordinates;
+            })
+        )
+      );
+      setRoutes(responses); // 여러 경로 모두 저장
+      console.log("routes", routes);
+      if (responses.length > 0 && responses[0].length > 0) setMapCenter(responses[0][0]);
+    } else {
+      alert("입력 데이터 구조가 올바르지 않습니다.");
     }
-  }, [schedule, route]);
+  } catch (error) {
+    console.error("경로 데이터를 가져오는 중 오류 발생:", error);
+  }
+}, []);
 
   //           Effect : 트립정보 세션 저장          //
   useEffect(() => {
@@ -235,6 +287,7 @@ function EditTrip(props) {
             schedule,
             setSchedule,
             route,
+            routes,
             setRoute,
             mapCenter,
             setMapCenter,

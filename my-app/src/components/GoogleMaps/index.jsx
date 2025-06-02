@@ -12,8 +12,9 @@ const containerStyle = {
   height: "100vh",
 };
 const libraries = ["places", "geometry"];
+const colors = ["#FF0000", "#0000FF", "#00FF00", "#FFA500", "#800080", "#00FFFF", "#FFC0CB"];
 function GoogleMaps(props) {
-  const { tripData, placesInfo, setPlacesInfo, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, placeType, setPlaceType, tripDates, setTripDates, dailyTimeSlots, setDailyTimeSlots, schedule, setSchedule, route, setRoute, mapCenter, setMapCenter } = props.props;
+  const { tripData, placesInfo, setPlacesInfo, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, placeType, setPlaceType, tripDates, setTripDates, dailyTimeSlots, setDailyTimeSlots, schedule, setSchedule, route, setRoute, routes, mapCenter, setMapCenter } = props.props;
   const [markerPosition, setMarkerPosition] = useState(null); // 마커 위치
   const [markers, setMarkers] = useState([]); // 저장된 마커
 
@@ -317,15 +318,22 @@ function GoogleMaps(props) {
               </>
             )}
             {/* 경로 표시 */}
-            {route.length > 0 && (
-              <Polyline
-                path={route}
-                options={{
-                  strokeColor: "#FF0000",
-                  strokeOpacity: 0.8,
-                  strokeWeight: 4,
-                }}
-              />
+            {Array.isArray(route) && route.length > 0 && !Array.isArray(route[0]) ? (
+              <Polyline path={route} options={{ strokeColor: "#FF0000", strokeOpacity: 0.8, strokeWeight: 4 }} />
+            ) : (
+              routes &&
+              routes.map((r, idx) => (
+                console.log(r),
+                <Polyline
+                  key={idx}
+                  path={r}
+                  options={{
+                    strokeColor: colors[idx % colors.length],
+                    strokeOpacity: 0.8,
+                    strokeWeight: 4,
+                  }}
+                />
+              ))
             )}
           </GoogleMap>
         </>
