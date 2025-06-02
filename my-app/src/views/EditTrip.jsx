@@ -161,52 +161,62 @@ function EditTrip(props) {
       }
     });
     console.log("temp", temp);
+
+    const newTemp = [];
+    // 날짜별로 반복
+    Object.values(temp).forEach((dayList, n) => {
+      newTemp[n] = dayList.map((item) => [item.location.lng, item.location.lat]);
+    });
+    console.log("newTemp", newTemp);
     setSchedule(temp);
-    fetchRoute(temp)
+    fetchRoute(newTemp)
   }, []);
 
   const [route, setRoute] = useState([]); // 경로 데이터
+  //           function : fetchRoute          //
   // 경로 데이터를 OpenRouteService에서 가져오는 함수
-  const fetchRoute = useCallback(async (schedule) => {
-    console.log("schedule", schedule);
-    if (!schedule || schedule.length < 2) {
-      alert("경로를 생성하려면 두 개 이상의 장소가 필요합니다.");
-      return;
-    }
-
-    const coordinates = Object.entries(schedule).flatMap(([type, places]) => places.map((place) => [place.location.lng, place.location.lat]));
-    console.log(coordinates);
-    try {
-      // 프록시 서버로 POST 요청
-      const response = await fetch("/api/directions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ coordinates }),
-      });
-
-      if (!response.ok) {
-        throw new Error("경로 데이터를 가져오는 데 실패했습니다.");
+  const fetchRoute = useCallback(
+    async (schedule) => {
+      console.log("schedule", schedule);
+      if (!schedule || schedule.length < 2) {
+        alert("경로를 생성하려면 두 개 이상의 장소가 필요합니다.");
+        return;
       }
 
-      const data = await response.json();
-      console.log("응답 데이터:", data); // 이 줄로 확인!
-      const encodedPolyline = data.routes[0].geometry;
-      const decodedCoordinates = polyline.decode(encodedPolyline);
+      const coordinates = schedule[0]
+      try {
+        // 프록시 서버로 POST 요청
+        const response = await fetch("/api/directions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ coordinates }),
+        });
 
-      const routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({
-        lat,
-        lng,
-      }));
-      console.log("Decoded Route Coordinates:", routeCoordinates);
+        if (!response.ok) {
+          throw new Error("경로 데이터를 가져오는 데 실패했습니다.");
+        }
 
-      setMapCenter(routeCoordinates[0]);
-      setRoute(routeCoordinates);
-    } catch (error) {
-      console.error("경로 데이터를 가져오는 중 오류 발생:", error);
-    }
-  }, [schedule, route]);
+        const data = await response.json();
+        console.log("응답 데이터:", data); // 이 줄로 확인!
+        const encodedPolyline = data.routes[0].geometry;
+        const decodedCoordinates = polyline.decode(encodedPolyline);
+
+        const routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({
+          lat,
+          lng,
+        }));
+        console.log("Decoded Route Coordinates:", routeCoordinates);
+
+        setMapCenter(routeCoordinates[0]);
+        setRoute(routeCoordinates);
+      } catch (error) {
+        console.error("경로 데이터를 가져오는 중 오류 발생:", error);
+      }
+    },
+    [schedule, route]
+  );
 
   //           Effect : 트립정보 세션 저장          //
   useEffect(() => {
