@@ -178,7 +178,7 @@ function EditTrip(props) {
     console.log(coordinates);
     try {
       // 프록시 서버로 POST 요청
-      const response = await fetch("/api/directions", {
+      const response = await fetch("http://localhost:3001/api/directions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
