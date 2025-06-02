@@ -48,7 +48,7 @@ function HeaderArea(props) {
             <img src={smallLogo} />
           </Link>
         </section>
-        <section className="nav-box">
+        <section className="nav-box" ref={navRef}>
           {/* 햄버거 아이콘 (모바일용) */}
           <div
             className="hamburger"
@@ -60,7 +60,7 @@ function HeaderArea(props) {
           </div>
 
           {/* 네비게이션 메뉴 */}
-          <nav ref={navRef} className={`nav-menu ${menuOpen ? "open" : ""}`}>
+          <nav className={`nav-menu ${menuOpen ? "open" : ""}`}>
             <Link to="/dashboard" onClick={() => setMenuOpen(false)}>
               DASHBOARD
             </Link>
