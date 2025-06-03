@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Polyline } from "@react-google-maps/api";
-
 import PlaceInfo from "../PlaceInfo";
 import accommodationIcon from "../../assets/images/accommodation_pin.png";
 import restaurantIcon from "../../assets/images/restaurant_pin.png";
@@ -13,8 +12,30 @@ const containerStyle = {
 };
 const libraries = ["places", "geometry"];
 const colors = ["#FF0000", "#0000FF", "#00FF00", "#FFA500", "#800080", "#00FFFF", "#FFC0CB"];
-function GoogleMaps(props) {
-  const { tripData, placesInfo, setPlacesInfo, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, placeType, setPlaceType, tripDates, setTripDates, dailyTimeSlots, setDailyTimeSlots, schedule, setSchedule, route, setRoute, routes, mapCenter, setMapCenter } = props.props;
+function GoogleMaps({
+    apiKey,
+    tripData,
+    placesInfo,
+    setPlacesInfo,
+    checkInDate,
+    setCheckInDate,
+    checkOutDate,
+    setCheckOutDate,
+    placeType,
+    setPlaceType,
+    tripDates,
+    setTripDates,
+    dailyTimeSlots,
+    setDailyTimeSlots,
+    schedule,
+    setSchedule,
+    route,
+    setRoute,
+    routes,
+    mapCenter,
+    setMapCenter,
+    // ...필요한 추가 props
+}) {
   const [markerPosition, setMarkerPosition] = useState(null); // 마커 위치
   const [markers, setMarkers] = useState([]); // 저장된 마커
 
@@ -24,10 +45,17 @@ function GoogleMaps(props) {
   const [suggestions, setSuggestions] = useState([]); // 자동완성 결과
   const [isApiLoaded, setIsApiLoaded] = useState(false);
 
-  //           function : 구글맵 API 로드         //
+  // //           function : 구글맵 API 로드         //
+  // const { isLoaded } = useJsApiLoader({
+  //   id: "google-map-script",
+  //   googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+  //   libraries: libraries,
+  //   language: "ko",
+  // });
+
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    googleMapsApiKey: apiKey,
     libraries: libraries,
     language: "ko",
   });
@@ -106,9 +134,11 @@ function GoogleMaps(props) {
   //           function : fetchPlaceOnClick          //
   // 지도 클릭 시 위치 정보 불러오기
   const fetchPlaceOnClicknDrag = useCallback(async (event) => {
+    console.log(event.latLng.lat(), event.latLng.lng());
     try {
-      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${event.latLng.lat()},${event.latLng.lng()}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
+      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${event.latLng.lat()},${event.latLng.lng()}&key=${apiKey}`);
       const data = await response.json();
+      console.log(data);
 
       const { Place } = await window.google.maps.importLibrary("places");
 
@@ -142,7 +172,7 @@ function GoogleMaps(props) {
 
   //           function : fetchSuggestions - 검색어를 이용한 자동완성         //
   const fetchSuggestions = useCallback(() => {
-    if (!query || !isApiLoaded) {
+    if (!query || !isLoaded) {
       setSuggestions([]);
       return;
     }
@@ -222,21 +252,6 @@ function GoogleMaps(props) {
     if (cityCenter) setMapCenter(cityCenter);
   }, [tripData.city]);
 
-  //           effect : google map api로드 확인          //
-  useEffect(() => {
-    // Google Maps API 로드 확인
-    if (window.google && window.google.maps && window.google.maps.places) {
-      setIsApiLoaded(true);
-    } else {
-      const interval = setInterval(() => {
-        if (window.google && window.google.maps && window.google.maps.places) {
-          setIsApiLoaded(true);
-          clearInterval(interval);
-        }
-      }, 100); // 100ms 간격으로 확인
-    }
-  }, []);
-
   //           Effect : placesInfo가 변경될 때마다 마커 업데이트           //
   useEffect(() => {
     const newMarkers = [];
@@ -255,91 +270,81 @@ function GoogleMaps(props) {
     return () => clearTimeout(timeoutId);
   }, [query]);
 
+  if (!isLoaded) return <div>지도 로딩중...</div>;
+
   return (
     <>
-      {isLoaded ? (
-        <>
-          <div className="map-group">
-            <div className="search-container">
-              <input type="text" value={query} placeholder="장소를 검색하세요..." onChange={(e) => setQuery(e.target.value)} className="search-input map-control" />
-              {/* 자동완성 결과 */}
-              {suggestions.length > 0 && (
-                <ul className="search-results">
-                  {suggestions.map((place) => (
-                    <li key={place.place_id} onClick={() => handlePlaceSelect(place)} className="result">
-                      {place.description}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={mapCenter}
-            zoom={zoom}
-            onClick={fetchPlaceOnClicknDrag}
-            options={{
-              disableDefaultUI: true,
-              zoomControl: false,
-            }}
-          >
-            {/* 저장된 마커들 */}
-            {markers.map((marker, index) => (
-              <Marker key={marker.id} position={marker.location} icon={getMarkerIcon(marker.id)} title={marker.name || marker.address} />
-            ))}
-            {/* 임시 마커(아직 저장 안 된 위치) */}
-            {markerPosition && (
-              <>
-                <Marker clickable={false} draggable={true} onDragEnd={fetchPlaceOnClicknDrag} position={markerPosition} icon={getMarkerIcon(addIcon)} title="새 장소">
-                  <InfoWindow
-                    position={markerPosition}
-                    options={{
-                      pixelOffset: new window.google.maps.Size(0, -40),
-                      disableAutoPan: true,
-                    }}
-                  >
-                    <PlaceInfo
-                      markerPosition={markerPosition}
-                      setMarkerPosition={setMarkerPosition}
-                      setPlaceType={setPlaceType}
-                      setCheckInDate={setCheckInDate}
-                      setCheckOutDate={setCheckOutDate}
-                      placeType={placeType}
-                      checkInDate={checkInDate}
-                      checkOutDate={checkOutDate}
-                      dailyTimeSlots={dailyTimeSlots}
-                      setDailyTimeSlots={setDailyTimeSlots}
-                      savePlace={savePlace}
-                    />
-                  </InfoWindow>
-                </Marker>
-              </>
-            )}
-            {/* 경로 표시 */}
-            {Array.isArray(route) && route.length > 0 && !Array.isArray(route[0]) ? (
-              <Polyline path={route} options={{ strokeColor: "#FF0000", strokeOpacity: 0.8, strokeWeight: 4 }} />
-            ) : (
-              routes &&
-              routes.map((r, idx) => (
-                console.log(r),
-                <Polyline
-                  key={idx}
-                  path={r}
-                  options={{
-                    strokeColor: colors[idx % colors.length],
-                    strokeOpacity: 0.8,
-                    strokeWeight: 4,
-                  }}
+      <div className="map-group">
+        <div className="search-container">
+          <input type="text" value={query} placeholder="장소를 검색하세요..." onChange={(e) => setQuery(e.target.value)} className="search-input map-control" />
+          {suggestions.length > 0 && (
+            <ul className="search-results">
+              {suggestions.map((place) => (
+                <li key={place.place_id} onClick={() => handlePlaceSelect(place)} className="result">
+                  {place.description}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={mapCenter}
+        zoom={zoom}
+        onClick={fetchPlaceOnClicknDrag}
+        options={{
+          disableDefaultUI: true,
+          zoomControl: false,
+        }}
+      >
+        {markers.map((marker, index) => (
+          <Marker key={marker.id} position={marker.location} icon={getMarkerIcon(marker.id)} title={marker.name || marker.address} />
+        ))}
+        {markerPosition && (
+          <>
+            <Marker clickable={false} draggable={true} onDragEnd={fetchPlaceOnClicknDrag} position={markerPosition} icon={getMarkerIcon(addIcon)} title="새 장소">
+              <InfoWindow
+                position={markerPosition}
+                options={{
+                  pixelOffset: new window.google.maps.Size(0, -40),
+                  disableAutoPan: true,
+                }}
+              >
+                <PlaceInfo
+                  markerPosition={markerPosition}
+                  setMarkerPosition={setMarkerPosition}
+                  setPlaceType={setPlaceType}
+                  setCheckInDate={setCheckInDate}
+                  setCheckOutDate={setCheckOutDate}
+                  placeType={placeType}
+                  checkInDate={checkInDate}
+                  checkOutDate={checkOutDate}
+                  dailyTimeSlots={dailyTimeSlots}
+                  setDailyTimeSlots={setDailyTimeSlots}
+                  savePlace={savePlace}
                 />
-              ))
-            )}
-          </GoogleMap>
-        </>
-      ) : (
-        <div>Loading Map...</div>
-      )}
+              </InfoWindow>
+            </Marker>
+          </>
+        )}
+        {Array.isArray(route) && route.length > 0 && !Array.isArray(route[0]) ? (
+          <Polyline path={route} options={{ strokeColor: "#FF0000", strokeOpacity: 0.8, strokeWeight: 4 }} />
+        ) : (
+          routes &&
+          routes.map((r, idx) => (
+            <Polyline
+              key={idx}
+              path={r}
+              options={{
+                strokeColor: colors[idx % colors.length],
+                strokeOpacity: 0.8,
+                strokeWeight: 4,
+              }}
+            />
+          ))
+        )}
+      </GoogleMap>
     </>
   );
 }
