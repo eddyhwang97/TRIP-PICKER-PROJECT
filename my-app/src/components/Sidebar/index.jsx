@@ -9,7 +9,7 @@ import "./style.scss";
 import { useNavigate } from "react-router-dom";
 
 function Sidebar({saveTrip,checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, placesInfo, setPlacesInfo, placeType, tripDates, setTripDates, dailyTimeSlots, setDailyTimeSlots, schedule, setSchedule, handelClusterization}) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const navigate = useNavigate();
   const [step, setStep] = useState(1);

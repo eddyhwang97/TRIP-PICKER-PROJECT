@@ -149,33 +149,33 @@ function GoogleMaps({
 
       const data = await response.json();
       console.log(data);
-      // if (data.status === "OK" && data.results.length > 0) {
-      //   const locationInfo = data.results[0];
+      if (data.status === "OK" && data.results.length > 0) {
+        const locationInfo = data.results[0];
 
-      //   // 필요에 따라 추가적으로 Google Maps JS SDK로 상세 정보 얻기
-      //   const service = new window.google.maps.places.PlacesService(document.createElement("div"));
-      //   service.getDetails({ placeId: locationInfo.place_id, fields: ["name", "formatted_address", "geometry.location"] }, (place, status) => {
-      //     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-      //       const clickedPosition = {
-      //         name: place.name,
-      //         lat,
-      //         lng,
-      //         address: place.formatted_address,
-      //       };
-      //       setMarkerPosition(clickedPosition);
-      //     } else {
-      //       // fallback: Geocode 결과만 사용
-      //       setMarkerPosition({
-      //         name: "",
-      //         lat,
-      //         lng,
-      //         address: locationInfo.formatted_address,
-      //       });
-      //     }
-      //   });
-      // } else {
-      //   console.error("위치 정보를 불러오지 못했습니다.");
-      // }
+        // 필요에 따라 추가적으로 Google Maps JS SDK로 상세 정보 얻기
+        const service = new window.google.maps.places.PlacesService(document.createElement("div"));
+        service.getDetails({ placeId: locationInfo.place_id, fields: ["name", "formatted_address", "geometry.location"] }, (place, status) => {
+          if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            const clickedPosition = {
+              name: place.name,
+              lat,
+              lng,
+              address: place.formatted_address,
+            };
+            setMarkerPosition(clickedPosition);
+          } else {
+            // fallback: Geocode 결과만 사용
+            setMarkerPosition({
+              name: "",
+              lat,
+              lng,
+              address: locationInfo.formatted_address,
+            });
+          }
+        });
+      } else {
+        console.error("위치 정보를 불러오지 못했습니다.");
+      }
     } catch (error) {
       console.error("에러 발생:", error);
     }
