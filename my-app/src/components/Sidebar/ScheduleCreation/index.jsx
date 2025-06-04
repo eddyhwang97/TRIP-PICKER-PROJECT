@@ -2,9 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { SidebarButton } from "../../../assets";
 import "./style.scss";
 
-export default function ScheduleCreation(props) {
-  const { placesInfo, setPlacesInfo,schedule, setSchedule, handelClusterization } = props;
-
+export default function ScheduleCreation({saveTrip, setStep, setPlacesInfo, schedule, handelClusterization}) {
   // 날짜 변환
   const changeDateFormat = useCallback((dateStr) => {
     const daysKor = ["일", "월", "화", "수", "목", "금", "토"];
@@ -73,7 +71,7 @@ export default function ScheduleCreation(props) {
           ))}
         </div>
       </div>
-      <SidebarButton step={4} setStep={props.setStep} handelClusterization={handelClusterization} />
+      <SidebarButton step={4} saveTrip={saveTrip} setStep={setStep} handelClusterization={handelClusterization} />
     </>
   );
 }

@@ -2,8 +2,8 @@ import React, { useCallback, useEffect } from "react";
 import { SidebarButton } from "../../../assets";
 import "./style.scss";
 
-export default function TimeSelection(props) {
-  const { tripDates, dailyTimeSlots, setDailyTimeSlots } = props;
+export default function TimeSelection({setStep, tripDates, dailyTimeSlots, setDailyTimeSlots}) {
+  
 
   //           function : setDailyTimeSlotsWithTripDates           //
   // 날짜 배열 생성 및 dailyTimeSlots 세팅 함수
@@ -119,7 +119,7 @@ export default function TimeSelection(props) {
           </div>
         ))}
       </div>
-      <SidebarButton step={2} setStep={props.setStep} />
+      <SidebarButton step={2} setStep={setStep} />
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from "react";
 
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { kmeans } from "ml-kmeans";
 import polyline from "@mapbox/polyline";
 // css
@@ -12,6 +12,7 @@ import GoogleMapsWrapper from "../components/GoogleMaps/GoogleMapsWrapper";
 
 function EditTrip(props) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [mapCenter, setMapCenter] = useState(null); // 지도 중심
   //           state : 여행정보 셋팅 및 저장 상태 변수 //
   const tripData = location.state.tripData;
@@ -175,85 +176,120 @@ function EditTrip(props) {
   const [route, setRoute] = useState([]); // 루트 1개 데이터
   const [routes, setRoutes] = useState([]); // 루트 여러개 데이터
   // 경로 데이터를 OpenRouteService에서 가져오는 함수
-  const fetchRoute = useCallback(async (schedule) => {
-    // 루트 1개인지 여러개인지 판별
-    // 루트 1개: schedule = [[lng,lat],[lng,lat],...]
-    // 루트 여러개: schedule = [ [[lng,lat],[lng,lat],...], [[lng,lat],[lng,lat],...], ... ]
-    const isSingleRoute = Array.isArray(schedule) && schedule.length > 0 && Array.isArray(schedule[0]) && typeof schedule[0][0] === "number";
+  const fetchRoute = useCallback(
+    async (schedule) => {
+      // 루트 1개인지 여러개인지 판별
+      // 루트 1개: schedule = [[lng,lat],[lng,lat],...]
+      // 루트 여러개: schedule = [ [[lng,lat],[lng,lat],...], [[lng,lat],[lng,lat],...], ... ]
+      const isSingleRoute = Array.isArray(schedule) && schedule.length > 0 && Array.isArray(schedule[0]) && typeof schedule[0][0] === "number";
 
-    const isMultiRoute = Array.isArray(schedule) && schedule.length > 0 && Array.isArray(schedule[0]) && Array.isArray(schedule[0][0]) && typeof schedule[0][0][0] === "number";
+      const isMultiRoute = Array.isArray(schedule) && schedule.length > 0 && Array.isArray(schedule[0]) && Array.isArray(schedule[0][0]) && typeof schedule[0][0][0] === "number";
 
-    try {
-      const API_URL = process.env.REACT_APP_API_SERVER || "http://localhost:3001";
-      if (isSingleRoute) {
-        // 루트 1개일 때
-        const coordinates = schedule;
-        const response = await fetch(`${API_URL}/api/directions`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ coordinates }),
-        });
+      try {
+        const API_URL = process.env.REACT_APP_API_SERVER || "http://localhost:3001";
+        if (isSingleRoute) {
+          // 루트 1개일 때
+          const coordinates = schedule;
+          const response = await fetch(`${API_URL}/api/directions`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ coordinates }),
+          });
 
-        if (!response.ok) {
-          throw new Error("경로 데이터를 가져오는 데 실패했습니다.");
-        }
-
-        const data = await response.json();
-        // polyline 혹은 geojson 분기
-        let routeCoordinates = [];
-        if (data.routes && data.routes[0].geometry) {
-          try {
-            const encodedPolyline = data.routes[0].geometry;
-            const decodedCoordinates = polyline.decode(encodedPolyline);
-            routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({ lat, lng }));
-          } catch (e) {
-            console.error("Polyline decode error:", e);
+          if (!response.ok) {
+            throw new Error("경로 데이터를 가져오는 데 실패했습니다.");
           }
-        } else if (data.features && data.features[0].geometry.coordinates) {
-          routeCoordinates = data.features[0].geometry.coordinates.map(([lng, lat]) => ({ lat, lng }));
-        }
-        setRoute(routeCoordinates);
-        if (routeCoordinates.length > 0) setMapCenter(routeCoordinates[0]);
-      } else if (isMultiRoute) {
-        // 루트 여러개일 때
-        const responses = await Promise.all(
-          schedule.map((coordinates, idx) =>
-            fetch(`${API_URL}/api/directions`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ coordinates }),
-            }).then(async (res) => {
-              if (!res.ok) throw new Error(`경로 ${idx + 1} 데이터를 가져오는 데 실패했습니다.`);
-              const data = await res.json();
-              let routeCoordinates = [];
-              if (data.routes && data.routes[0].geometry) {
-                try {
-                  const encodedPolyline = data.routes[0].geometry;
-                  const decodedCoordinates = polyline.decode(encodedPolyline);
-                  routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({ lat, lng }));
-                } catch (e) {
-                  console.error("Polyline decode error (multi):", e);
+
+          const data = await response.json();
+          // polyline 혹은 geojson 분기
+          let routeCoordinates = [];
+          if (data.routes && data.routes[0].geometry) {
+            try {
+              const encodedPolyline = data.routes[0].geometry;
+              const decodedCoordinates = polyline.decode(encodedPolyline);
+              routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({ lat, lng }));
+            } catch (e) {
+              console.error("Polyline decode error:", e);
+            }
+          } else if (data.features && data.features[0].geometry.coordinates) {
+            routeCoordinates = data.features[0].geometry.coordinates.map(([lng, lat]) => ({ lat, lng }));
+          }
+          setRoute(routeCoordinates);
+          if (routeCoordinates.length > 0) setMapCenter(routeCoordinates[0]);
+        } else if (isMultiRoute) {
+          // 루트 여러개일 때
+          const responses = await Promise.all(
+            schedule.map((coordinates, idx) =>
+              fetch(`${API_URL}/api/directions`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ coordinates }),
+              }).then(async (res) => {
+                if (!res.ok) throw new Error(`경로 ${idx + 1} 데이터를 가져오는 데 실패했습니다.`);
+                const data = await res.json();
+                let routeCoordinates = [];
+                if (data.routes && data.routes[0].geometry) {
+                  try {
+                    const encodedPolyline = data.routes[0].geometry;
+                    const decodedCoordinates = polyline.decode(encodedPolyline);
+                    routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({ lat, lng }));
+                  } catch (e) {
+                    console.error("Polyline decode error (multi):", e);
+                  }
+                } else if (data.features && data.features[0].geometry.coordinates) {
+                  routeCoordinates = data.features[0].geometry.coordinates.map(([lng, lat]) => ({ lat, lng }));
                 }
-              } else if (data.features && data.features[0].geometry.coordinates) {
-                routeCoordinates = data.features[0].geometry.coordinates.map(([lng, lat]) => ({ lat, lng }));
-              }
-              return routeCoordinates;
-            })
-          )
-        );
-        setRoutes(responses); // 여러 경로 모두 저장
-        if (responses.length > 0 && responses[0].length > 0) setMapCenter(responses[0][0]);
-      } else {
-        alert("입력 데이터 구조가 올바르지 않습니다.");
+                return routeCoordinates;
+              })
+            )
+          );
+          setRoutes(responses); // 여러 경로 모두 저장
+          if (responses.length > 0 && responses[0].length > 0) setMapCenter(responses[0][0]);
+        } else {
+          alert("입력 데이터 구조가 올바르지 않습니다.");
+        }
+      } catch (error) {
+        console.error("경로 데이터를 가져오는 중 오류 발생:", error);
       }
-    } catch (error) {
-      console.error("경로 데이터를 가져오는 중 오류 발생:", error);
-    }
-  }, [setRoute, setRoutes, setMapCenter]);
+    },
+    [setRoute, setRoutes, setMapCenter]
+  );
+
+  //           function : saveTrip -모든 트립 정보 저장하기
+  const saveTrip = useCallback(() => {
+    const trip = {
+      id: tripData.id,
+      userId: tripData.userId,
+      title: tripData.title,
+      startDate: tripDates[0],
+      endDate: tripDates[1],
+      city: tripData.city,
+      accommodation: placesInfo.accommodation,
+      attraction: placesInfo.attraction,
+      restaurant: placesInfo.restaurant,
+      cafe: placesInfo.cafe,
+      groupedByDate: tripData.schedule,
+      dailyTimeSlots: tripData.dailyTimeSlots,
+    };
+
+    // 1. 기존 트립리스트 가져오기
+    let trips = JSON.parse(localStorage.getItem("trips")) || [];
+
+    // 2. 트립 업데이트 (id가 같으면 교체)
+    const updatedTrips = trips.map((t) => (t.id === trip.id ? trip : t));
+
+    // 만약 새로 추가하는 trip이면 push
+    const exists = trips.some((t) => t.id === trip.id);
+    if (!exists) updatedTrips.push(trip);
+
+    // 3. 저장
+    localStorage.setItem("trips", JSON.stringify(updatedTrips));
+
+  });
 
   //           Effect : 트립정보 세션 저장          //
   useEffect(() => {
@@ -265,45 +301,44 @@ function EditTrip(props) {
     <>
       <div className="container">
         <GoogleMapsWrapper
-        tripData={tripData}
-        placesInfo={placesInfo}
-        setPlacesInfo={setPlacesInfo}
-        checkInDate={checkInDate}
-        setCheckInDate={setCheckInDate}
-        checkOutDate={checkOutDate}
-        setCheckOutDate={setCheckOutDate}
-        placeType={placeType}
-        setPlaceType={setPlaceType}
-        tripDates={tripDates}
-        setTripDates={setTripDates}
-        dailyTimeSlots={dailyTimeSlots}
-        setDailyTimeSlots={setDailyTimeSlots}
-        schedule={schedule}
-        setSchedule={setSchedule}
-        route={route}
-        setRoute={setRoute}
-        routes={routes}
-        mapCenter={mapCenter}
-        setMapCenter={setMapCenter}
-        // ...필요한 추가 props
-      />
+          tripData={tripData}
+          placesInfo={placesInfo}
+          setPlacesInfo={setPlacesInfo}
+          checkInDate={checkInDate}
+          setCheckInDate={setCheckInDate}
+          checkOutDate={checkOutDate}
+          setCheckOutDate={setCheckOutDate}
+          placeType={placeType}
+          setPlaceType={setPlaceType}
+          tripDates={tripDates}
+          setTripDates={setTripDates}
+          dailyTimeSlots={dailyTimeSlots}
+          setDailyTimeSlots={setDailyTimeSlots}
+          schedule={schedule}
+          setSchedule={setSchedule}
+          route={route}
+          setRoute={setRoute}
+          routes={routes}
+          mapCenter={mapCenter}
+          setMapCenter={setMapCenter}
+          // ...필요한 추가 props
+        />
         <Sidebar
-          sidebarProps={{
-            placesInfo,
-            setPlacesInfo,
-            checkInDate,
-            setCheckInDate,
-            checkOutDate,
-            setCheckOutDate,
-            placeType,
-            tripDates,
-            setTripDates,
-            dailyTimeSlots,
-            setDailyTimeSlots,
-            schedule,
-            setSchedule,
-            handelClusterization,
-          }}
+          placesInfo={placesInfo}
+          setPlacesInfo={setPlacesInfo}
+          checkInDate={checkInDate}
+          setCheckInDate={setCheckInDate}
+          checkOutDate={checkOutDate}
+          setCheckOutDate={setCheckOutDate}
+          placeType={placeType}
+          tripDates={tripDates}
+          setTripDates={setTripDates}
+          dailyTimeSlots={dailyTimeSlots}
+          setDailyTimeSlots={setDailyTimeSlots}
+          schedule={schedule}
+          setSchedule={setSchedule}
+          handelClusterization={handelClusterization}
+          saveTrip={saveTrip}
         />
       </div>
     </>

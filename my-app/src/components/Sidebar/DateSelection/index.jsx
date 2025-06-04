@@ -6,8 +6,7 @@ import "./style.scss";
 import $ from "jquery";
 import { SidebarButton } from "../../../assets";
 
-export default function DateSelection(props) {
-  const { tripDates, setTripDates } = props;
+export default function DateSelection({setStep, tripDates, setTripDates}) {
   const [dateRange, setDateRange] = useState(tripDates);
 
   //           function : 날짜 선택 감지            //
@@ -18,16 +17,16 @@ export default function DateSelection(props) {
 
   //           function : 날짜 선택 유효성 검사            //
   const validateDateRange = () => {
-  if (dateRange && dateRange[0]) {
-    const today = new Date();
-    const todayDate = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, "0"), String(today.getDate()).padStart(2, "0")].join("-");
-    if (format(new Date(dateRange[0]), "yyyy-MM-dd") < todayDate) {
-      setTripDates([todayDate, todayDate]);
-      setDateRange([todayDate, todayDate]);
-      alert("시작날이 오늘보다 빠를 수는 없습니다.");
+    if (dateRange && dateRange[0]) {
+      const today = new Date();
+      const todayDate = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, "0"), String(today.getDate()).padStart(2, "0")].join("-");
+      if (format(new Date(dateRange[0]), "yyyy-MM-dd") < todayDate) {
+        setTripDates([todayDate, todayDate]);
+        setDateRange([todayDate, todayDate]);
+        alert("시작날이 오늘보다 빠를 수는 없습니다.");
+      }
     }
-  }
-};
+  };
   //           useEffect :  dateRange 감지            //
   useEffect(() => {
     handleDateChange();
@@ -51,7 +50,7 @@ export default function DateSelection(props) {
           </div>
         </div>
       </div>
-      <SidebarButton step={1} setStep={props.setStep} />
+      <SidebarButton step={1} setStep={setStep} />
     </>
   );
 }

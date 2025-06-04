@@ -13,28 +13,28 @@ const containerStyle = {
 const libraries = ["places", "geometry"];
 const colors = ["#FF0000", "#0000FF", "#00FF00", "#FFA500", "#800080", "#00FFFF", "#FFC0CB"];
 function GoogleMaps({
-    apiKey,
-    tripData,
-    placesInfo,
-    setPlacesInfo,
-    checkInDate,
-    setCheckInDate,
-    checkOutDate,
-    setCheckOutDate,
-    placeType,
-    setPlaceType,
-    tripDates,
-    setTripDates,
-    dailyTimeSlots,
-    setDailyTimeSlots,
-    schedule,
-    setSchedule,
-    route,
-    setRoute,
-    routes,
-    mapCenter,
-    setMapCenter,
-    // ...필요한 추가 props
+  apiKey,
+  tripData,
+  placesInfo,
+  setPlacesInfo,
+  checkInDate,
+  setCheckInDate,
+  checkOutDate,
+  setCheckOutDate,
+  placeType,
+  setPlaceType,
+  tripDates,
+  setTripDates,
+  dailyTimeSlots,
+  setDailyTimeSlots,
+  schedule,
+  setSchedule,
+  route,
+  setRoute,
+  routes,
+  mapCenter,
+  setMapCenter,
+  // ...필요한 추가 props
 }) {
   const [markerPosition, setMarkerPosition] = useState(null); // 마커 위치
   const [markers, setMarkers] = useState([]); // 저장된 마커
@@ -134,37 +134,48 @@ function GoogleMaps({
   //           function : fetchPlaceOnClick          //
   // 지도 클릭 시 위치 정보 불러오기
   const fetchPlaceOnClicknDrag = useCallback(async (event) => {
-    console.log(event.latLng.lat(), event.latLng.lng());
+    const lat = event.latLng.lat();
+    const lng = event.latLng.lng();
+
     try {
-      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${event.latLng.lat()},${event.latLng.lng()}&key=${apiKey}`);
+      const API_URL = process.env.REACT_APP_API_SERVER || "http://localhost:3001";
+      const response = await fetch(`${API_URL}/api/geocode`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ lat, lng }),
+      });
+
       const data = await response.json();
       console.log(data);
+      // if (data.status === "OK" && data.results.length > 0) {
+      //   const locationInfo = data.results[0];
 
-      const { Place } = await window.google.maps.importLibrary("places");
-
-      if (data.status === "OK" && data.results.length > 0) {
-        const locationInfo = data.results[0];
-
-        const place = new Place({
-          id: data.results[0].place_id,
-          requestedLanguage: "ko", // optional
-        });
-
-        // Call fetchFields, passing the desired data fields.
-        await place.fetchFields({
-          fields: ["displayName"],
-        });
-        const clickedPosition = {
-          name: place.displayName,
-          lat: event.latLng.lat(),
-          lng: event.latLng.lng(),
-          address: locationInfo.formatted_address,
-        };
-        return setMarkerPosition(clickedPosition);
-        // 위치 정보에 따라 필요한 동작 수행
-      } else {
-        console.error("위치 정보를 불러오지 못했습니다.");
-      }
+      //   // 필요에 따라 추가적으로 Google Maps JS SDK로 상세 정보 얻기
+      //   const service = new window.google.maps.places.PlacesService(document.createElement("div"));
+      //   service.getDetails({ placeId: locationInfo.place_id, fields: ["name", "formatted_address", "geometry.location"] }, (place, status) => {
+      //     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+      //       const clickedPosition = {
+      //         name: place.name,
+      //         lat,
+      //         lng,
+      //         address: place.formatted_address,
+      //       };
+      //       setMarkerPosition(clickedPosition);
+      //     } else {
+      //       // fallback: Geocode 결과만 사용
+      //       setMarkerPosition({
+      //         name: "",
+      //         lat,
+      //         lng,
+      //         address: locationInfo.formatted_address,
+      //       });
+      //     }
+      //   });
+      // } else {
+      //   console.error("위치 정보를 불러오지 못했습니다.");
+      // }
     } catch (error) {
       console.error("에러 발생:", error);
     }

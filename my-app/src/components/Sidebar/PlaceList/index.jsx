@@ -1,8 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import { SidebarButton } from "../../../assets";
 import "./style.scss";
-export default function PlaceList(props) {
-  const { placesInfo = {}, setPlacesInfo, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, dailyTimeSlots, handelClusterization, setStep } = props;
+export default function PlaceList({placesInfo = {}, setPlacesInfo, checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, dailyTimeSlots, handelClusterization, setStep }) {
   // 수정 중인 장소의 ID를 저장하는 state 추가
   const [editingPlaceId, setEditingPlaceId] = useState(null);
   const inputRefs = useRef({});

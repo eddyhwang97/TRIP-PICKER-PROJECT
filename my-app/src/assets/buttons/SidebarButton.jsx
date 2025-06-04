@@ -1,8 +1,8 @@
 import React from "react";
 import "./style.scss";
 
-export default function SidebarButton(props) {
-  const { step, setStep, handleOnclickAtPlaceList } = props;
+export default function SidebarButton({step, setStep, handleOnclickAtPlaceList, saveTrip}) {
+  
   const RenderSidebarButtonComponent = (step, setStep) => {
     switch (step) {
       case 1:
@@ -46,7 +46,13 @@ export default function SidebarButton(props) {
             <button className="prev-button" onClick={() => setStep(3)}>
               이전
             </button>
-            <button className="next-button" onClick={() => setStep(5)}>
+            <button
+              className="next-button"
+              onClick={() => {
+                setStep(5);
+                saveTrip();
+              }}
+            >
               저장하기
             </button>
           </div>
@@ -57,7 +63,7 @@ export default function SidebarButton(props) {
             <button className="prev-button" onClick={() => setStep(4)}>
               이전
             </button>
-            <button className="next-button">수정하기</button>
+            <button className="next-button" onClick={() => setStep(1)}>수정하기</button>
           </div>
         );
       default:
