@@ -165,16 +165,19 @@
       margin: 0 auto; // 가운데 정렬 (부모가 세로 레이아웃일 때 유효)
     }
 
-    span {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      translate: -50% -50%;
-      width: 50px;
-      height: 5px;
-      background-color: #9a9a9a;
-      &:nth-child(2) {
-        transform: rotate(90deg);
+    .plus-box{
+
+      span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+        width: 50px;
+        height: 5px;
+        background-color: #9a9a9a;
+        &:nth-child(2) {
+          transform: rotate(90deg);
+        }
       }
     }
   }
@@ -217,3 +220,4 @@
     gap: 15px;
   }
 }
+

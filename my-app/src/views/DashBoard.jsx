@@ -1,20 +1,25 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { use, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./css/dashboard.scss";
 import DashBoardItem from "../components/DashBoardItem";
 import noticeIcon from "../assets/icon/notice.png";
 import { useStore } from "../stores/store.API";
 import { useNavigate } from "react-router-dom";
 
+const citys = JSON.parse(localStorage.getItem("citys"));
+
 function DashBoard(props) {
   const user = useStore((state) => state.user);
   const navigate = useNavigate();
+  //           state          //
   const [tripList, setTripList] = useState([]);
   const [mode, setMode] = useState("V");
   const [checkedItems, setCheckedItems] = useState([]);
+  const [inputValue, setInputValue] = useState("");
+  const [cityList, setCityList] = useState(citys);
+  const cityInfo = useRef(null);
   const tripRef = useRef(null);
 
-  //           function          //
-
+  //           function : 여행목록 체크박스          //
   // 여행목록 체크박스 클릭 감지
   const handleCheck = (id, isChecked) => {
     setCheckedItems((prev) => (isChecked ? [...prev, id] : prev.filter((item) => item !== id)));
@@ -24,24 +29,104 @@ function DashBoard(props) {
     setTripList((prev) => prev.filter((item) => !checkedItems.includes(item.id)));
   };
 
-  // 사용자 여행목록 가져오기
+  //           function : 사용자 여행목록 가져오기          //
   const getTripList = () => {
     const userTirpList = user !== null ? JSON.parse(localStorage.getItem("trips")).filter((trip) => trip.userId === user.id) : [];
     setTripList(userTirpList);
     // console.log(userTirpList);
   };
-  // 클릭한 여행데이터 수집
-  const getCurrentTripData = (trip) => {
+  //          function : 클릭한 여행데이터 수집          //
+  const getCurrentTripData = useCallback((trip) => {
+    console.log(trip);
     tripRef.current = trip;
     const tripData = tripRef.current;
     navigateEditTrip(tripData);
+  });
+
+  //           function : navigation          //
+  const navigateEditTrip = useCallback((tripData) => {
+    navigate("/edittrip", { state: { tripData: tripData } });
+  });
+
+  //           function : 여행 생성          //
+  const [newTrip, setNewTrip] = useState(false);
+
+  const clickEvent = {
+    showSearch: () => {
+      setNewTrip(true);
+    },
+    makeTrip: (city) => {
+      const usersTrip = user ? user.trips : null;
+      const createTripId = usersTrip !== null ? (usersTrip.length < 10 ? `trip00${usersTrip.length + 1}` : usersTrip.length > 10 ? `trip0${usersTrip.length + 1}` : `trip${usersTrip.length + 1}`) : "trip001";
+      const today = new Date();
+      const todayDate = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, "0"), String(today.getDate()).padStart(2, "0")].join("-");
+      let tripData;
+      // 1. 로그인 상태일 경우
+      if (user !== null) {
+        // (1) 사용자 trips가 있을경우
+        if (usersTrip.length > 0) {
+          tripData = {
+            id: createTripId,
+            userId: user.id,
+            title: "Untitled Trip",
+            startDate: todayDate,
+            endDate: todayDate,
+            city: city.id,
+            accommodation: [],
+            attraction: [],
+            restaurant: [],
+            cafe: [],
+            groupedByDate: {},
+            dailyTimeSlots: {},
+          };
+        }
+        // (2) 사용자 trips가 없을경우
+        else if (usersTrip.length === 0) {
+          tripData = {
+            id: createTripId,
+            userId: user.id,
+            title: "Untitled Trip",
+            startDate: todayDate,
+            endDate: todayDate,
+            city: city.id,
+            accommodation: [],
+            attraction: [],
+            restaurant: [],
+            cafe: [],
+            groupedByDate: {},
+            dailyTimeSlots: {},
+          };
+        }
+      }
+      // 2. 로그인 상태 아닐 경우(대쉬보드 또는 메인에서 넘어옴 => 무조건 새로운 생성)
+      if (user === null) {
+        tripData = {
+          id: createTripId,
+          userId: "unknown-host",
+          title: "Untitled Trip",
+          startDate: todayDate,
+          endDate: todayDate,
+          city: city.id,
+          accommodation: [],
+          attraction: [],
+          restaurant: [],
+          cafe: [],
+          groupedByDate: {},
+          dailyTimeSlots: {},
+        };
+      }
+      getCurrentTripData(tripData);
+    },
   };
 
-  // 로컬시티데이터와 선택한 시티데이터 매칭 후 center 뽑기
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInputValue(value);
 
-  //            navigation          //
-  const navigateEditTrip = (tripData) => {
-    navigate("/edittrip", { state: { tripData: tripData } });
+    // 입력값에 따라 cityList 필터링
+    const filteredCities = citys.filter((item) => item.name.includes(value) || item.englishName.toLowerCase().includes(value.toLowerCase()));
+    setCityList(filteredCities);
+    console.log(filteredCities);
   };
 
   //           useLayoutEffect          //
@@ -50,6 +135,7 @@ function DashBoard(props) {
     getTripList();
   }, []);
 
+  //           render          //
   return (
     <div className="container">
       <div className="dashboard-box">
@@ -115,11 +201,41 @@ function DashBoard(props) {
           <section className="dashboard-right-bottom">
             <div className="dashboard-right-trip-item-box">
               <div className="dashboard-right-trip-item-list">
-                <div className="dashboard-right-trip-create-new-item">
+                <div className="dashboard-right-trip-create-new-item" onClick={setNewTrip}>
                   <div className="dashboard-right-trip-item-thumb-box">
                     <div className="dashboard-right-trip-item-thumb-image">
-                      <span></span>
-                      <span></span>
+                      {newTrip ? (
+                        <div className="main-intro-travle-location-search-box">
+                          <div className="main-intro-search-box" onClick={clickEvent.showCityList}>
+                            <input type="text" className="main-intro-search-input" placeholder="여행지 검색하기" value={inputValue} onChange={handleInputChange} />
+                          </div>
+
+                          <div className="main-intro-recommend-location-list">
+                            <ul>
+                              {cityList.length > 0 ? (
+                                cityList.map((city, idx) => (
+                                  <li className="main-intro-city-list" key={idx} onClick={() => ((cityInfo.current = city), clickEvent.makeTrip(city))}>
+                                    <div className="main-intro-location-image">
+                                      <img src={city.image} alt={city.name} />
+                                    </div>
+                                    <div className="main-intro-location-name">
+                                      <span className="main-intro-city-name-kr">{city.name}</span>
+                                      <span className="main-intro-city-name-en">{city.englishName}</span>
+                                    </div>
+                                  </li>
+                                ))
+                              ) : (
+                                <li className="main-intro-city-list no-result">검색 결과가 없습니다.</li>
+                              )}
+                            </ul>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="plus-box">
+                          <span></span>
+                          <span></span>
+                        </div>
+                      )}
                     </div>
                     <p className="dashboard-right-trip-item-thumb-title">{"새로운 여행"}</p>
                   </div>

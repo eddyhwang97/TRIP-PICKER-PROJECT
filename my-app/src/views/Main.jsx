@@ -8,11 +8,11 @@ import picker from "../assets/logo/picker.png";
 import "./css/main.scss";
 import { useNavigate } from "react-router-dom";
 // data
+const citys = JSON.parse(localStorage.getItem("citys"));
 
 function Main(props) {
-  const navigate = useNavigate();
   const user = useStore((state) => state.user);
-  const citys = JSON.parse(localStorage.getItem("citys"));
+  const navigate = useNavigate();
   const [start, setStart] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [cityList, setCityList] = useState(citys);
@@ -123,9 +123,6 @@ function Main(props) {
         <div className="main-intro-travle-location-search-box">
           <div className="main-intro-search-box" onClick={clickEvent.showCityList}>
             <input type="text" className="main-intro-search-input" placeholder="여행지 검색하기" value={inputValue} onChange={handleInputChange} />
-            {/* <button className="main-intro-search-button">
-              <img src={searchButton} alt="검색버튼" />
-            </button> */}
           </div>
 
           <div className="main-intro-recommend-location-list">
