@@ -9,7 +9,6 @@ import "./css/main.scss";
 import { useNavigate } from "react-router-dom";
 // data
 const citys = JSON.parse(localStorage.getItem("citys"));
-console.log(citys);
 
 function Main(props) {
   const user = useStore((state) => state.user);

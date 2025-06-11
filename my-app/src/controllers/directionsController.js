@@ -1,6 +1,6 @@
-import axios from "axios";
+const axios = require('axios');
 
-export const getDirections = async (req, res) => {
+exports.getDirections = async (req, res) => {
   try {
     const response = await axios.post(
       "https://api.openrouteservice.org/v2/directions/driving-car",

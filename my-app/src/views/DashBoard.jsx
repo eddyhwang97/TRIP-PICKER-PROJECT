@@ -53,7 +53,6 @@ function DashBoard(props) {
   };
   //          function : 클릭한 여행데이터 수집          //
   const getCurrentTripData = useCallback((trip) => {
-    console.log(trip);
     tripRef.current = trip;
     const tripData = tripRef.current;
     navigateEditTrip(tripData);

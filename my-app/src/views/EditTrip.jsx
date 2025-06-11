@@ -63,12 +63,10 @@ function EditTrip(props) {
 
     // 2. kmeans 클러스터링
     const clusters = kmeans(locations, numberOfDays);
-    console.log("K-means 클러스터링 결과:", clusters);
 
     // 3. 클러스터링 결과 데이터로 중심값과 장소 정보 매핑
     // 클러스터링 결과에서 중심점과 해당 클러스터에 속하는 장소들을 매핑
     const clusterData = clusters.centroids.map((centroid, clusterIndex) => {
-      console.log("centroid", centroid, "clusterIndex", clusterIndex);
       const clusterPlaces = places.filter(
         (_, index) => clusters.clusters[index] === clusterIndex
       );
@@ -81,8 +79,6 @@ function EditTrip(props) {
         places: clusterPlaces,
       };
     });
-
-    console.log("Cluster Data:", clusterData);
 
     // 4. 일정 기반으로 배열 생성후 일정에 맞는 숙소 넣기
     const groupedByDate = {};
@@ -200,8 +196,6 @@ function EditTrip(props) {
       ]);
     });
 
-    console.log("newtemp", newtemp);
-
     /*******  79cc65ab-fdd8-41a1-b8f3-ef25c9d89bbb  *******/
     setSchedule(temp);
 
@@ -236,16 +230,13 @@ function EditTrip(props) {
         if (isSingleRoute) {
           // 루트 1개일 때
           const coordinates = schedule;
-          const response = await fetch(
-           `/api/directions`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ coordinates }),
-            }
-          );
+          const response = await fetch(`/api/directions`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ coordinates }),
+          });
 
           if (!response.ok) {
             throw new Error("경로 데이터를 가져오는 데 실패했습니다.");
