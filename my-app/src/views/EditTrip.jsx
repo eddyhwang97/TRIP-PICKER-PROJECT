@@ -17,9 +17,17 @@ function EditTrip(props) {
   //           state : 여행정보 셋팅 및 저장 상태 변수 //
   const tripData = location.state.tripData;
   // PlaceList
-  const [placesInfo, setPlacesInfo] = useState({ accommodation: tripData.accommodation, attraction: tripData.attraction, restaurant: tripData.restaurant, cafe: tripData.cafe });
+  const [placesInfo, setPlacesInfo] = useState({
+    accommodation: tripData.accommodation,
+    attraction: tripData.attraction,
+    restaurant: tripData.restaurant,
+    cafe: tripData.cafe,
+  });
   // DateSelection
-  const [tripDates, setTripDates] = useState([tripData.startDate, tripData.endDate]);
+  const [tripDates, setTripDates] = useState([
+    tripData.startDate,
+    tripData.endDate,
+  ]);
   // TimeSelection
   const [dailyTimeSlots, setDailyTimeSlots] = useState(tripData.dailyTimeSlots);
   // ScheduleCreation
@@ -27,9 +35,13 @@ function EditTrip(props) {
   // 장소 유형
   const [placeType, setPlaceType] = useState("attraction");
   // 체크인
-  const [checkInDate, setCheckInDate] = useState(Object.keys(dailyTimeSlots)[0]);
+  const [checkInDate, setCheckInDate] = useState(
+    Object.keys(dailyTimeSlots)[0]
+  );
   // 체크아웃
-  const [checkOutDate, setCheckOutDate] = useState(Object.keys(dailyTimeSlots)[1]);
+  const [checkOutDate, setCheckOutDate] = useState(
+    Object.keys(dailyTimeSlots)[1]
+  );
 
   //          function : 클러스터링 및 일정 생성          //
   const handelClusterization = useCallback(async () => {
@@ -39,7 +51,11 @@ function EditTrip(props) {
       .map(([type, places]) => (type !== "accommodation" ? places : []))
       .flat();
     // 1.2 클러스터링에 사용할 장소 데이터
-    const locations = places.map((place) => [place.location.lat, place.location.lng, place.checkInDate || 0]);
+    const locations = places.map((place) => [
+      place.location.lat,
+      place.location.lng,
+      place.checkInDate || 0,
+    ]);
     // 1.3 클러스터링에 사용할 일정 데이터 - k값
     const numberOfDays = Object.keys(dailyTimeSlots).length;
     // 1.3 클러스터링에 사용할 장소 데이터 - 숙소데이터
@@ -53,7 +69,9 @@ function EditTrip(props) {
     // 클러스터링 결과에서 중심점과 해당 클러스터에 속하는 장소들을 매핑
     const clusterData = clusters.centroids.map((centroid, clusterIndex) => {
       console.log("centroid", centroid, "clusterIndex", clusterIndex);
-      const clusterPlaces = places.filter((_, index) => clusters.clusters[index] === clusterIndex);
+      const clusterPlaces = places.filter(
+        (_, index) => clusters.clusters[index] === clusterIndex
+      );
 
       return {
         centroid: {
@@ -102,7 +120,17 @@ function EditTrip(props) {
 
         // 체크인 숙소 위치와 각 클러스터의 중심점 거리 계산
         const distances = clusterData.map((cluster, index) => {
-          const distance = window.google.maps.geometry.spherical.computeDistanceBetween(new window.google.maps.LatLng(accommodation.location.lat, accommodation.location.lng), new window.google.maps.LatLng(cluster.centroid.lat, cluster.centroid.lng));
+          const distance =
+            window.google.maps.geometry.spherical.computeDistanceBetween(
+              new window.google.maps.LatLng(
+                accommodation.location.lat,
+                accommodation.location.lng
+              ),
+              new window.google.maps.LatLng(
+                cluster.centroid.lat,
+                cluster.centroid.lng
+              )
+            );
           return { index, distance };
         });
 
@@ -129,10 +157,15 @@ function EditTrip(props) {
       });
 
       // 사용되지 않은 클러스터 찾기
-      const unusedClusters = clusterData.filter((_, index) => !usedClusters.has(index));
+      const unusedClusters = clusterData.filter(
+        (_, index) => !usedClusters.has(index)
+      );
 
       // places가 비어있는 날짜 찾기
-      const emptyDates = Object.keys(groupedByDate).filter((date) => !groupedByDate[date].places || groupedByDate[date].places.length === 0);
+      const emptyDates = Object.keys(groupedByDate).filter(
+        (date) =>
+          !groupedByDate[date].places || groupedByDate[date].places.length === 0
+      );
 
       // 사용되지 않은 클러스터를 빈 날짜에 할당
       unusedClusters.forEach((cluster, index) => {
@@ -161,7 +194,10 @@ function EditTrip(props) {
     });
     /*************  ✨ Windsurf Command ⭐  *************/
     const newtemp = Object.keys(groupedByDate).map((date) => {
-      return groupedByDate[date].places.map((place) => [place.location.lng, place.location.lat]);
+      return groupedByDate[date].places.map((place) => [
+        place.location.lng,
+        place.location.lat,
+      ]);
     });
 
     console.log("newtemp", newtemp);
@@ -181,22 +217,35 @@ function EditTrip(props) {
       // 루트 1개인지 여러개인지 판별
       // 루트 1개: schedule = [[lng,lat],[lng,lat],...]
       // 루트 여러개: schedule = [ [[lng,lat],[lng,lat],...], [[lng,lat],[lng,lat],...], ... ]
-      const isSingleRoute = Array.isArray(schedule) && schedule.length > 0 && Array.isArray(schedule[0]) && typeof schedule[0][0] === "number";
+      const isSingleRoute =
+        Array.isArray(schedule) &&
+        schedule.length > 0 &&
+        Array.isArray(schedule[0]) &&
+        typeof schedule[0][0] === "number";
 
-      const isMultiRoute = Array.isArray(schedule) && schedule.length > 0 && Array.isArray(schedule[0]) && Array.isArray(schedule[0][0]) && typeof schedule[0][0][0] === "number";
+      const isMultiRoute =
+        Array.isArray(schedule) &&
+        schedule.length > 0 &&
+        Array.isArray(schedule[0]) &&
+        Array.isArray(schedule[0][0]) &&
+        typeof schedule[0][0][0] === "number";
 
       try {
-        const API_URL = process.env.REACT_APP_API_SERVER || "http://localhost:3001";
+        const API_URL =
+          process.env.REACT_APP_API_SERVER || "http://localhost:3001";
         if (isSingleRoute) {
           // 루트 1개일 때
           const coordinates = schedule;
-          const response = await fetch(`${API_URL}/api/directions`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ coordinates }),
-          });
+          const response = await fetch(
+           `/api/directions`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ coordinates }),
+            }
+          );
 
           if (!response.ok) {
             throw new Error("경로 데이터를 가져오는 데 실패했습니다.");
@@ -209,12 +258,17 @@ function EditTrip(props) {
             try {
               const encodedPolyline = data.routes[0].geometry;
               const decodedCoordinates = polyline.decode(encodedPolyline);
-              routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({ lat, lng }));
+              routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({
+                lat,
+                lng,
+              }));
             } catch (e) {
               console.error("Polyline decode error:", e);
             }
           } else if (data.features && data.features[0].geometry.coordinates) {
-            routeCoordinates = data.features[0].geometry.coordinates.map(([lng, lat]) => ({ lat, lng }));
+            routeCoordinates = data.features[0].geometry.coordinates.map(
+              ([lng, lat]) => ({ lat, lng })
+            );
           }
           setRoute(routeCoordinates);
           if (routeCoordinates.length > 0) setMapCenter(routeCoordinates[0]);
@@ -222,33 +276,45 @@ function EditTrip(props) {
           // 루트 여러개일 때
           const responses = await Promise.all(
             schedule.map((coordinates, idx) =>
-              fetch(`${API_URL}/api/directions`, {
+              fetch(`/api/directions`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ coordinates }),
               }).then(async (res) => {
-                if (!res.ok) throw new Error(`경로 ${idx + 1} 데이터를 가져오는 데 실패했습니다.`);
+                if (!res.ok)
+                  throw new Error(
+                    `경로 ${idx + 1} 데이터를 가져오는 데 실패했습니다.`
+                  );
                 const data = await res.json();
                 let routeCoordinates = [];
                 if (data.routes && data.routes[0].geometry) {
                   try {
                     const encodedPolyline = data.routes[0].geometry;
                     const decodedCoordinates = polyline.decode(encodedPolyline);
-                    routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({ lat, lng }));
+                    routeCoordinates = decodedCoordinates.map(([lat, lng]) => ({
+                      lat,
+                      lng,
+                    }));
                   } catch (e) {
                     console.error("Polyline decode error (multi):", e);
                   }
-                } else if (data.features && data.features[0].geometry.coordinates) {
-                  routeCoordinates = data.features[0].geometry.coordinates.map(([lng, lat]) => ({ lat, lng }));
+                } else if (
+                  data.features &&
+                  data.features[0].geometry.coordinates
+                ) {
+                  routeCoordinates = data.features[0].geometry.coordinates.map(
+                    ([lng, lat]) => ({ lat, lng })
+                  );
                 }
                 return routeCoordinates;
               })
             )
           );
           setRoutes(responses); // 여러 경로 모두 저장
-          if (responses.length > 0 && responses[0].length > 0) setMapCenter(responses[0][0]);
+          if (responses.length > 0 && responses[0].length > 0)
+            setMapCenter(responses[0][0]);
         } else {
           alert("입력 데이터 구조가 올바르지 않습니다.");
         }
@@ -288,7 +354,6 @@ function EditTrip(props) {
 
     // 3. 저장
     localStorage.setItem("trips", JSON.stringify(updatedTrips));
-
   });
 
   //           Effect : 트립정보 세션 저장          //
