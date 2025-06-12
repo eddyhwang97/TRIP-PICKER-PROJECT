@@ -178,7 +178,7 @@ function DashBoard(props) {
               ></div>
               <div className="dashboard-left-profile-user-info">
                 <div className="dashboard-left-profile-user-info-name">
-                  <span>{"이름"}</span>
+                  <span>{user ? user.name : "Guest"}</span>
                   <div className="dashboard-left-notice">
                     <button className="dashboard-left-notice-button">
                       <img src={noticeIcon} alt="알림" />
