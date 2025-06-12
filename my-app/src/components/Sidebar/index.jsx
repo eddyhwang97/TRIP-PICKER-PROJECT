@@ -27,11 +27,10 @@ function Sidebar({saveTrip,checkInDate, setCheckInDate, checkOutDate, setCheckOu
 
   return (
     <>
-      {/* 사이드바 토글 버튼 (1024px 이하에서만 보임) */}
+      <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
       <button className="sidebar-toggle" onClick={() => setSidebarOpen((prev) => !prev)}>
         {sidebarOpen ? "«" : "»"}
       </button>
-      <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
         <div className="sidebar-header">
           <h2>
             {step === 1 && "날짜 선택"}
