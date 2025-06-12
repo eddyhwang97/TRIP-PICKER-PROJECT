@@ -1,5 +1,17 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Polyline } from "@react-google-maps/api";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  GoogleMap,
+  useJsApiLoader,
+  Marker,
+  InfoWindow,
+  Polyline,
+} from "@react-google-maps/api";
 import PlaceInfo from "../PlaceInfo";
 import accommodationIcon from "../../assets/images/accommodation_pin.png";
 import restaurantIcon from "../../assets/images/restaurant_pin.png";
@@ -11,7 +23,15 @@ const containerStyle = {
   height: "100vh",
 };
 const libraries = ["places", "geometry"];
-const colors = ["#FF0000", "#0000FF", "#00FF00", "#FFA500", "#800080", "#00FFFF", "#FFC0CB"];
+const colors = [
+  "#FF0000",
+  "#0000FF",
+  "#00FF00",
+  "#FFA500",
+  "#800080",
+  "#00FFFF",
+  "#FFC0CB",
+];
 function GoogleMaps({
   apiKey,
   tripData,
@@ -43,15 +63,6 @@ function GoogleMaps({
   //           state : 검색어 관련           //
   const [query, setQuery] = useState(""); // 검색어
   const [suggestions, setSuggestions] = useState([]); // 자동완성 결과
-  const [isApiLoaded, setIsApiLoaded] = useState(false);
-
-  // //           function : 구글맵 API 로드         //
-  // const { isLoaded } = useJsApiLoader({
-  //   id: "google-map-script",
-  //   googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
-  //   libraries: libraries,
-  //   language: "ko",
-  // });
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -91,15 +102,11 @@ function GoogleMaps({
     }
 
     // 체크인 날짜와 체크아웃 날짜 비교
-    if (placeType === "accommodation" && checkInDate > checkOutDate) {
+    if (placeType === "accommodation" && checkInDate >= checkOutDate) {
       alert("체크인 날짜은 체크아웃 날짜보다 작은 날짜을 선택해주세요.");
       return;
     }
-    // 체크인 날짜와 체크아웃 날짜 비교(같은날짜)
-    if (placeType === "accommodation" && checkInDate === checkOutDate) {
-      alert("체크인 날짜은 체크아웃 날짜보다 작은 날짜을 선택해주세요.");
-      return;
-    }
+
     // 체크인 날짜와 체크아웃 날짜 비교(겹치는 날짜)
 
     // 새로운 장소 데이터 생성
@@ -153,26 +160,34 @@ function GoogleMaps({
         const locationInfo = data.results[0];
 
         // 필요에 따라 추가적으로 Google Maps JS SDK로 상세 정보 얻기
-        const service = new window.google.maps.places.PlacesService(document.createElement("div"));
-        service.getDetails({ placeId: locationInfo.place_id, fields: ["name", "formatted_address", "geometry.location"] }, (place, status) => {
-          if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            const clickedPosition = {
-              name: place.name,
-              lat,
-              lng,
-              address: place.formatted_address,
-            };
-            setMarkerPosition(clickedPosition);
-          } else {
-            // fallback: Geocode 결과만 사용
-            setMarkerPosition({
-              name: "",
-              lat,
-              lng,
-              address: locationInfo.formatted_address,
-            });
+        const service = new window.google.maps.places.PlacesService(
+          document.createElement("div")
+        );
+        service.getDetails(
+          {
+            placeId: locationInfo.place_id,
+            fields: ["name", "formatted_address", "geometry.location"],
+          },
+          (place, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+              const clickedPosition = {
+                name: place.name,
+                lat,
+                lng,
+                address: place.formatted_address,
+              };
+              setMarkerPosition(clickedPosition);
+            } else {
+              // fallback: Geocode 결과만 사용
+              setMarkerPosition({
+                name: "",
+                lat,
+                lng,
+                address: locationInfo.formatted_address,
+              });
+            }
           }
-        });
+        );
       } else {
         console.error("위치 정보를 불러오지 못했습니다.");
       }
@@ -188,15 +203,23 @@ function GoogleMaps({
       return;
     }
 
-    const autocompleteService = new window.google.maps.places.AutocompleteService();
+    const autocompleteService =
+      new window.google.maps.places.AutocompleteService();
 
-    autocompleteService.getPlacePredictions({ input: query, location: new window.google.maps.LatLng(mapCenter.lat, mapCenter.lng), radius: 5000 }, (predictions, status) => {
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        setSuggestions(predictions);
-      } else {
-        setSuggestions([]);
+    autocompleteService.getPlacePredictions(
+      {
+        input: query,
+        location: new window.google.maps.LatLng(mapCenter.lat, mapCenter.lng),
+        radius: 5000,
+      },
+      (predictions, status) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          setSuggestions(predictions);
+        } else {
+          setSuggestions([]);
+        }
       }
-    });
+    );
   });
 
   //           function : handlePlaceSelect - 자동완성 결과를 이용한 장소 선택         //
@@ -213,7 +236,9 @@ function GoogleMaps({
       return;
     }
 
-    const service = new window.google.maps.places.PlacesService(document.createElement("div"));
+    const service = new window.google.maps.places.PlacesService(
+      document.createElement("div")
+    );
 
     const request = {
       placeId: placeId,
@@ -241,13 +266,22 @@ function GoogleMaps({
   //           function : 마커 아이콘 설정          //
   const getMarkerIcon = useCallback((type) => {
     if (type === "accommodation" || type.includes("accom")) {
-      return { url: accommodationIcon, scaledSize: new window.google.maps.Size(40, 40) };
+      return {
+        url: accommodationIcon,
+        scaledSize: new window.google.maps.Size(40, 40),
+      };
     }
     if (type === "restaurant" || type.includes("rest")) {
-      return { url: restaurantIcon, scaledSize: new window.google.maps.Size(40, 40) };
+      return {
+        url: restaurantIcon,
+        scaledSize: new window.google.maps.Size(40, 40),
+      };
     }
     if (type === "attraction" || type.includes("attr")) {
-      return { url: placeIcon, scaledSize: new window.google.maps.Size(40, 40) };
+      return {
+        url: placeIcon,
+        scaledSize: new window.google.maps.Size(40, 40),
+      };
     }
     if (type === "cafe" || type.includes("cafe")) {
       return { url: cafeIcon, scaledSize: new window.google.maps.Size(40, 40) };
@@ -287,11 +321,21 @@ function GoogleMaps({
     <>
       <div className="map-group">
         <div className="search-container">
-          <input type="text" value={query} placeholder="장소를 검색하세요..." onChange={(e) => setQuery(e.target.value)} className="search-input map-control" />
+          <input
+            type="text"
+            value={query}
+            placeholder="장소를 검색하세요..."
+            onChange={(e) => setQuery(e.target.value)}
+            className="search-input map-control"
+          />
           {suggestions.length > 0 && (
             <ul className="search-results">
               {suggestions.map((place) => (
-                <li key={place.place_id} onClick={() => handlePlaceSelect(place)} className="result">
+                <li
+                  key={place.place_id}
+                  onClick={() => handlePlaceSelect(place)}
+                  className="result"
+                >
                   {place.description}
                 </li>
               ))}
@@ -310,11 +354,23 @@ function GoogleMaps({
         }}
       >
         {markers.map((marker, index) => (
-          <Marker key={marker.id} position={marker.location} icon={getMarkerIcon(marker.id)} title={marker.name || marker.address} />
+          <Marker
+            key={marker.id}
+            position={marker.location}
+            icon={getMarkerIcon(marker.id)}
+            title={marker.name || marker.address}
+          />
         ))}
         {markerPosition && (
           <>
-            <Marker clickable={false} draggable={true} onDragEnd={fetchPlaceOnClicknDrag} position={markerPosition} icon={getMarkerIcon(addIcon)} title="새 장소">
+            <Marker
+              clickable={false}
+              draggable={true}
+              onDragEnd={fetchPlaceOnClicknDrag}
+              position={markerPosition}
+              icon={getMarkerIcon(addIcon)}
+              title="새 장소"
+            >
               <InfoWindow
                 position={markerPosition}
                 options={{
@@ -339,8 +395,17 @@ function GoogleMaps({
             </Marker>
           </>
         )}
-        {Array.isArray(route) && route.length > 0 && !Array.isArray(route[0]) ? (
-          <Polyline path={route} options={{ strokeColor: "#FF0000", strokeOpacity: 0.8, strokeWeight: 4 }} />
+        {Array.isArray(route) &&
+        route.length > 0 &&
+        !Array.isArray(route[0]) ? (
+          <Polyline
+            path={route}
+            options={{
+              strokeColor: "#FF0000",
+              strokeOpacity: 0.8,
+              strokeWeight: 4,
+            }}
+          />
         ) : (
           routes &&
           routes.map((r, idx) => (
