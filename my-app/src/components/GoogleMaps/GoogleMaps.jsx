@@ -138,8 +138,8 @@ function GoogleMaps({
     const lng = event.latLng.lng();
 
     try {
-      const API_URL = process.env.REACT_APP_API_SERVER || "http://localhost:3001";
-      const response = await fetch(`${API_URL}/api/geocode`, {
+      // const API_URL = process.env.REACT_APP_API_SERVER || "http://localhost:3001";
+      const response = await fetch(`/api/geocode`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

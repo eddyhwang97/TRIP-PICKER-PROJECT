@@ -69,7 +69,7 @@ function Sidebar({saveTrip,checkInDate, setCheckInDate, checkOutDate, setCheckOu
           />
         )}
         {step === 4 && <ScheduleCreation saveTrip={saveTrip} placesInfo={placesInfo} setPlacesInfo={setPlacesInfo} categoryColors={categoryColors} schedule={schedule} setSchedule={setSchedule} step={step} setStep={setStep} />}
-        {step === 5 && <Viewer step={step} setStep={setStep} />}
+        
       </div>
     </>
   );
