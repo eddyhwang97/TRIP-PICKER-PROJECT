@@ -138,7 +138,7 @@ function GoogleMaps({
     alert("장소가 저장되었습니다!");
   }, [markerPosition, placeType, checkInDate, checkOutDate, setPlacesInfo]);
 
-  //           function : fetchPlaceOnClick          //
+  //           function : fetchPlaceOnClicknDrag          //
   // 지도 클릭 시 위치 정보 불러오기
   const fetchPlaceOnClicknDrag = useCallback(async (event) => {
     const lat = event.latLng.lat();
