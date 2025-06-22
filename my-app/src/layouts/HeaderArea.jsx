@@ -31,12 +31,9 @@ function HeaderArea(props) {
           </Link>
         </section>
         <section className="nav-box" ref={navRef}>
-
           {/* 네비게이션 메뉴 */}
-          <nav className='nav-menu'>
-            <Link to="/dashboard">
-              DASHBOARD
-            </Link>
+          <nav className="nav-menu">
+            {user ? <Link to="/dashboard">DASHBOARD</Link> : null}
             {user ? (
               <a
                 href="/"
@@ -49,12 +46,8 @@ function HeaderArea(props) {
               </a>
             ) : (
               <>
-                <Link to="/login">
-                  LOGIN
-                </Link>
-                <Link to="/join" >
-                  JOIN
-                </Link>
+                <Link to="/login">LOGIN</Link>
+                <Link to="/join">JOIN</Link>
               </>
             )}
           </nav>

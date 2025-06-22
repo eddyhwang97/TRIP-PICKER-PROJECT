@@ -1,9 +1,10 @@
 @import "../../css/core";
 
 .container {
-  width: 100%;
-  height: calc(100vh - 60px);
-  overflow: hidden;
+  height: 100dvh; // 최신 브라우저용 동적 뷰포트 대응
+  @supports not (height: 100dvh) {
+    height: calc(100vh - 60px); // 구버전 브라우저 fallback
+  }
 }
 
 .main-intro-box {
@@ -233,5 +234,70 @@ margin-top: 5rem;
 @keyframes buttonAnimation {
   to {
     opacity: 1;
+  }
+}
+
+// 가로형 디바이스를 위한 미디어 쿼리 (1024×600 등 대응)
+@media screen and (max-width: 1024px) and (max-height: 700px) {
+  .main-intro-box {
+    margin-top: 100px;
+
+    .main-intro-text {
+      font-size: 6rem;
+    }
+    .main-intro-logo {
+      img {
+        width: 50px;
+        height: 44px;
+      }
+    }
+  }
+
+  .main-intro-start-button {
+    button {
+      width: 180px;
+      height: 44px;
+      font-size: 18px;
+    }
+  }
+
+  .main-intro-search-box {
+    width: 300px;
+    height: 45px;
+
+    input {
+      font-size: 1.6rem;
+    }
+  }
+
+  .main-intro-recommend-location-list {
+    width: 320px;
+    max-height: 140px;
+    font-size: 16px;
+  }
+
+  .main-intro-city-list {
+    height: 50px;
+
+    .main-intro-location-image {
+      width: 45px;
+      height: 45px;
+    }
+
+    .main-intro-location-name {
+      font-size: 18px;
+
+      .main-intro-city-name-en {
+        font-size: 16px;
+      }
+    }
+  }
+}
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .main-intro-search-box {
+    scale: 0.95;
+  }
+  .main-intro-recommend-location-list {
+    scale: 0.95;
   }
 }

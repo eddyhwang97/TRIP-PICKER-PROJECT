@@ -94,6 +94,7 @@ function Join(props) {
             onChange={(e) => setUsername(e.target.value)}
             className="join-input"
             required
+            placeholder="example@example.com"
           />
           <div className="passwordBox">
             <div className="inputText">비밀번호</div>
@@ -103,6 +104,7 @@ function Join(props) {
               onChange={(e) => setPassword(e.target.value)}
               className="join-input"
               required
+              placeholder="영문, 숫자, 특수문자 2자 포함 8자 이상"
             />
           </div>
           <div className="passwordBox">

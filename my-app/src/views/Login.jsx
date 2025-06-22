@@ -74,6 +74,7 @@ function Login(props) {
             onChange={(e) => setUsername(e.target.value)}
             className="login-input"
             required
+            placeholder="example@example.com"
           />
           <div className="passwordBox">
             <div className="inputText">비밀번호</div>
@@ -84,7 +85,6 @@ function Login(props) {
               className="login-input"
               required
             />
-            <div className="forgetPassword">비밀번호를 잊으셨나요?</div>
           </div>
           <button
             type="submit"
