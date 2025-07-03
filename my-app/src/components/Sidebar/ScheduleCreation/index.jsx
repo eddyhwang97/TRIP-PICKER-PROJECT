@@ -1,8 +1,15 @@
-import React, { useCallback} from "react";
+import React, { useCallback } from "react";
 import { SidebarButton } from "../../../assets";
 import "./style.scss";
 
-export default function ScheduleCreation({saveTrip, step,setStep, setPlacesInfo, schedule, handelClusterization}) {
+export default function ScheduleCreation({
+  saveTrip,
+  step,
+  setStep,
+  setPlacesInfo,
+  schedule,
+  handelClusterization,
+}) {
   // 날짜 변환
   const changeDateFormat = useCallback((dateStr) => {
     const daysKor = ["일", "월", "화", "수", "목", "금", "토"];
@@ -20,7 +27,9 @@ export default function ScheduleCreation({saveTrip, step,setStep, setPlacesInfo,
         setPlacesInfo((prevPlacesInfo) => {
           const updatedPlacesInfo = { ...prevPlacesInfo };
           Object.keys(updatedPlacesInfo).forEach((category) => {
-            updatedPlacesInfo[category] = updatedPlacesInfo[category].filter((place) => place.id !== placeId);
+            updatedPlacesInfo[category] = updatedPlacesInfo[category].filter(
+              (place) => place.id !== placeId
+            );
           });
           return updatedPlacesInfo;
         });
@@ -41,7 +50,11 @@ export default function ScheduleCreation({saveTrip, step,setStep, setPlacesInfo,
       categoryInfo = ["카페", "category-yellow"];
     }
 
-    return <span className={`place-category ${categoryInfo[1]}`}>{categoryInfo[0]}</span>;
+    return (
+      <span className={`place-category ${categoryInfo[1]}`}>
+        {categoryInfo[0]}
+      </span>
+    );
   };
 
   return (
@@ -50,7 +63,9 @@ export default function ScheduleCreation({saveTrip, step,setStep, setPlacesInfo,
         <div className="schedule-summary">
           {Object.entries(schedule).map(([day, dateInfo], index) => (
             <div className="day-group" key={day}>
-              <h3 className="day-title">{`${index + 1}일차(${changeDateFormat(day)})`}</h3>
+              <h3 className="day-title">{`${index + 1}일차(${changeDateFormat(
+                day
+              )})`}</h3>
               <ul className="place-list">
                 {dateInfo.map((place) => (
                   <li className="place-item" key={place.id}>
@@ -61,7 +76,10 @@ export default function ScheduleCreation({saveTrip, step,setStep, setPlacesInfo,
                       </div>
                       <div className="place-address">{place.address}</div>
                     </div>
-                    <button className="delete-button" onClick={() => handleDelete(place.id)}>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDelete(place.id)}
+                    >
                       삭제
                     </button>
                   </li>
@@ -71,8 +89,15 @@ export default function ScheduleCreation({saveTrip, step,setStep, setPlacesInfo,
           ))}
         </div>
       </div>
-      {step === 4 && <SidebarButton step={4} saveTrip={saveTrip} setStep={setStep} handelClusterization={handelClusterization} />}
-      {step === 5 && <SidebarButton step={5} setStep={setStep}/>}
+      {step === 4 && (
+        <SidebarButton
+          step={4}
+          saveTrip={saveTrip}
+          setStep={setStep}
+          handelClusterization={handelClusterization}
+        />
+      )}
+      {step === 5 && <SidebarButton step={5} setStep={setStep} />}
     </>
   );
 }

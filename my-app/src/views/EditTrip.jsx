@@ -176,7 +176,7 @@ function EditTrip(props) {
 
     matchClustersWithAccommodations();
     makeSchedule(groupedByDate);
-  });
+  },[]);
   const makeSchedule = useCallback((groupedByDate) => {
     const temp = {};
     Object.keys(groupedByDate).forEach((date) => {
@@ -188,7 +188,6 @@ function EditTrip(props) {
         temp[date].push(groupedByDate[date].accommodation[0]);
       }
     });
-    /*************  ✨ Windsurf Command ⭐  *************/
     const newtemp = Object.keys(groupedByDate).map((date) => {
       return groupedByDate[date].places.map((place) => [
         place.location.lng,
@@ -196,7 +195,6 @@ function EditTrip(props) {
       ]);
     });
 
-    /*******  79cc65ab-fdd8-41a1-b8f3-ef25c9d89bbb  *******/
     setSchedule(temp);
 
     fetchRoute(newtemp);
@@ -225,8 +223,6 @@ function EditTrip(props) {
         typeof schedule[0][0][0] === "number";
 
       try {
-        const API_URL =
-          process.env.REACT_APP_API_SERVER || "http://localhost:3001";
         if (isSingleRoute) {
           // 루트 1개일 때
           const coordinates = schedule;
@@ -316,7 +312,7 @@ function EditTrip(props) {
     [setRoute, setRoutes, setMapCenter]
   );
 
-  //           function : saveTrip -모든 트립 정보 저장하기
+  //           function : saveTrip -모든 트립 정보 저장하기          //
   const saveTrip = useCallback(() => {
     const trip = {
       id: tripData.id,
