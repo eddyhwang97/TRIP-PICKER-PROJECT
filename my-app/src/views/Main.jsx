@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useStore } from "../stores/store.API";
 
 // assets
@@ -17,6 +17,9 @@ function Main(props) {
   const [inputValue, setInputValue] = useState("");
   const [cityList, setCityList] = useState(citys);
   const cityInfo = useRef(null);
+  useLayoutEffect(() => {
+    setCityList(citys)
+  },[cityList])
 
   const clickEvent = {
     showSearch: () => {
