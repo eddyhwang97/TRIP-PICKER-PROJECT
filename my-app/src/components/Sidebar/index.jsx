@@ -4,11 +4,27 @@ import DateSelection from "./DateSelection";
 import TimeSelection from "./TimeSelection";
 import ScheduleCreation from "./ScheduleCreation";
 import PlaceList from "./PlaceList";
-import Viewer from "./Viewer";
+
 import "./style.scss";
 import { useNavigate } from "react-router-dom";
 
-function Sidebar({saveTrip,checkInDate, setCheckInDate, checkOutDate, setCheckOutDate, placesInfo, setPlacesInfo, placeType, tripDates, setTripDates, dailyTimeSlots, setDailyTimeSlots, schedule, setSchedule, handelClusterization}) {
+function Sidebar({
+  saveTrip,
+  checkInDate,
+  setCheckInDate,
+  checkOutDate,
+  setCheckOutDate,
+  placesInfo,
+  setPlacesInfo,
+  placeType,
+  tripDates,
+  setTripDates,
+  dailyTimeSlots,
+  setDailyTimeSlots,
+  schedule,
+  setSchedule,
+  handelClusterization,
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const navigate = useNavigate();
@@ -28,9 +44,12 @@ function Sidebar({saveTrip,checkInDate, setCheckInDate, checkOutDate, setCheckOu
   return (
     <>
       <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-      <button className="sidebar-toggle" onClick={() => setSidebarOpen((prev) => !prev)}>
-        {sidebarOpen ? "«" : "»"}
-      </button>
+        <button
+          className="sidebar-toggle"
+          onClick={() => setSidebarOpen((prev) => !prev)}
+        >
+          {sidebarOpen ? "«" : "»"}
+        </button>
         <div className="sidebar-header">
           <h2>
             {step === 1 && "날짜 선택"}
@@ -50,8 +69,23 @@ function Sidebar({saveTrip,checkInDate, setCheckInDate, checkOutDate, setCheckOu
           </button>
         </div>
         {/* 단계별로 컴포넌트 보여주기 */}
-        {step === 1 && <DateSelection tripDates={tripDates} setTripDates={setTripDates} step={step} setStep={setStep} />}
-        {step === 2 && <TimeSelection tripDates={tripDates} dailyTimeSlots={dailyTimeSlots} setDailyTimeSlots={setDailyTimeSlots} step={step} setStep={setStep} />}
+        {step === 1 && (
+          <DateSelection
+            tripDates={tripDates}
+            setTripDates={setTripDates}
+            step={step}
+            setStep={setStep}
+          />
+        )}
+        {step === 2 && (
+          <TimeSelection
+            tripDates={tripDates}
+            dailyTimeSlots={dailyTimeSlots}
+            setDailyTimeSlots={setDailyTimeSlots}
+            step={step}
+            setStep={setStep}
+          />
+        )}
         {step === 3 && (
           <PlaceList
             checkOutDate={checkOutDate}
@@ -68,8 +102,18 @@ function Sidebar({saveTrip,checkInDate, setCheckInDate, checkOutDate, setCheckOu
             handelClusterization={handelClusterization}
           />
         )}
-        {step === 4 && <ScheduleCreation saveTrip={saveTrip} placesInfo={placesInfo} setPlacesInfo={setPlacesInfo} categoryColors={categoryColors} schedule={schedule} setSchedule={setSchedule} step={step} setStep={setStep} />}
-        
+        {(step === 4 || step === 5) && (
+          <ScheduleCreation
+            saveTrip={saveTrip}
+            placesInfo={placesInfo}
+            setPlacesInfo={setPlacesInfo}
+            categoryColors={categoryColors}
+            schedule={schedule}
+            setSchedule={setSchedule}
+            step={step}
+            setStep={setStep}
+          />
+        )}
       </div>
     </>
   );

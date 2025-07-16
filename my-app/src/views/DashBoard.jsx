@@ -1,7 +1,5 @@
 import React, {
-  use,
   useCallback,
-  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -28,40 +26,30 @@ function DashBoard(props) {
 
   //           function : 여행목록 체크박스          //
   // 여행목록 체크박스 클릭 감지
-  const handleCheck = (id, isChecked) => {
+  const handleCheck = useCallback((id, isChecked) => {
     setCheckedItems((prev) =>
       isChecked ? [...prev, id] : prev.filter((item) => item !== id)
     );
-    // console.log(checkedItems);
-  };
-  const handleDeleteTripList = () => {
+  },[]);
+  //          function : 여행목록 삭제          //
+  const handleDeleteTripList = useCallback(() => {
+    console.log("handleDeleteTripList", checkedItems);
     setTripList((prev) =>
       prev.filter((item) => !checkedItems.includes(item.id))
     );
-  };
+  },[]);
 
-  //           function : 사용자 여행목록 가져오기          //
-  const getTripList = () => {
-    const userTirpList =
-      user !== null
-        ? JSON.parse(localStorage.getItem("trips")).filter(
-            (trip) => trip.userId === user.id
-          )
-        : [];
-    setTripList(userTirpList);
-    // console.log(userTirpList);
-  };
   //          function : 클릭한 여행데이터 수집          //
   const getCurrentTripData = useCallback((trip) => {
     tripRef.current = trip;
     const tripData = tripRef.current;
     navigateEditTrip(tripData);
-  });
+  },[]);
 
   //           function : navigation          //
   const navigateEditTrip = useCallback((tripData) => {
     navigate("/edittrip", { state: { tripData: tripData } });
-  });
+  },[]);
 
   //           function : 여행 생성          //
   const [newTrip, setNewTrip] = useState(false);
@@ -162,7 +150,13 @@ function DashBoard(props) {
   //           useLayoutEffect          //
   // 첫 랜더링시 여행 리스트 가져오기
   useLayoutEffect(() => {
-    getTripList();
+    const userTirpList =
+      user !== null
+        ? JSON.parse(localStorage.getItem("trips")).filter(
+            (trip) => trip.userId === user.id
+          )
+        : [];
+    setTripList(userTirpList);
   }, []);
 
   //           render          //
@@ -178,7 +172,7 @@ function DashBoard(props) {
               ></div>
               <div className="dashboard-left-profile-user-info">
                 <div className="dashboard-left-profile-user-info-name">
-                  <span>{user ? user.name : "Guest"}</span>
+                  <span>{user ? user.id : "host"}</span>
                   <div className="dashboard-left-notice">
                     <button className="dashboard-left-notice-button">
                       <img src={noticeIcon} alt="알림" />
@@ -186,7 +180,7 @@ function DashBoard(props) {
                   </div>
                 </div>
                 <span className="dashboard-left-profile-user-info-email">
-                  {"trippicker@email.com"}
+                  {user ? user.email : "host"}
                 </span>
               </div>
             </div>
@@ -194,25 +188,19 @@ function DashBoard(props) {
           <section className="dashBoard-left-bottom">
             <div className="dashboard-left-bottom-trip-list">
               <p className="dashboard-left-bottom-trip-list-title">TRIP LIST</p>
-              <div className="dashboard-left-bottom-trip-list-folder">
-                <p className="dashboard-left-bottom-trip-list-folder-title">
-                  하와이 여행 일정
-                </p>
-                {/* <ul>
-                  <li className="dashboard-left-bottom-trip-list-folder-item">ㄴ호놀룰루</li>
-                  <li className="dashboard-left-bottom-trip-list-folder-item">ㄴ와이키키</li>
-                </ul> */}
-              </div>
-              <div className="dashboard-left-bottom-trip-list-folder">
-                <p className="dashboard-left-bottom-trip-list-folder-title">
-                  일본 여행 일정
-                </p>
-                {/* <ul>
-                  <li className="dashboard-left-bottom-trip-list-folder-item">ㄴ이와테</li>
-                  <li className="dashboard-left-bottom-trip-list-folder-item">ㄴ미야기</li>
-                  <li className="dashboard-left-bottom-trip-list-folder-item">ㄴ후쿠시마</li>
-                </ul> */}
-              </div>
+              {tripList &&
+                tripList.map((trip) => {
+                  return (
+                    <div
+                      key={trip.id}
+                      className="dashboard-left-bottom-trip-list-folder"
+                    >
+                      <p className="dashboard-left-bottom-trip-list-folder-title">
+                        {trip.title || "여행 목록"}
+                      </p>
+                    </div>
+                  );
+                })}
             </div>
           </section>
         </div>
